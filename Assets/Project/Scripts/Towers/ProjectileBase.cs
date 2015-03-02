@@ -21,12 +21,12 @@ namespace Excelsion.Towers.Projectiles
 
 
 		//Do things like explode here.
-		virtual void OnCollisionEnter2D( Collision2D col )
+		public virtual void OnCollisionEnter2D( Collision2D col )
 		{
 			return;
 		}
 
-		virtual void OnExplosion(  ) //Pass objects affected here.
+		public virtual void OnExplosion(  ) //Pass objects affected here.
 		{
 			return;
 		}
