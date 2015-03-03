@@ -93,10 +93,12 @@ public class OrbitalCameraFollow : MonoBehaviour {
             zoomGoTo += zoomIncriment;
         }
 
-        //zoomCurrent = Mathf.Lerp(zoomCurrent, zoomGoTo, Time.deltaTime * zoomSpeed);
+        zoomCurrent = Mathf.Lerp(zoomCurrent, zoomGoTo, Time.deltaTime * zoomSpeed);
 
-        zoomCurrent = transform.position.y;
 
+
+        //zoomCurrent = transform.position.y;
+        /*
         if ((zoomCurrent + betweenTerrainHeight) > zoomGoTo)
         {
             transform.position += transform.forward * Time.deltaTime * zoomSpeed;
@@ -105,6 +107,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
         {
             transform.position -= transform.forward * Time.deltaTime * zoomSpeed;
         }
+         */
 
         transform.position += transform.forward * Time.deltaTime;
 
