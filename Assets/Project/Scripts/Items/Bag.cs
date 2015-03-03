@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//Stephan Ennen - 3/3/2015
+
 namespace Excelsion.Inventory
 {
 	//Represents a collection of items.
@@ -18,7 +20,7 @@ namespace Excelsion.Inventory
 		{
 			return false;
 		}
-		//Increase inventory size by one.
+		//Increase inventory size by one. (Use ArrayTools.cs)
 		public void IncreaseSize()
 		{
 
