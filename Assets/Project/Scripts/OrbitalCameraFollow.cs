@@ -24,11 +24,11 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
     //Used for calculating camera displacment
     public float terrainHeight = 0;
-    private float predictUpperTerrainHeight = 0;
-    private float predictLowerTerrainHeight = 0;
+    public float terrainHeighest = 0;
     private float betweenTerrainHeight = 0;
+    private float lastBetweenTerrainHeight = 0;
+    private float terrainCalculationAccuracy = 30;
 
-    
 
 	void Start () {
 	}
@@ -37,53 +37,35 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
         //Temp variables for terrain location
         RaycastHit terrainLocation; 
-        Vector3 fwd = transform.TransformDirection(Vector3.forward);
+        Vector3 fwd = transform.TransformDirection(new Vector3(0,0.25f,1));
+        Vector3 dwn = transform.TransformDirection(new Vector3(0,-1,1));
+        terrainHeighest = 0;
 
-        //Used for calculating the height of the terrain
-        if (Physics.Raycast(transform.position,fwd,out terrainLocation, Mathf.Infinity))
+        //Calculate the highest terrain in a arch from fwd to down
+        for(int i = 0; i < terrainCalculationAccuracy; i++)
         {
-            //Provides the height of the terrain
-            terrainHeight = terrainLocation.point.y;
-
-            //Predicts upper terrain height
-            RaycastHit predictUpperTerrainLocation;
-            if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y+terrainHeight,transform.position.z),fwd,out predictUpperTerrainLocation,Mathf.Infinity))
+            Vector3 dir = Vector3.Lerp(fwd,dwn,Time.deltaTime*i*2);
+            if (Physics.Raycast(transform.position, dir, out terrainLocation, Mathf.Infinity))
             {
-                predictUpperTerrainHeight = predictUpperTerrainLocation.point.y;
-                Debug.DrawLine(transform.position, predictUpperTerrainLocation.point, Color.red, 0.1f);
+                terrainHeight = terrainLocation.point.y;
+                
+                Debug.DrawLine(transform.position, terrainLocation.point, Color.red, 0.1f);
             }
 
-            //Predicts lower terrain height
-            RaycastHit predictLowerTerrainLocation;
-            if (Physics.Raycast(new Vector3(transform.position.x, transform.position.y - terrainHeight, transform.position.z), fwd, out predictLowerTerrainLocation, Mathf.Infinity))
+            if (terrainHeight > terrainHeighest)
             {
-                predictLowerTerrainHeight = predictLowerTerrainLocation.point.y;
-                Debug.DrawLine(transform.position, predictLowerTerrainLocation.point, Color.red, 0.1f);
+                terrainHeighest = terrainHeight;
+                betweenTerrainHeight = terrainHeighest;
             }
-
-            //Checks if it needs to change the between terrain height
-            if (terrainHeight != predictUpperTerrainHeight || terrainHeight != predictLowerTerrainHeight )
-            {
-                betweenTerrainHeight = (terrainHeight + predictUpperTerrainHeight + predictLowerTerrainHeight) / 3f;
-            }
-            else
-            {
-                betweenTerrainHeight = terrainHeight;
-            }
-
-            //Sets camera position based of current zoom
-            cameraPosition = new Vector3(terrainLocation.point.x, zoomCurrent, terrainLocation.point.z);
-
-            //transform.position = new Vector3(transform.position.x, zoomCurrent + betweenTerrainHeight, transform.position.z);
-            //transform.position += transform.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-            
-
-            Debug.DrawLine(transform.position, terrainLocation.point, Color.red,0.1f);
-            //Debug.Log(cameraPosition);
         }
 
-        
+        //Sets the camera rotation point
+        if (Physics.Raycast(transform.position, fwd, out terrainLocation, Mathf.Infinity))
+        {
+            cameraPosition = new Vector3(terrainLocation.point.x, zoomCurrent + betweenTerrainHeight, terrainLocation.point.z);
+        }
 
+        //Sets the zoomGoTo
         if (((Input.GetAxisRaw("Mouse ScrollWheel") > 0) || (Input.GetKey("z"))) && (zoomGoTo > zoomMin))
         {
             zoomGoTo -= zoomIncriment;
@@ -93,30 +75,25 @@ public class OrbitalCameraFollow : MonoBehaviour {
             zoomGoTo += zoomIncriment;
         }
 
+        //Smooths the zoomCurrent
         zoomCurrent = Mathf.Lerp(zoomCurrent, zoomGoTo, Time.deltaTime * zoomSpeed);
 
-
-
-        //zoomCurrent = transform.position.y;
-        /*
-        if ((zoomCurrent + betweenTerrainHeight) > zoomGoTo)
+        //Allows for logical transitioning of the forward
+        if (zoomCurrent + betweenTerrainHeight != (transform.position.y))
         {
-            transform.position += transform.forward * Time.deltaTime * zoomSpeed;
+            while ((zoomCurrent + betweenTerrainHeight) < ((transform.position.y)))
+            {
+                transform.position += transform.forward;
+            }
+
+            while ((zoomCurrent + betweenTerrainHeight) > (transform.position.y))
+            {
+                transform.position -= transform.forward;
+            }
+            
         }
-        else if ((zoomCurrent + betweenTerrainHeight) < zoomGoTo)
-        {
-            transform.position -= transform.forward * Time.deltaTime * zoomSpeed;
-        }
-         */
 
-        transform.position += transform.forward * Time.deltaTime;
-
-        //transform.position = new Vector3(transform.position.x, zoomCurrent + betweenTerrainHeight, transform.position.z);
-        //transform.position += transform.forward * Input.GetAxis("Mouse ScrollWheel") * zoomIncriment * zoomSpeed;
-
-        //zoom = goTo;
-
-
+        //Allows for camera strave
         if (Input.GetKey("q"))
         {
             transform.RotateAround(cameraPosition, Vector3.up, -rotationSpeed * Time.deltaTime);
@@ -143,20 +120,5 @@ public class OrbitalCameraFollow : MonoBehaviour {
         {
             transform.Translate(new Vector3(movementSpeed, 0, 0));
         }
-
-        //zoom -= 10 * (Input.GetAxis("Mouse ScrollWheel"));
-        //zoom -= Input.GetAxis("Mouse ScrollWheel");
-         //transform.position.y-terrainHeight;
-
-        
-        //Camera.main.fieldOfView = zoom;
-        /*
-        if (Input.GetKey("w"))
-        {
-            Vector3 folPos = followObject.transform.position;
-            followObject.transform.position = new Vector3(folPos.x,folPos.y,folPos.z);
-        }*/
-
-
 	}
 }
