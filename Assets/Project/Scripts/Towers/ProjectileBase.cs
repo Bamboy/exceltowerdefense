@@ -1,32 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Stephan Ennen - 3/3/2015
+
 namespace Excelsion.Towers.Projectiles
 {
 	//This is created by TurretBase.
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	public abstract class ProjectileBase : MonoBehaviour 
+	[RequireComponent(typeof(Rigidbody), typeof(Collider))]
+	public class ProjectileBase : MonoBehaviour 
 	{
-		public float explosionRadius = 0.0f;
+		public delegate void onImpactEvent();
+		public delegate void onUpdateEvent();
+
+		public TowerBase owner;
+		public Vector3 target;
 
 		void Start () 
 		{
-		
+			
 		}
-
+		public void Initalize( TowerBase owner, Vector3 target ) //Delegates are passed seperately.
+		{
+			this.owner = owner;
+			this.target = target;
+		}
 		void Update () 
 		{
-		
+			
 		}
 
 
 		//Do things like explode here.
-		public virtual void OnCollisionEnter2D( Collision2D col )
-		{
-			return;
-		}
-
-		public virtual void OnExplosion(  ) //Pass objects affected here.
+		public virtual void OnCollisionEnter( Collision col )
 		{
 			return;
 		}
