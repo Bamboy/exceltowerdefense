@@ -10,12 +10,14 @@ namespace Excelsion.Towers
 	public class TowerBase : MonoBehaviour 
 	{
 		public Turret turret;
-		public List<Item> inventory;
+		public Bag inventory;
 
+		private bool isBuilt = false;
 
 		void Start () 
 		{
-			inventory = new List<Item>( 0 ); //Start with an empty inventory because at the start of a game we wont have a working tower.
+			isBuilt = false;
+			inventory = new Bag( 0 ); //Start with an empty inventory because at the start of a game we wont have a working tower.
 		}
 
 		void Update () 
@@ -26,7 +28,7 @@ namespace Excelsion.Towers
 		//Called when the mouse is over our collider and is clicked.
 		void OnMouseDown()
 		{
-			this.renderer.material.color = Color.blue;
+			this.GetComponent<Renderer>().material.color = Color.blue;
 		}
 	}
 }
