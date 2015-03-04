@@ -37,7 +37,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
         //Temp variables for terrain location
         RaycastHit terrainLocation; 
-        Vector3 fwd = transform.TransformDirection(new Vector3(0,0.25f,1));
+        Vector3 fwd = transform.TransformDirection(new Vector3(0,0.1f,1));
         Vector3 dwn = transform.TransformDirection(new Vector3(0,-1,1));
         terrainHeighest = 0;
 
