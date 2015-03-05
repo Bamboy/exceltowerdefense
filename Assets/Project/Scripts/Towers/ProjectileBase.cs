@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Excelsion.Enemies;
 
 //Stephan Ennen - 3/3/2015
 
@@ -13,28 +14,57 @@ namespace Excelsion.Towers.Projectiles
 		public delegate void onUpdateEvent();
 
 		public TowerBase owner;
-		public Vector3 target;
+		public Enemy target;
+		public int dmg;
 
-		void Start () 
-		{
-			
-		}
-		public void Initalize( TowerBase owner, Vector3 target ) //Delegates are passed seperately.
+		public void Initalize( TowerBase owner, Enemy target, int damageOnImpact ) //Delegates are passed seperately.
 		{
 			this.owner = owner;
 			this.target = target;
+			this.dmg = damageOnImpact;
+			GetComponent<Rigidbody>().AddForce( VectorExtras.Direction( this.transform.position, target.transform.position ) * 30.0f, ForceMode.Impulse );
+		}
+
+		void Start()
+		{
+			StartCoroutine("TimedDestroy"); //We might go flying off into oblivion. Clean ourselves up if so.
 		}
 		void Update () 
 		{
-			
+			//if( onUpdateEvent != null )
+			//	onUpdateEvent();
 		}
-
 
 		//Do things like explode here.
 		public virtual void OnCollisionEnter( Collision col )
 		{
-			return;
+			if( col.gameObject.tag == "Enemy" )
+			{
+				Enemy e = col.gameObject.GetComponent< Enemy >();
+				e.Damage( dmg );
+			}
+
+			//if( onImpactEvent != null )
+			//	onImpactEvent();
+
+			GameObject.Destroy( this.gameObject );
 		}
+
+		IEnumerable TimedDestroy()
+		{
+			yield return new WaitForSeconds( 10.0f );
+			GameObject.Destroy( this.gameObject );
+		}
+
+
+
+
+
+
+
+
+
+
 
 	}
 }

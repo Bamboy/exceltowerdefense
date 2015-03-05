@@ -18,10 +18,10 @@ namespace Excelsion.Towers
 
 		public TowerStats()
 		{
-			speed = 2.0f; //Fire a shot every 2 seconds.
-			range = 30.0f; //Target any enemies within 30 units.
-			damage = 3;  //3 damage on hit.
-			luck = 0.10f; //10% chance.
+			speed = 1.0f; //Fire a shot every 1 seconds.
+			range = 50.0f; //Target any enemies within 50 units.
+			damage = 5;  //5 damage on hit.
+			luck = 0.10f; //10% chance to drop something useful.
 		}
 	}
 }

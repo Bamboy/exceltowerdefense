@@ -2,6 +2,8 @@
 using System.Collections;
 using Excelsion.GameManagers;
 
+//Stephan Ennen - 3/4/2015
+
 namespace Excelsion.Enemies
 {
 	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
@@ -20,6 +22,7 @@ namespace Excelsion.Enemies
 		private Vector3 currentHeading;
 		public virtual void Start () 
 		{
+			maxHealth = health;
 			defaultSpeed = speed;
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
@@ -28,9 +31,8 @@ namespace Excelsion.Enemies
 		public virtual void FixedUpdate()
 		{
 			DoMovement();
-
-
 		}
+		#region Movement
 		public virtual void DoMovement()
 		{
 			targetPosition = DefenseController.Get().enemyObjective.transform.position;
@@ -67,15 +69,32 @@ namespace Excelsion.Enemies
 					transform.LookAt( transform.position + currentHeading );
 			}
 		}
+		#endregion
 
-		public virtual void Update () 
+		#region Health
+		public int health = 30; //TODO - Add status effects TODO - Add health percentage display.
+		private int maxHealth;
+		public virtual void Damage( int val )
 		{
-
+			health -= val;
+			if( health <= 0 )
+			{
+				Kill();
+			}
+		}
+		public void Kill()
+		{
+			OnKilled();
+			DefenseController.Get().enemies.Remove( this );
+			Destroy( this.gameObject );
+		}
+		public virtual void OnKilled()
+		{
+			Debug.Log("BLERHGhnsfm...");
+			return; //TODO add chance to drop resources here.
 		}
 
-
-
-
+		#endregion
 
 
 
