@@ -31,6 +31,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
 
 	void Start () {
+        
 	}
 	
 	void FixedUpdate () {
@@ -39,6 +40,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
         RaycastHit terrainLocation; 
         Vector3 fwd = transform.TransformDirection(new Vector3(0,0.1f,1));
         Vector3 dwn = transform.TransformDirection(new Vector3(0,-1,1));
+        terrainHeight = 0;
         terrainHeighest = 0;
 
         //Calculate the highest terrain in a arch from fwd to down
@@ -47,9 +49,12 @@ public class OrbitalCameraFollow : MonoBehaviour {
             Vector3 dir = Vector3.Lerp(fwd,dwn,Time.deltaTime*i*2);
             if (Physics.Raycast(transform.position, dir, out terrainLocation, Mathf.Infinity))
             {
-                terrainHeight = terrainLocation.point.y;
+                if(terrainLocation.collider.tag == "Terrain")
+                {
+                    terrainHeight = terrainLocation.point.y;
+                    Debug.DrawLine(transform.position, terrainLocation.point, Color.red, 0.1f);
+                }
                 
-                Debug.DrawLine(transform.position, terrainLocation.point, Color.red, 0.1f);
             }
 
             if (terrainHeight > terrainHeighest)
