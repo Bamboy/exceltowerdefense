@@ -20,7 +20,14 @@ namespace Excelsion.UI
 		public Text info_dmgDisplay;
 		public Text info_luckDisplay;
 
-
+		public Image inv_one;
+		public Image inv_two;
+		public Image inv_three;
+		public Image inv_four;
+		public Image inv_five;
+		public Image inv_six;
+		//GameObject drugObject;
+		//int drugSlot;
 
 		void Start () 
 		{
@@ -41,11 +48,36 @@ namespace Excelsion.UI
 			{
 				selectedInfoToggle.SetActive(false);
 			}
+			//if( drugObject != null )
+			//{
+			//	drugObject.transform.position = Input.mousePosition;
+			//}
 		}
 
-		public static void SendButtonDown( int inventorySlot )
+		public static void GUIBegunDrag( int slot )
 		{
-
+			/*drugSlot = slot;
+			switch( slot )
+			{
+				case 0:
+					drugObject = inv_one;
+					continue;
+				case 1:
+					drugObject = inv_two;
+					continue;
+				case 2:
+					drugObject = inv_three;
+					continue;
+				case 3:
+					drugObject = inv_four;
+					continue;
+				case 4:
+					drugObject = inv_five;
+					continue;
+				case 5:
+					drugObject = inv_six;
+					continue;
+			}*/
 		}
 
 		void DisplayStats()
