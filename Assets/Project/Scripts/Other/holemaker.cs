@@ -9,7 +9,7 @@ public class holemaker : MonoBehaviour {
 	int zResolution;
 	public int xSize = 1;
 	public int zSize = 1;
-	public float speed = 0.05f;
+	public float ySize = 0.01f;
 	float [,] heights;
 
 	
@@ -43,7 +43,7 @@ public class holemaker : MonoBehaviour {
 		int mouseZ = (int)((point.z / tData.size.z) * zResolution);
 		float[,] modHeights = new float [zSize,xSize];
 		float y = heights [mouseX, mouseZ];
-		y -= speed * Time.deltaTime;
+		y -= ySize * Time.deltaTime;
 		if (y < 0.0f)
 			y = 0.0f;
 		modHeights [0, 0] = y;
