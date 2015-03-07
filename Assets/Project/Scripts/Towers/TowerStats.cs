@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//Stephan Ennen - 3/3/2015
+//Stephan Ennen - 3/7/2015
 
 namespace Excelsion.Towers
 {
@@ -22,6 +22,17 @@ namespace Excelsion.Towers
 			range = 50.0f; //Target any enemies within 50 units.
 			damage = 5;  //5 damage on hit.
 			luck = 0.10f; //10% chance to drop something useful.
+		}
+
+		//Defines what to do when two towerstat objects are added together.
+		public static TowerStats operator +(TowerStats a, TowerStats b)
+		{
+			TowerStats c = a;
+			c.speed = Mathf.Max(0f, a.speed + b.speed);
+			c.range = Mathf.Max(0f, a.range + b.range);
+			c.damage = Mathf.Max(0, a.damage + b.damage);
+			c.luck = Mathf.Clamp01(a.luck + b.luck);
+			return c;
 		}
 	}
 }

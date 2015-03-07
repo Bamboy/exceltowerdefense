@@ -9,7 +9,7 @@ namespace Excelsion.Enemies
 	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 	public class Enemy : MonoBehaviour 
 	{
-		private bool DO_DEBUG = true;
+		private bool DO_DEBUG = false;
 		private bool faceHeading = true;
 		private float damping = 0.4f;
 		float speed = 5.0f;
@@ -88,8 +88,10 @@ namespace Excelsion.Enemies
 			DefenseController.Get().enemies.Remove( this );
 			Destroy( this.gameObject );
 		}
+		public int moneyValue = 3;
 		public virtual void OnKilled()
 		{
+			DefenseController.money += moneyValue;
 			Debug.Log("BLERHGhnsfm...");
 			return; //TODO add chance to drop resources here.
 		}

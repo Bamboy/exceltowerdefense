@@ -7,7 +7,7 @@ using Excelsion.Towers.Projectiles;
 using Excelsion.GameManagers;
 using Excelsion.Enemies;
 
-//Stephan Ennen - 3/4/2015
+//Stephan Ennen - 3/7/2015
 
 namespace Excelsion.Towers
 {
@@ -23,15 +23,55 @@ namespace Excelsion.Towers
 		public List< Enemy > targets; //Switch this to internal later...
 		public Enemy activeTarget;
 
-
 		private bool CanAttack{ get{ return (stats.speed > 0.0f && activeTarget != null); } } //Disable attacking if speed is zero or less.
 		public Vector3 targetPos; //Todo - add actual gameobject that is being targeted.
 		private float cooldown = 0.0f; //Firing speed timer.
 		private int tick;
+
+		#region Statics
+		public static TowerBase[] towers;
+		static int nextTowerID = 0;
+		static int selectedID = -1;
+		private int myID;
+		static void Register( TowerBase newTower )
+		{
+			if( towers == null )
+			{
+				towers = new TowerBase[1];
+				towers[0] = newTower;
+			}
+			else
+			{
+				towers = ArrayTools.PushLast<TowerBase>( towers, newTower );
+			}
+			nextTowerID++;
+		}
+		public static TowerBase GetSelected()
+		{
+			if( selectedID != -1 )
+			{
+				Debug.Log( selectedID );
+				return towers[selectedID];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		void OnLevelWasLoaded( int level )
+		{
+			towers = new TowerBase[0];
+			nextTowerID = 0;
+			selectedID = -1;
+		}
+		#endregion
 		void Start () 
 		{
+			myID = nextTowerID;
+			Register( this );
+
 			targets = new List< Enemy >();
-			inventory = new Bag( 0 ); //Start with an empty inventory because at the start of a game we won't have a working tower.
+			inventory = new Bag( 2 ); //Start with an empty inventory because at the start of a game we won't have a working tower.
 			stats = new TowerStats();
 			//stats.speed = 0.0f;
 		}
@@ -57,6 +97,38 @@ namespace Excelsion.Towers
 			}
 			tick++;
 		}
+		#region Inventory
+		//Add up stats from our base stats and stats given by items. Call each time a modification is made to our bag.
+		void CalculateStats() 
+		{
+			if( inventory.contents.Length != 0 )
+			{
+				TowerStats newStats = new TowerStats(); //The default values here are equal to that of an empty (no items) tower.
+				foreach( Item i in inventory.contents )
+				{
+					if( i == null )
+					{
+						Debug.LogWarning("Item somehow was null!", this);
+						continue;
+					}
+					if( i as ItemNull != null )
+						continue;
+
+					newStats = newStats + i.Stats;
+				}
+				stats = newStats;
+			}
+		}
+
+
+
+
+
+
+
+
+
+		#endregion
 		#region Targetting
 		void TargettingUpdate()
 		{
@@ -139,11 +211,7 @@ namespace Excelsion.Towers
 			//TODO Reset stats to default then tell items to re-add their value modifiers.
 		}
 
-		//Called when the mouse is over our collider and is clicked. TODO Open GUI and stuff here.
-		void OnMouseDown()
-		{
-			this.GetComponent<Renderer>().material.color = Color.blue;
-		}
+
 
 
 
@@ -223,12 +291,17 @@ namespace Excelsion.Towers
 			}
 		}
 
+		#region Interaction
+		//Called when the mouse is over our collider and is clicked. TODO Open GUI and stuff here.
+		void OnMouseDown()
+		{
+			this.GetComponent<Renderer>().material.color = Color.blue;
+			selectedID = myID;
+		}
 
 
 
-
-
-
+		#endregion
 
 
 
