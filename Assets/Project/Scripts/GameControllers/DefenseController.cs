@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Excelsion.Enemies;
 
+//Stephan Ennen - 3/7/2015
+
 namespace Excelsion.GameManagers
 {
 	public class DefenseController : MonoBehaviour 
@@ -31,6 +33,8 @@ namespace Excelsion.GameManagers
 		public float spawnHeight = 15.0f;
 		public GameObject enemyPrefab;
 
+		public static int money;
+
 		void Awake()
 		{
 			if( defControl == null )
@@ -47,6 +51,8 @@ namespace Excelsion.GameManagers
 				Debug.LogError("You need to tag an object as Player so the enemies have something to attack!");
 			}
 			StartCoroutine( "TimedSpawner" );
+
+			money = 500;
 		}
 
 		void OnDrawGizmos()

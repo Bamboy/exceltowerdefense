@@ -7,19 +7,36 @@ using Excelsion.Towers.Projectiles;
 
 namespace Excelsion.Inventory
 {
-	//RIGHT NOW THIS CLASS IS ONLY A PLACEHOLDER FOR OTHER SCRIPTS.
-	public abstract class Item : System.Object
+	//NEVER DELETE THIS DEFINITION!!!
+	public class ItemNull : Item
 	{
-		public abstract int Priority{ get; } //Lower values will be overwritten by higher values.
-		public abstract int MutexBits{ get; } //Runs a bitwise AND operation to see if we can use this item alongside another item.
-		public abstract TowerStats Stats{ get; }
+		public ItemNull()
+		{
 
+		}
+
+		//Lower values will be overwritten by higher values.
+		public override int Priority{ get{ return 0; } } 
+		//Runs a bitwise AND operation to see if we can use this item alongside another item.
+		public override int MutexBits{ get{ return 0; } }
+		public override TowerStats Stats{ 
+			get{ 
+				TowerStats val = new TowerStats();
+				val.speed = 0f;
+				val.range = 0f;
+				val.damage = 1;
+				val.luck = 0f;
+				return val;
+			}
+		}
+		
 		//Return display name
-		public abstract string Name{ get; }
+		public override string Name{ get{ return "Empty slot"; } }
 		//Return display icon location
-		public abstract string Icon{ get; }
+		public override string Icon{ get{ return "GUI/Items/Testing/null"; } }
 		//TODO - Add model / effect changes
-
+		
+		/*
 		//Called in the tower's update loop. You could do things like auras or independent projectiles here.
 		public virtual void OnTowerUpdate()
 		{
@@ -45,19 +62,19 @@ namespace Excelsion.Inventory
 		{
 			return;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		
+		*/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 }
