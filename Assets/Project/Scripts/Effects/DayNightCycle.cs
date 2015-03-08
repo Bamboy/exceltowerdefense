@@ -4,8 +4,9 @@ using System.Collections;
 public class DayNightCycle : MonoBehaviour {
 
     //Setting of timming variables
+    //public float currentDay = 0;
     public float dayLength = 1000;
-    private float daysPassed;
+    public static float daysPassed;
     public float nightLength = 500;
     private float nightsPassed;
     private float nextPhase = 0;

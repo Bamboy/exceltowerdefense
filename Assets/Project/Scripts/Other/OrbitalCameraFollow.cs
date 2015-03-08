@@ -10,17 +10,18 @@ public class OrbitalCameraFollow : MonoBehaviour {
     public float rotationSpeed = 100;
 
     //How fast can it move around
-    public float movementSpeed = 10;
+    public float movementSpeed = 1;
 
     //Used for calculating smoothing in zoom
-    public float zoomCurrent = 100;
-    public float zoomGoTo = 100;
+    public float zoomCurrent;
+    public float zoomGoTo;
     public float zoomSpeed = 10;
 
     //Sets the min and maximum zoom along with the incriment
-    public float zoomMin = 5;
-    public float zoomMax = 100;
-    public float zoomIncriment = 5;
+    public float zoomMin = 10;
+    public float zoomMax = 120;
+    private float zoomPercentage;
+    public float zoomIncriment = 10;
 
     //Used for calculating camera displacment
     public float terrainHeight = 0;
@@ -31,10 +32,13 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
 
 	void Start () {
-        
+        zoomCurrent = zoomMax;
+        zoomGoTo = zoomMax;
+        zoomPercentage = zoomMax / 100; //(zoomMin / zoomMax) * 100;
+        zoomMin = zoomMin * zoomPercentage;
 	}
 	
-	void FixedUpdate () {
+	void Update () {
 
         //Temp variables for terrain location
         RaycastHit terrainLocation; 
@@ -71,13 +75,15 @@ public class OrbitalCameraFollow : MonoBehaviour {
         }
 
         //Sets the zoomGoTo
-        if (((Input.GetAxisRaw("Mouse ScrollWheel") > 0) || (Input.GetKey("z"))) && (zoomGoTo > zoomMin))
+        if (((Input.GetAxis("Mouse ScrollWheel") > 0) || (Input.GetKey("z"))) && (zoomGoTo > zoomMin))
         {
-            zoomGoTo -= zoomIncriment;
+            //zoomGoTo -= zoomIncriment;
+            zoomGoTo -= (zoomPercentage * zoomIncriment);
         }
-        else if (((Input.GetAxisRaw("Mouse ScrollWheel") < 0) || (Input.GetKey("x"))) && (zoomGoTo < zoomMax))
+        else if (((Input.GetAxis("Mouse ScrollWheel") < 0) || (Input.GetKey("x"))) && (zoomGoTo < zoomMax))
         {
-            zoomGoTo += zoomIncriment;
+            //zoomGoTo += zoomIncriment;
+            zoomGoTo += (zoomPercentage * zoomIncriment);
         }
 
         //Smooths the zoomCurrent
