@@ -6,13 +6,13 @@ using Excelsion.GameManagers;
 
 namespace Excelsion.Enemies
 {
-	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
+	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(NavMeshAgent))]
 	public class Enemy : MonoBehaviour 
 	{
 		private bool DO_DEBUG = false;
 		private bool faceHeading = true;
 		private float damping = 0.4f;
-		float speed = 5.0f;
+		private float speed = 5.0f;
 		public float Speed{ get{ return this.speed; } set{ this.speed = Mathf.Max(0f, value); } }
 		private float defaultSpeed; //We use this to remove status effects.
 
@@ -26,13 +26,18 @@ namespace Excelsion.Enemies
 			defaultSpeed = speed;
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
+
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            agent.destination = targetPosition;
 		}
 
 		public virtual void FixedUpdate()
 		{
-			DoMovement();
+			//DoMovement();
 		}
+
 		#region Movement
+
 		public virtual void DoMovement()
 		{
 			targetPosition = DefenseController.Get().enemyObjective.transform.position;

@@ -16,21 +16,36 @@ namespace Excelsion.Towers.Projectiles
 		public TowerBase owner;
 		public Enemy target;
 		public int dmg;
+        public float speed;
+
+        public Vector3 targetInitPosition;
 
 		public void Initalize( TowerBase owner, Enemy target, int damageOnImpact ) //Delegates are passed seperately.
 		{
 			this.owner = owner;
 			this.target = target;
 			this.dmg = damageOnImpact;
-			GetComponent<Rigidbody>().AddForce( VectorExtras.Direction( this.transform.position, target.transform.position ) * 30.0f, ForceMode.Impulse );
+            
+			//GetComponent<Rigidbody>().AddForce( VectorExtras.Direction( this.transform.position, target.transform.position ) * 30.0f, ForceMode.Impulse );
 		}
 
 		void Start()
 		{
+            targetInitPosition = target.transform.position;
+            //transform.Rotate(VectorExtras.Direction(this.transform.position, target.transform.position));
 			StartCoroutine("TimedDestroy"); //We might go flying off into oblivion. Clean ourselves up if so.
 		}
 		void Update () 
 		{
+            if (target != null)
+            {
+            Quaternion.LookRotation(VectorExtras.Direction(this.transform.position, targetInitPosition), Vector3.up);
+            transform.Translate(Vector3.forward*speed*Time.deltaTime);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
 			//if( onUpdateEvent != null )
 			//	onUpdateEvent();
 		}
