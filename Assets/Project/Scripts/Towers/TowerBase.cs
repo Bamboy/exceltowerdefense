@@ -234,11 +234,28 @@ namespace Excelsion.Towers
 					inventory.contents[i].OnPreProjectileCreated(); //TODO - sort execution order by priority.
 				}
 			}
-			targetPos = activeTarget.transform.position;
-			//Create projectile
-			Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
-			Vector3 direction = VectorExtras.Direction(head, targetPos);
 
+            
+
+            targetPos = (transform.position + CalculateInterceptCourse(activeTarget.transform.position,
+                activeTarget.GetComponent<NavMeshAgent>().velocity,
+                transform.position,
+                30f));
+
+            Debug.Log(activeTarget.GetComponent<NavMeshAgent>().speed);
+            Debug.Log(30f * Time.fixedDeltaTime);
+
+            Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
+            Vector3 direction = VectorExtras.Direction(head, targetPos);
+
+            //targetPos += VectorExtras.OffsetPosInDirection(head, direction, 3.25f);
+            //targetPos = new Vector3(targetPos.x, targetPos.y+1, targetPos.z);
+
+            //targetPos.Normalize();
+
+            Debug.Log(targetPos);
+
+			//Create projectile
 			GameObject projObj = GameObject.Instantiate( projectilePrefab, 
 			 						VectorExtras.OffsetPosInDirection( head, direction, 3.25f ), //Make sure the projectile doesnt hit the tower.
 									Quaternion.LookRotation( direction, Vector3.up )) as GameObject;
@@ -265,7 +282,35 @@ namespace Excelsion.Towers
 		}
 
 
+        public static Vector3 CalculateInterceptCourse(Vector3 aTargetPos, Vector3 aTargetSpeed, Vector3 aInterceptorPos, float aInterceptorSpeed)
+        {
+            Vector3 targetDir = aTargetPos - aInterceptorPos;
 
+            float iSpeed2 = aInterceptorSpeed * aInterceptorSpeed;
+            float tSpeed2 = aTargetSpeed.sqrMagnitude;
+            float fDot1 = Vector3.Dot(targetDir, aTargetSpeed);
+            float targetDist2 = targetDir.sqrMagnitude;
+            float d = (fDot1 * fDot1) - targetDist2 * (tSpeed2 - iSpeed2);
+            if (d < 0.1f)  // negative == no possible course because the interceptor isn't fast enough
+                return Vector3.zero;
+            float sqrt = Mathf.Sqrt(d);
+            float S1 = (-fDot1 - sqrt) / targetDist2;
+            float S2 = (-fDot1 + sqrt) / targetDist2;
+
+            if (S1 < 0.0001f)
+            {
+                if (S2 < 0.0001f)
+                    return Vector3.zero;
+                else
+                    return (S2) * targetDir + aTargetSpeed;
+            }
+            else if (S2 < 0.0001f)
+                return (S1) * targetDir + aTargetSpeed;
+            else if (S1 < S2)
+                return (S2) * targetDir + aTargetSpeed;
+            else
+                return (S1) * targetDir + aTargetSpeed;
+        }
 
 		void OnDrawGizmos()
 		{

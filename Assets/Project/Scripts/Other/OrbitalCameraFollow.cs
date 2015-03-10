@@ -53,8 +53,6 @@ public class OrbitalCameraFollow : MonoBehaviour {
             zoomGoTo += (zoomPercentage * zoomIncriment);
         }
 
-        
-
         //Allows for camera strave
         if (Input.GetKey("q"))
         {

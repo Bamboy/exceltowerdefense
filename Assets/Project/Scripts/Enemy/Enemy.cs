@@ -22,12 +22,14 @@ namespace Excelsion.Enemies
 		private Vector3 currentHeading;
 		public virtual void Start () 
 		{
+
 			maxHealth = health;
 			defaultSpeed = speed;
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
 
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            targetPosition = DefenseController.Get().enemyObjective.transform.position;
             agent.destination = targetPosition;
 		}
 

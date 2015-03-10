@@ -31,7 +31,9 @@ namespace Excelsion.Towers.Projectiles
 
 		void Start()
 		{
-            targetInitPosition = target.transform.position;
+            //target.GetComponent<NavMeshAgent>().speed;
+            //targetInitPosition = target.GetComponent<NavMeshAgent>().nextPosition * target.GetComponent<NavMeshAgent>().speed * (target.transform.position - transform.position).sqrMagnitude*10000;
+            //targetInitPosition = target.transform.position;
             //transform.Rotate(VectorExtras.Direction(this.transform.position, target.transform.position));
 			StartCoroutine("TimedDestroy"); //We might go flying off into oblivion. Clean ourselves up if so.
 		}
@@ -39,13 +41,15 @@ namespace Excelsion.Towers.Projectiles
 		{
             if (target != null)
             {
-            Quaternion.LookRotation(VectorExtras.Direction(this.transform.position, targetInitPosition), Vector3.up);
-            transform.Translate(Vector3.forward*speed*Time.deltaTime);
+                transform.Translate(Vector3.forward*speed*Time.deltaTime);
+                //transform.Translate(VectorExtras.Direction(this.transform.position, target.transform.position)*speed*Time.deltaTime);
+                //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
             }
             else
             {
                 Destroy(gameObject);
             }
+
 			//if( onUpdateEvent != null )
 			//	onUpdateEvent();
 		}

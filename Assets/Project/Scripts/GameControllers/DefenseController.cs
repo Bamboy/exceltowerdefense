@@ -76,8 +76,8 @@ namespace Excelsion.GameManagers
 
 		IEnumerator TimedSpawner()
 		{
-			yield return new WaitForSeconds( 1.0f );
-			while( enemies.Count >= 10 )
+			yield return new WaitForSeconds( 0.5f );
+			while( enemies.Count >= 20 )
 				yield return null;
 
 			GameObject obj = GameObject.Instantiate( enemyPrefab, GetSpawnPosition(), Quaternion.identity ) as GameObject;
