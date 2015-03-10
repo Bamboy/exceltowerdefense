@@ -240,10 +240,7 @@ namespace Excelsion.Towers
             targetPos = (transform.position + CalculateInterceptCourse(activeTarget.transform.position,
                 activeTarget.GetComponent<NavMeshAgent>().velocity,
                 transform.position,
-                30f));
-
-            Debug.Log(activeTarget.GetComponent<NavMeshAgent>().speed);
-            Debug.Log(30f * Time.fixedDeltaTime);
+                projectilePrefab.GetComponent<ProjectileBase>().speed));
 
             Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
             Vector3 direction = VectorExtras.Direction(head, targetPos);
