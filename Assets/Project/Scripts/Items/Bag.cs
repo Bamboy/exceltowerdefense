@@ -14,10 +14,10 @@ namespace Excelsion.Inventory
 		{
 			contents = new Item[ Mathf.Max(0, size) ];
 			contents = ArrayTools.CreateRepeat<Item>( new ItemNull(), Mathf.Max(0, size) );
-			//for( int i = 0; i < size; i ++)
-			//{
-			//	contents[i] = new ItemNull();
-			//}
+			for( int i = 0; i < size; i ++)
+			{
+				contents[i] = new ItemNull();
+			}
 		}
 
 		//Search for empty slot and add the item. Returns false if it isnt possible.
