@@ -15,6 +15,10 @@ namespace Excelsion.Towers
 	[RequireComponent(typeof(Collider))]
 	public class TowerBase : MonoBehaviour 
 	{
+		public delegate void OnProjectileCreation( out ProjectileBase[] projectiles, TowerBase tower );
+
+		public OnProjectileCreation onProjectileCreation;
+
 		private bool DO_DEBUG = true;
 		public GameObject projectilePrefab;
 		public Turret turret;
@@ -71,9 +75,18 @@ namespace Excelsion.Towers
 			Register( this );
 
 			targets = new List< Enemy >();
-			inventory = new Bag( 2 ); //Start with an empty inventory because at the start of a game we won't have a working tower.
+			inventory = new Bag( 6 ); //Start with an empty inventory because at the start of a game we won't have a working tower.
+
+			//Note that multiple items of the same type is not intended here. (Except for ItemNull)
+			//=======STARTING ITEMS======
+			inventory.contents[0] = new ItemPaper();
+			inventory.contents[1] = new ItemFireball();
+			inventory.contents[2] = new ItemNull();
+			//=======END ITEMS======
+			Debug.LogError("Double click me to change initial tower items!", this);
+			
 			stats = new TowerStats();
-			//stats.speed = 0.0f;
+			OnBagModified();
 		}
 
 		void Update () 
@@ -89,6 +102,7 @@ namespace Excelsion.Towers
 			}
 
 			TargettingUpdate();
+			CalculateStats(); //TODO - Don't update this every frame - only when our bag is changed.
 
 			cooldown -= Time.deltaTime;
 			if( CanAttack && cooldown <= 0.0f )
@@ -101,9 +115,9 @@ namespace Excelsion.Towers
 		//Add up stats from our base stats and stats given by items. Call each time a modification is made to our bag.
 		void CalculateStats() 
 		{
+			TowerStats newStats = new TowerStats(); //The default values here are equal to that of an empty (no items) tower.
 			if( inventory.contents.Length != 0 )
 			{
-				TowerStats newStats = new TowerStats(); //The default values here are equal to that of an empty (no items) tower.
 				foreach( Item i in inventory.contents )
 				{
 					if( i == null )
@@ -116,19 +130,32 @@ namespace Excelsion.Towers
 
 					newStats = newStats + i.Stats;
 				}
-				stats = newStats;
 			}
+			stats = newStats;
 		}
 
 
-
-
-
-
-
-
+		//Call this when an item is added or removed from our inventory.
+		void OnBagModified()
+		{
+			//TODO - Reset stats and delegates to default then tell items to re-add their value modifiers.
+			CalculateStats(); //Note this also resets our stats.
+			
+			//Tell items to re-apply tower-based delegates.
+			for( int i = 0; i < inventory.contents.Length; i++ )
+			{
+				if( inventory.contents[i] == null )
+					continue;
+				else
+				{
+					inventory.contents[i].OnTowerDelegates( this );
+				}
+			}
+		}
 
 		#endregion
+
+
 		#region Targetting
 		void TargettingUpdate()
 		{
@@ -152,7 +179,7 @@ namespace Excelsion.Towers
 				}
 
 			}
-			else
+			else //TODO make filtering and prioritizing delegates
 			{
 				FilterTargetsInRange();
 				if( targets.Count > 0 )
@@ -161,6 +188,7 @@ namespace Excelsion.Towers
 
 
 		}
+
 		//Search for enemies in range and add them to a personal array.
 		void FilterTargetsInRange() //TODO - Call this when active target dies. (is set to null)
 		{
@@ -193,7 +221,7 @@ namespace Excelsion.Towers
 					continue;
 				}
 				//float distance = Vector3.Distance( DefenseController.Get().enemyObjective.transform.position, e.transform.position );
-				float distance = Vector3.Distance( transform.position, e.transform.position );
+				float distance = Vector3.Distance( transform.position, e.transform.position );//TODO make filtering and prioritizing delegate(s)
 				if( distance < closest )
 				{
 					closest = distance;
@@ -205,11 +233,7 @@ namespace Excelsion.Towers
 
 		#endregion
 
-		//Call this when an item is added or removed from our inventory.
-		void OnBagModified()
-		{
-			//TODO Reset stats to default then tell items to re-add their value modifiers.
-		}
+
 
 
 
@@ -224,45 +248,17 @@ namespace Excelsion.Towers
 
 		void CreateProjectile()
 		{
-			//Tell items we are about to create a projectile.
-			for( int i = 0; i < inventory.contents.Length; i++ )
+
+			ProjectileBase[] projectiles = new ProjectileBase[0];
+			if( onProjectileCreation != null )
+				onProjectileCreation( out projectiles, this );
+			else
+				projectiles = DefaultProjectileCreation(); //No custom projectile creation specified. Do default.
+
+			foreach( ProjectileBase proj_init in projectiles )
 			{
-				if( inventory.contents[i] == null )
-					continue;
-				else
-				{
-					inventory.contents[i].OnPreProjectileCreated(); //TODO - sort execution order by priority.
-				}
+				proj_init.Initalize( this, activeTarget, stats.damage );
 			}
-
-            
-
-            targetPos = (transform.position + CalculateInterceptCourse(activeTarget.transform.position,
-                activeTarget.GetComponent<NavMeshAgent>().velocity,
-                transform.position,
-                projectilePrefab.GetComponent<ProjectileBase>().speed));
-
-            Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
-            Vector3 direction = VectorExtras.Direction(head, targetPos);
-
-            //targetPos += VectorExtras.OffsetPosInDirection(head, direction, 3.25f);
-            //targetPos = new Vector3(targetPos.x, targetPos.y+1, targetPos.z);
-
-            //targetPos.Normalize();
-
-            Debug.Log(targetPos);
-
-			//Create projectile
-			GameObject projObj = GameObject.Instantiate( projectilePrefab, 
-			 						VectorExtras.OffsetPosInDirection( head, direction, 3.25f ), //Make sure the projectile doesnt hit the tower.
-									Quaternion.LookRotation( direction, Vector3.up )) as GameObject;
-			ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
-			if( projScript == null )
-			{ Debug.LogError("Prefab given does not have a ProjectileBase script attached!", this); Debug.Break(); }
-
-			projScript.Initalize( this, activeTarget, stats.damage );
-
-
 
 			//Give items access to the projectile so they can make changes to it.
 			for( int j = 0; j < inventory.contents.Length; j++ )
@@ -271,14 +267,39 @@ namespace Excelsion.Towers
 					continue;
 				else
 				{
-					inventory.contents[j].OnProjectileCreated( projScript ); //TODO - sort execution order by priority.
+					foreach( ProjectileBase proj_delegates in projectiles )
+					{
+						inventory.contents[j].OnProjectileDelegates( proj_delegates ); //TODO - sort execution order by priority.
+					}
 				}
 			}
 
 			cooldown = stats.speed; //trigger our cooldown
 		}
+		ProjectileBase[] DefaultProjectileCreation()
+		{
+			targetPos = (transform.position + CalculateInterceptCourse(activeTarget.transform.position,
+			                                                           activeTarget.GetComponent<NavMeshAgent>().velocity,
+			                                                           transform.position,
+			                                                           projectilePrefab.GetComponent<ProjectileBase>().speed));
+			
+			Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
+			Vector3 direction = VectorExtras.Direction(head, targetPos);
+			
+			//Create projectile
+			GameObject projObj = GameObject.Instantiate( projectilePrefab, 
+			                                            VectorExtras.OffsetPosInDirection( head, direction, 3.25f ), //Make sure the projectile doesnt hit the tower.
+			                                            Quaternion.LookRotation( direction, Vector3.up )) as GameObject;
+			ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
+			if( projScript == null )
+			{ Debug.LogError("Prefab given does not have a ProjectileBase script attached!", this); Debug.Break(); }
 
+			ProjectileBase[] val = new ProjectileBase[1];
+			val[0] = projScript;
+			return val;
+		}
 
+		#region Prediction
         public static Vector3 CalculateInterceptCourse(Vector3 aTargetPos, Vector3 aTargetSpeed, Vector3 aInterceptorPos, float aInterceptorSpeed)
         {
             Vector3 targetDir = aTargetPos - aInterceptorPos;
@@ -308,7 +329,7 @@ namespace Excelsion.Towers
             else
                 return (S1) * targetDir + aTargetSpeed;
         }
-
+		#endregion
 		void OnDrawGizmos()
 		{
 			if( DO_DEBUG )
@@ -334,7 +355,7 @@ namespace Excelsion.Towers
 		}
 
 		#region Interaction
-		//Called when the mouse is over our collider and is clicked. TODO Open GUI and stuff here.
+		//Called when the mouse is over our collider and is clicked.
 		void OnMouseDown()
 		{
 			this.GetComponent<Renderer>().material.color = Color.blue;

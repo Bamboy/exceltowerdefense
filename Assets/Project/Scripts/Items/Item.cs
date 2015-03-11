@@ -2,6 +2,7 @@
 using System.Collections;
 using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
+using Excelsion.Enemies;
 
 //Stephan Ennen - 3/7/2015
 
@@ -17,34 +18,57 @@ namespace Excelsion.Inventory
 		//Return display name
 		public abstract string Name{ get; }
 		//Return display icon location
-		public abstract string Icon{ get; }
+		public abstract Sprite Icon{ get; }
 		//TODO - Add model / effect changes
 
-		//Called in the tower's update loop. You could do things like auras or independent projectiles here.
+
+		#region Tower Functions
+		//Apply tower delegates here.
+		public virtual void OnTowerDelegates( TowerBase tower )
+		{
+			return;
+		}
+		//Called in the tower's update loop. You could do things like auras or something here. NOT a delegate.
 		public virtual void OnTowerUpdate()
 		{
 			return;
 		}
-		//Called before a projectile is created. Use this to create multiple projectiles..?
-		public virtual void OnPreProjectileCreated()
+
+		//Use this to create multiple projectiles.
+		public virtual void OnProjectileCreation( out ProjectileBase[] projectiles, TowerBase tower )
 		{
+			projectiles = new ProjectileBase[0];
 			return;
 		}
+		#endregion
+		#region Projectile Functions
 		//Called after our projectile is created. Use this to pass delegates or other info to the projectile.
-		public virtual void OnProjectileCreated( ProjectileBase projectile )
+		public virtual void OnProjectileDelegates( ProjectileBase projectile ) //DONE
 		{
 			return;
 		}
-		//Called in the projectile's update loop. Pass as a delegate in OnProjectileCreated.
-		public virtual void OnProjectileUpdate()
+
+		//Called in the projectile's update loop. Pass as a delegate in OnProjectileDelegates.
+		public virtual void OnProjectileUpdate( ProjectileBase projectile )
 		{
 			return;
 		}
-		//This is given to the projectile as a delegate.
-		public virtual void OnProjectileImpact() //TODO - pass array of enemies hit here.
+
+		//Override how target(s) are selected. Only one of these functions is run.
+		public virtual void EnemySelection( out Enemy[] enemies, ProjectileBase projectile )
+		{
+			enemies = new Enemy[0];
+			return;
+		}
+
+		//Give the enemies status effects or just do some damage.
+		public virtual void OnEnemiesHit( Enemy[] enemies )
 		{
 			return;
 		}
+		#endregion
+
+
 
 
 
