@@ -26,6 +26,7 @@ namespace Excelsion.UI
 		public Image inv_four;
 		public Image inv_five;
 		public Image inv_six;
+
 		//GameObject drugObject;
 		//int drugSlot;
 
@@ -88,11 +89,9 @@ namespace Excelsion.UI
 			info_dmgDisplay.text = "Damage: "+ selected.stats.damage.ToString();
 			info_luckDisplay.text = "Luck: "+ (selected.stats.luck * 100.0f).ToString("F1") +"%";
 		}
+
 		void DisplayInventory()
 		{
-			Debug.Log (selected.inventory.contents [0].Name);
-			Debug.Log (selected.inventory.contents [1].Name);
-			Debug.Log (selected.inventory.contents [2].Name);
 			inv_one.sprite =   selected.inventory.contents[0].Icon;
 			inv_two.sprite =   selected.inventory.contents[1].Icon;
 			inv_three.sprite = selected.inventory.contents[2].Icon;

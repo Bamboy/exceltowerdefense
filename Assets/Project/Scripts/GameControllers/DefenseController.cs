@@ -10,7 +10,7 @@ namespace Excelsion.GameManagers
 	public class DefenseController : MonoBehaviour 
 	{
 		#region Access Instance Anywhere
-		public static DefenseController defControl;
+		private static DefenseController defControl;
 		public static DefenseController Get()
 		{
 			if( defControl != null )
