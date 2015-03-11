@@ -3,14 +3,11 @@ using System.Collections;
 
 namespace Excelsion.Inventory
 {
-	public class InventoryPlayer : Bag
+	public class InventoryPlayer : MonoBehaviour
 	{
 		public InventoryPlayer()
 		{
-			for( int i = 0; i < 12; i ++)
-			{
-				contents[i] = new ItemNull();
-			}
+			Bag inventory = new Bag (12);
 		}
 
 		// Use this for initialization
