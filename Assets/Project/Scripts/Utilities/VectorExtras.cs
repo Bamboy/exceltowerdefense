@@ -3,7 +3,7 @@ using System.Collections;
 
 ///////////////////////////////////
 /// By: Stephan "Bamboy" Ennen ////
-/// Last Updated: 1/31/15      ////
+/// Last Updated: 3/11/15      ////
 ///////////////////////////////////
 
 //This script just holds general functions we might want to use in our other scripts.

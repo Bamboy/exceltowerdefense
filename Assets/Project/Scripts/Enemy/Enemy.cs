@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Excelsion.GameManagers;
+using Excelsion.UI;
 
 //Stephan Ennen - 3/4/2015
 
@@ -20,10 +21,14 @@ namespace Excelsion.Enemies
 		private Vector3 targetInRangePosition;
 		private Vector3 targetHeading;
 		private Vector3 currentHeading;
+
+		public int health = 30; //TODO - Add status effects TODO - Add health percentage display.
+		private int maxHealth;
+		public HealthBar healthDisplay;
 		public virtual void Start () 
 		{
-
 			maxHealth = health;
+			healthDisplay.MaxHealth = health;
 			defaultSpeed = speed;
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
@@ -31,11 +36,6 @@ namespace Excelsion.Enemies
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
             targetPosition = DefenseController.Get().enemyObjective.transform.position;
             agent.destination = targetPosition;
-		}
-
-		public virtual void FixedUpdate()
-		{
-			//DoMovement();
 		}
 
 		#region Movement
@@ -79,8 +79,7 @@ namespace Excelsion.Enemies
 		#endregion
 
 		#region Health
-		public int health = 30; //TODO - Add status effects TODO - Add health percentage display.
-		private int maxHealth;
+
 		public virtual void Damage( int val )
 		{
 			health -= val;
@@ -88,6 +87,7 @@ namespace Excelsion.Enemies
 			{
 				Kill();
 			}
+			healthDisplay.CurrentHealth = health;
 		}
 		public void Kill()
 		{

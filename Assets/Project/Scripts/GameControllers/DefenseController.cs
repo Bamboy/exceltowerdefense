@@ -10,7 +10,7 @@ namespace Excelsion.GameManagers
 	public class DefenseController : MonoBehaviour 
 	{
 		#region Access Instance Anywhere
-		public static DefenseController defControl;
+		private static DefenseController defControl;
 		public static DefenseController Get()
 		{
 			if( defControl != null )
@@ -81,7 +81,9 @@ namespace Excelsion.GameManagers
 				yield return null;
 
 			GameObject obj = GameObject.Instantiate( enemyPrefab, GetSpawnPosition(), Quaternion.identity ) as GameObject;
+			obj.transform.parent = this.transform;
 			Enemy newEnemy = obj.GetComponent< Enemy >();
+			if( newEnemy == null ) { Debug.LogError("Enemy prefab specified does not have an Enemy component!", this); Debug.Break(); }
 			enemies.Add( newEnemy );
 
 			StartCoroutine( "TimedSpawner" ); //Repeat forever...
