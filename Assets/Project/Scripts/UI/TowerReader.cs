@@ -90,6 +90,9 @@ namespace Excelsion.UI
 		}
 		void DisplayInventory()
 		{
+			Debug.Log (selected.inventory.contents [0].Name);
+			Debug.Log (selected.inventory.contents [1].Name);
+			Debug.Log (selected.inventory.contents [2].Name);
 			inv_one.sprite =   selected.inventory.contents[0].Icon;
 			inv_two.sprite =   selected.inventory.contents[1].Icon;
 			inv_three.sprite = selected.inventory.contents[2].Icon;

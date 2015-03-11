@@ -83,7 +83,7 @@ namespace Excelsion.Towers
 			inventory.contents[1] = new ItemFireball();
 			inventory.contents[2] = new ItemNull();
 			//=======END ITEMS======
-			Debug.LogError("Double click me to change initial tower items!", this);
+			Debug.Log("Double click me to change initial tower items!");
 			
 			stats = new TowerStats();
 			OnBagModified();
@@ -91,13 +91,16 @@ namespace Excelsion.Towers
 
 		void Update () 
 		{
-			for( int i = 0; i < inventory.contents.Length; i++ )
+			if (selectedID != -1)
 			{
-				if( inventory.contents[i] == null )
-					continue;
-				else
+				for (int i = 0; i < inventory.contents.Length; i++)
 				{
-					inventory.contents[i].OnTowerUpdate(); //TODO - sort by priority.
+					if (inventory.contents [i] == null)
+						continue;
+					else
+					{
+						inventory.contents [i].OnTowerUpdate (); //TODO - sort by priority.
+					}
 				}
 			}
 
@@ -233,17 +236,7 @@ namespace Excelsion.Towers
 
 		#endregion
 
-
-
-
-
-
-
-
-
-
-
-
+		
 
 
 		void CreateProjectile()
@@ -358,17 +351,16 @@ namespace Excelsion.Towers
 		//Called when the mouse is over our collider and is clicked.
 		void OnMouseDown()
 		{
+			if( selectedID != -1 )
+			{
+				GetSelected().GetComponent<Renderer> ().material.color = Color.yellow;
+			}
 			this.GetComponent<Renderer>().material.color = Color.blue;
 			selectedID = myID;
 		}
 
 
-
 		#endregion
-
-
-
-
 
 
 

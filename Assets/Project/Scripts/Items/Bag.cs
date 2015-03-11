@@ -20,6 +20,11 @@ namespace Excelsion.Inventory
 			}
 		}
 
+		public Bag()
+		{
+
+		}
+
 		//Search for empty slot and add the item. Returns false if it isnt possible.
 		bool Add( Item obj ) //TODO - make it so it takes a slot number instead?
 		{
@@ -85,6 +90,7 @@ namespace Excelsion.Inventory
 		}
 		public bool HasEmpty() //Same as above but returns true/false
 		{ return (GetEmpty() != -1); }
+
 		public bool Contains( Item obj )
 		{
 			foreach( Item i in contents )
