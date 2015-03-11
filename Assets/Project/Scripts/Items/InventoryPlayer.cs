@@ -23,11 +23,17 @@ namespace Excelsion.Inventory
 		// Update is called once per frame
 		void Update ()
 		{
-			Debug.Log ("Null: " + inventory.contents [4].Name);
+			//Debug.Log ("Slot 0: " + inventory.contents [0].Name);
 			for( int i = 0; i < icons.Length; i++ )
 			{
 				icons[i].sprite = inventory.contents[i].Icon;
 			}
+		}
+
+		public void addItem()
+		{
+			Debug.Log ("Adding fire!");
+			inventory.contents [0] = new ItemFireball ();
 		}
 	}
 }
