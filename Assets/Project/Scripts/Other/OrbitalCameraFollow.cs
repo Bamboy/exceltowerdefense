@@ -26,10 +26,10 @@ public class OrbitalCameraFollow : MonoBehaviour {
     //Used for calculating camera displacment
     public float terrainHeight = 0;
     public float terrainHeighest = 0;
-    private float betweenTerrainHeight = 0;
-    private float lastBetweenTerrainHeight = 0;
+    private float midTerrainHeight = 0;
     private float terrainCalculationAccuracy = 30;
 
+    public LayerMask cameraOrbitBasedOff;
 
 	void Start () {
         zoomCurrent = zoomMax;
@@ -96,7 +96,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
         for (int i = 0; i < terrainCalculationAccuracy; i++)
         {
             Vector3 dir = Vector3.Lerp(fwd, dwn, Time.deltaTime * i * 2);
-            if (Physics.Raycast(transform.position, dir, out terrainLocation, Mathf.Infinity))
+            if (Physics.Raycast(transform.position, dir, out terrainLocation, Mathf.Infinity, cameraOrbitBasedOff))
             {
                 if (terrainLocation.collider.tag == "Terrain")
                 {
@@ -109,27 +109,30 @@ public class OrbitalCameraFollow : MonoBehaviour {
             if (terrainHeight > terrainHeighest)
             {
                 terrainHeighest = terrainHeight;
-                betweenTerrainHeight = terrainHeighest;
             }
         }
 
         //Sets the camera rotation point
-        if (Physics.Raycast(transform.position, fwd, out terrainLocation, Mathf.Infinity))
+        Vector3 dirMid = transform.TransformDirection(new Vector3(0, 0, 1));
+        if (Physics.Raycast(transform.position, dirMid, out terrainLocation, Mathf.Infinity,cameraOrbitBasedOff))
         {
-            cameraPosition = new Vector3(terrainLocation.point.x, zoomCurrent + betweenTerrainHeight, terrainLocation.point.z);
+            midTerrainHeight = terrainLocation.point.y;
+            cameraPosition = new Vector3(terrainLocation.point.x, zoomCurrent + midTerrainHeight, terrainLocation.point.z);
+            Debug.DrawLine(transform.position, terrainLocation.point, Color.green, 0.1f);
         }
+
         //Smooths the zoomCurrent
         zoomCurrent = Mathf.Lerp(zoomCurrent, zoomGoTo, Time.deltaTime * zoomSpeed);
 
         //Allows for logical transitioning of the forward
-        if (zoomCurrent + betweenTerrainHeight != (transform.position.y))
+        if (zoomCurrent + terrainHeighest != (transform.position.y))
         {
-            while ((zoomCurrent + betweenTerrainHeight) < ((transform.position.y)))
+            while ((zoomCurrent + terrainHeighest) < ((transform.position.y)))
             {
                 transform.position += transform.forward;
             }
 
-            while ((zoomCurrent + betweenTerrainHeight) > (transform.position.y))
+            while ((zoomCurrent + terrainHeighest) > (transform.position.y))
             {
                 transform.position -= transform.forward;
             }
