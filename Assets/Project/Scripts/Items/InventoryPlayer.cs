@@ -30,10 +30,27 @@ namespace Excelsion.Inventory
 			}
 		}
 
-		public void addItem()
+		public void AddItemTest()
+		{
+			AddItem (0, 0);
+			AddItem (1, 2);
+		}
+
+		public void AddItem(int id, int slot)
 		{
 			Debug.Log ("Adding fire!");
-			inventory.contents [0] = new ItemFireball ();
+			switch(id)
+			{
+				case 0:
+					inventory.contents [slot] = new ItemFireball ();
+					break;
+				case 1:
+					inventory.contents [slot] = new ItemPaper();
+					break;
+				default:
+					inventory.contents[slot] = new ItemNull();
+					break;
+			}
 		}
 	}
 }
