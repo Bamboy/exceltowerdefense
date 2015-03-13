@@ -4,7 +4,7 @@ using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
 using Excelsion.Enemies;
 using Excelsion.GameManagers;
-
+using UnityEngine.EventSystems;
 //Stephan Ennen - 3/10/2015
 
 namespace Excelsion.Inventory
@@ -94,13 +94,7 @@ namespace Excelsion.Inventory
 		//{
 		//	return;
 		//}
-		
-		
-		
-		
-		
-		
-		
+			
 		
 		
 		

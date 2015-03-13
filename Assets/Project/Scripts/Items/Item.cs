@@ -3,6 +3,7 @@ using System.Collections;
 using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
 using Excelsion.Enemies;
+using UnityEngine.EventSystems;
 
 //Stephan Ennen - 3/7/2015
 
@@ -67,20 +68,6 @@ namespace Excelsion.Inventory
 			return;
 		}
 		#endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	}

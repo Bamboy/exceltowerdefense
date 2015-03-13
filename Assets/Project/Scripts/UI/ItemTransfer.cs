@@ -9,7 +9,6 @@ namespace Excelsion.UI
 
 	public class ItemTransfer : MonoBehaviour 
 	{
-
 		// Use this for initialization
 		void Start () 
 		{
@@ -17,7 +16,7 @@ namespace Excelsion.UI
 		}
 		
 		// Update is called once per frame
-		void OnMouseDown () 
+		void Update () 
 		{
 		
 		}

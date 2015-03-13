@@ -52,5 +52,10 @@ namespace Excelsion.Inventory
 					break;
 			}
 		}
+
+		public void Test()
+		{
+			Debug.Log ("Test");
+		}
 	}
 }
