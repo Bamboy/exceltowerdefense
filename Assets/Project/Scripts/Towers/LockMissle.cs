@@ -4,7 +4,8 @@ using System.Collections;
 public class LockMissle : MonoBehaviour {
 
 	public Transform target;
-	public float missleSpeed = 5f;
+	public float missleSpeed;
+	public bool isFlying = true;
 
 	private Transform myTransform;
 
@@ -14,25 +15,33 @@ public class LockMissle : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-
+	
 
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		GameObject go = GameObject.FindGameObjectWithTag("Enemy");
-		target = go.transform;
-		// rotate the projectile to aim the target:
-		myTransform.LookAt(target);
-		float moveMissle = missleSpeed * Time.deltaTime;
-		myTransform.Translate(Vector3.forward * moveMissle);
+		if (isFlying) {
+			GameObject go = GameObject.FindGameObjectWithTag ("Enemy");
+			target = go.transform;
+			missleSpeed = 5f;
+			myTransform.LookAt (target);
+			float moveMissle = missleSpeed * Time.deltaTime;
+			myTransform.Translate (Vector3.forward * moveMissle);
+		}
+		stopArrow ();
 	}
-
 	void OnTriggerEnter (Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			Destroy(col.gameObject);
-			Destroy(this.gameObject);
+			isFlying = false;
+			transform.parent = col.transform;
+
+		}
+	}
+	void stopArrow(){
+		if (isFlying == false) {
+			missleSpeed = 0f;
 		}
 	}
 }

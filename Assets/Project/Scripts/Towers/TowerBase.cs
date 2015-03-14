@@ -21,7 +21,6 @@ namespace Excelsion.Towers
 
 		private bool DO_DEBUG = true;
 		public GameObject projectilePrefab;
-		public GameObject misslePrefab; //Lloyd's add
 		public Turret turret;
 		public Bag inventory;
 		public TowerStats stats;
@@ -112,7 +111,7 @@ namespace Excelsion.Towers
 			if( CanAttack && cooldown <= 0.0f )
 			{
 				CreateProjectile();
-				CreateMissle(); //Lloyd's missle 
+
 			}
 			tick++;
 		}
@@ -237,14 +236,6 @@ namespace Excelsion.Towers
 		}
 
 		#endregion
-
-		//Lloyd's missle
-		void CreateMissle()
-		{
-			Vector3 top = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
-			Rigidbody missleObj = Instantiate (misslePrefab, top, Quaternion.identity)as Rigidbody;
-			missleObj.velocity = transform.TransformDirection (Vector3.forward * 10);
-		}
 
 
 		void CreateProjectile()
