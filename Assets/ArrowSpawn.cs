@@ -9,9 +9,10 @@ public class ArrowSpawn : MonoBehaviour
     public Transform spawnLocation;
     public Vector3 targetLocation;
     public GameObject projectile;
-    public float shootAngle = 15f;
+    public GameObject testingObject;
+    public float shootAngle = 45f;
 
-    public Rigidbody rb;
+    private Rigidbody rb;
 
     void Start()
     {
@@ -21,7 +22,7 @@ public class ArrowSpawn : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
 
             RaycastHit hit;
@@ -29,39 +30,27 @@ public class ArrowSpawn : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-
-                 GameObject newArrow = GameObject.Instantiate(projectile, spawnLocation.position, Quaternion.identity) as GameObject;
-                 rb = newArrow.GetComponent<Rigidbody>();
-                 rb.velocity = BallisticVel(targetLocation, shootAngle);
-                 //Destroy(ball, 10);
-                /*
-                //float attackVelocity = 30f;
-                
-                //float angle = Mathf.Atan((Mathf.Pow(attackVelocity, 2) + Mathf.Sqrt(Mathf.Pow(attackVelocity, 4) - (gravity * ((gravity * Mathf.Pow(distance, 2)) + (2 * y * Mathf.Pow(attackVelocity, 2)))))) / (gravity * distance)) * Mathf.Rad2Deg;
-
-                targetLocation = hit.point;
-                //Vector3 direction = VectorExtras.Direction(transfor,targetLocation);
-
-                //Create projectile
-                GameObject newArrow = GameObject.Instantiate(projectile,spawnLocation.position,Quaternion.identity) as GameObject;
-                newArrow.GetComponent<ArrowArch>().targetLocation = targetLocation;
-                newArrow.GetComponent<ArrowArch>().speed = 30f;
-
-                //foreach (ProjectileBase proj_init in projectiles)
-                //{
-                //    proj_init.target =  //targetLocation;
-                //}
-
-                //val[0] = projScript;
-                //return val;
-                 * */
+                if (projectile != null)
+                {
+                    GameObject newArrow = GameObject.Instantiate(projectile, spawnLocation.position, Quaternion.identity) as GameObject;
+                    GameObject.Instantiate(testingObject, hit.point, Quaternion.identity);
+                    rb = newArrow.GetComponent<Rigidbody>();
+                    targetLocation = hit.point;
+                    rb.velocity = BallisticVel(targetLocation, shootAngle);
+                }
+                else
+                {
+                    Debug.Log("Please assign a projectile prefab");
+                }
+                 
             }
         }
             
     }
     public Vector3 BallisticVel(Vector3 targetLocation, float angle)
     {
-        Vector3 dir = targetLocation - transform.position;  // get target direction
+        Vector3 dir = new Vector3(targetLocation.x,targetLocation.y+2f,targetLocation.z) - spawnLocation.position;  // get target direction
+
         float h = dir.y;  // get height difference
         dir.y = 0;  // retain only the horizontal direction
         float dist = dir.magnitude;  // get horizontal distance
@@ -69,7 +58,20 @@ public class ArrowSpawn : MonoBehaviour
         dir.y = dist * Mathf.Tan(a);  // set dir to the elevation angle
         dist += h / Mathf.Tan(a);  // correct for small height differences
         // calculate the velocity magnitude
-        float vel = Mathf.Sqrt(dist * Physics.gravity.magnitude / Mathf.Sin(2 * a));
-        return vel * dir.normalized;
+        float vel = Mathf.Sqrt((dist) * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+        Vector3 calculatedVal = (vel * dir.normalized);
+
+        if (calculatedVal.y > 0)
+        {
+            return calculatedVal;
+        }
+        else
+        {
+            calculatedVal = new Vector3(0, 1, 0);
+            return calculatedVal;
+        }
+        
+        //return new Vector3(vel * dir.normalized.x, vel * dir.normalized.y, vel * dir.normalized.z);
+        
     }
 }

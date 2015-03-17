@@ -4,16 +4,22 @@ using System.Collections;
 public class DayNightCycle : MonoBehaviour {
 
     //Setting of timming variables
-    //public float currentDay = 0;
+    public static float currentDay = 0;
+
     public float dayLength = 1000;
     public static float daysPassed;
+        
     public float nightLength = 500;
     private float nightsPassed;
-    private float nextPhase = 0;
-    private float currentPhase = 0;
+
+    private float nextPhase     = 0;
+    private float currentPhase  = 0;
     private float relativePhase = 0;
-    public float currentTime = 0;
-    public float timeSpeed = 1;
+
+    public float currentTime    = 0;
+    public float bufferTime     = 0;
+    public float timeSpeed      = 1;
+
     public bool isDay = true;
     private bool previousIsDay = true;
 
@@ -25,6 +31,7 @@ public class DayNightCycle : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+        //Declares the current passing of time
         if (isDay == true)
         {
             nextPhase = dayLength;
@@ -35,30 +42,39 @@ public class DayNightCycle : MonoBehaviour {
             nextPhase = nightLength;
             currentPhase = nightLength;
         }
+
 	}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
         //Sets the current time
-        currentTime = Time.time * timeSpeed;
+        currentTime = Time.time * timeSpeed + bufferTime;
 
-        /*
+        //Checks for change in isDay incase the player wants to skip to day or night
         if (isDay != previousIsDay)
         {
             if (isDay == true)
             {
-                relativePhase = ((relativePhase / currentPhase) * dayLength);
+                nightsPassed += 1;
+                nextPhase += nightLength;
+                bufferTime += nightLength - relativePhase;
                 currentPhase = dayLength;
             }
             else if (isDay == false)
             {
-                relativePhase = ((relativePhase / currentPhase) * nightLength);
+                daysPassed += 1;
+                nextPhase += dayLength;
+                bufferTime += dayLength - relativePhase;
                 currentPhase = nightLength;
             }
             previousIsDay = isDay;
-        }*/
+        }
+
         
+
         //Checks for day/night to end
         if (isDay == true && currentTime > nextPhase)
         {
