@@ -18,6 +18,9 @@ namespace Excelsion.UI
 			"Z - Max distance where object is fully opaque. W - Max distance where drawing ends.")]
 		public Vector4 fadeDistances = new Vector4( 5.0f, 10.0f, 150.0f, 175.0f );
 
+		public ParticleSystem fire; //TODO - set serializable instead of public
+		public ParticleSystem cold;
+
 		void Start () 
 		{
 			cam = Camera.main;
@@ -110,9 +113,12 @@ namespace Excelsion.UI
 			//Set fade
 			foreach( Renderer r in gameObject.GetComponentsInChildren< Renderer >() )
 			{
-				Color tempColor = r.material.color;
-				tempColor.a = alpha;
-				r.material.color = tempColor;
+				if (r.material.HasProperty("_Color"))
+				{
+					Color tempColor = r.material.GetColor("_Color");
+					tempColor.a = alpha;
+					r.material.SetColor("_Color", tempColor);
+				}
 			}
 			//Set height
 
@@ -136,26 +142,36 @@ namespace Excelsion.UI
 				return 2;
 		}
 
-		#region gizmos
-		void OnDrawGizmos()
+
+
+
+		#region status effects
+
+		public void ShowFire( bool state )
 		{
-			//Visualization of the fade distances (for debug)
-			/*
-			Gizmos.color = Color.yellow;
-			Gizmos.DrawWireSphere( transform.position, fadeDistances.y );
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireSphere( transform.position, fadeDistances.z );
-			Gizmos.color = Color.blue;
-			Gizmos.DrawRay( new Ray( transform.position, transform.forward ) ); 
-			 */
+			if( state == true )
+			{
+				fire.Play(true);
+			}
+			else
+			{
+				fire.Stop(true);
+			}
 		}
+		public void ShowCold( bool state )
+		{
+			if( state == true )
+			{
+				cold.Play(true);
+			}
+			else
+			{
+				cold.Stop(true);
+			}
+		}
+
+
 		#endregion
-
-
-
-
-
-
 
 
 

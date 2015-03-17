@@ -21,7 +21,6 @@ namespace Excelsion.Towers
 
 		private bool DO_DEBUG = true;
 		public GameObject projectilePrefab;
-		public Turret turret;
 		public Bag inventory;
 		public TowerStats stats;
 		public List< Enemy > targets; //Switch this to internal later...
@@ -79,8 +78,8 @@ namespace Excelsion.Towers
 
 			//Note that multiple items of the same type is not intended here. (Except for ItemNull)
 			//=======STARTING ITEMS======
-			inventory.contents[0] = new ItemPaper();
-			inventory.contents[1] = new ItemFireball();
+			inventory.contents[0] = new ItemIgnite();
+			inventory.contents[1] = new ItemNull();
 			inventory.contents[2] = new ItemNull();
 			//=======END ITEMS======
 			Debug.Log("Double click me to change initial tower items!");
