@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Project/Models.meta~1940fc67de9e816be823dbbef49d3ab773668562.meta
 guid: 07b0858d01642514aa84c7f1704e87e8
 timeCreated: 1426445269
+=======
+guid: b75f91ff600e53b499609339e6787c1c
+timeCreated: 1426606284
+>>>>>>> a73dad08cdf5613eab6cc2c9e2667cde835dddfe:Assets/Project/Models.meta~1940fc67de9e816be823dbbef49d3ab773668562.meta
 licenseType: Free
 DefaultImporter:
   userData: 

@@ -3,7 +3,7 @@ using System.Collections;
 using Excelsion.GameManagers;
 using Excelsion.UI;
 
-//Stephan Ennen - 3/4/2015
+//Stephan Ennen - 3/17/2015
 
 namespace Excelsion.Enemies
 {
@@ -78,8 +78,16 @@ namespace Excelsion.Enemies
 		}
 		#endregion
 
-		#region Health
 
+
+		void Update()
+		{
+			//Evaluate status effects.
+			EvaluateFire();
+			EvaluateCold();
+		}
+
+		#region Health
 		public virtual void Damage( int val )
 		{
 			health -= val;
@@ -102,12 +110,81 @@ namespace Excelsion.Enemies
 			Debug.Log("BLERHGhnsfm...");
 			return; //TODO add chance to drop resources here.
 		}
-
 		#endregion
 
 
 
 
+
+		#region Status Effects
+		//=========== FIRE ===========
+		public float fire = 0.0f; //This acts as our timer.
+		public bool OnFire{ get{ return fire > 0.0f; } } //Return true if our timer is active.
+		public int fireTickDamage = 2; //Damage to do every second
+		public void SetFire( float duration )
+		{
+			if( OnFire )//Add time to existing fire.
+				fire += duration;
+			else
+			{ //Start new fire.
+				fire = duration;
+				StartCoroutine("FireTick", 1.0f);
+				healthDisplay.ShowFire(true);
+			}
+		}
+		void EvaluateFire()
+		{
+			if( OnFire )
+			{
+				fire -= Time.deltaTime;
+				if( OnFire == false )
+				{
+					fire = 0.0f; //Stop fire.
+					StopCoroutine("FireTick");
+					healthDisplay.ShowFire(false);
+				}
+			}
+		}
+		IEnumerator FireTick( float tickTime )
+		{
+			yield return null;
+			while( OnFire == true )
+			{
+				Damage( fireTickDamage ); //Deal damage then wait 'tickTime'.
+				yield return new WaitForSeconds( tickTime );
+			}
+			Debug.Log("Escaped the flames!", this);
+		}
+
+		//=========== COLD ===========
+		public float cold = 0.0f;
+		public bool IsCold{ get{ return cold > 0.0f; } }
+		public float coldMovementModifier = 0.50f; //Percentage at which effected enemies will move at. (50% normal speed, here)
+		public void SetCold( float duration )
+		{
+			if( IsCold )
+				cold += duration;
+			else
+			{   //Start new cold
+				speed = coldMovementModifier * defaultSpeed;
+				cold = duration;
+				healthDisplay.ShowCold(true);
+			}
+		}
+		void EvaluateCold()
+		{
+			if( IsCold )
+			{
+				cold -= Time.deltaTime;
+				if( IsCold == false ) //End cold.
+				{
+					cold = 0.0f;
+					speed = defaultSpeed; //Restore our normal speed.
+					healthDisplay.ShowCold(false);
+				}
+			}
+		}
+		#endregion
 
 
 
