@@ -13,9 +13,17 @@ namespace Excelsion.Enemies
 		private bool DO_DEBUG = false;
 		private bool faceHeading = true;
 		private float damping = 0.4f;
-		private float speed = 5.0f;
-		public float Speed{ get{ return this.speed; } set{ this.speed = Mathf.Max(0f, value); } }
+		private float speed = 8.0f;
+		public float Speed
+		{ 
+			get{ return this.speed; } 
+			set{ 
+				this.speed = Mathf.Max(0f, value); 
+				navigation.speed = this.speed;
+			} 
+		}
 		private float defaultSpeed; //We use this to remove status effects.
+		private NavMeshAgent navigation;
 
 		private Vector3 targetPosition;
 		private Vector3 targetInRangePosition;
@@ -29,13 +37,14 @@ namespace Excelsion.Enemies
 		{
 			maxHealth = health;
 			healthDisplay.MaxHealth = health;
-			defaultSpeed = speed;
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
 
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
-            targetPosition = DefenseController.Get().enemyObjective.transform.position;
-            agent.destination = targetPosition;
+			targetPosition = DefenseController.Get().enemyObjective.transform.position;
+            navigation = GetComponent<NavMeshAgent>();
+            navigation.destination = targetPosition;
+			Speed = speed;
+			defaultSpeed = speed;
 		}
 
 		#region Movement
@@ -166,7 +175,7 @@ namespace Excelsion.Enemies
 				cold += duration;
 			else
 			{   //Start new cold
-				speed = coldMovementModifier * defaultSpeed;
+				Speed = coldMovementModifier * defaultSpeed;
 				cold = duration;
 				healthDisplay.ShowCold(true);
 			}
@@ -179,7 +188,7 @@ namespace Excelsion.Enemies
 				if( IsCold == false ) //End cold.
 				{
 					cold = 0.0f;
-					speed = defaultSpeed; //Restore our normal speed.
+					Speed = defaultSpeed; //Restore our normal speed.
 					healthDisplay.ShowCold(false);
 				}
 			}

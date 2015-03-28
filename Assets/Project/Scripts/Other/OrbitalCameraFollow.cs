@@ -56,11 +56,22 @@ public class OrbitalCameraFollow : MonoBehaviour {
         //Allows for camera strave
         if (Input.GetKey("q"))
         {
-            transform.RotateAround(cameraPosition, Vector3.up, -rotationSpeed * Time.deltaTime);
+			RaycastHit data;
+			if( Physics.Raycast( Camera.main.transform.position, Camera.main.transform.forward, out data ) )
+			{
+				transform.RotateAround( data.point, Vector3.up, -rotationSpeed * Time.deltaTime);
+			}
+
+
         }
         else if (Input.GetKey("e"))
         {
-            transform.RotateAround(cameraPosition, Vector3.up, rotationSpeed * Time.deltaTime);
+			RaycastHit data;
+			if( Physics.Raycast( Camera.main.transform.position, Camera.main.transform.forward, out data ) )
+			{
+				transform.RotateAround( data.point, Vector3.up, rotationSpeed * Time.deltaTime);
+			}
+
         }
 
         if (Input.GetKey("w"))

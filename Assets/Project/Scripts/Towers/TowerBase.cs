@@ -21,6 +21,8 @@ namespace Excelsion.Towers
 
 		private bool DO_DEBUG = true;
 		public GameObject projectilePrefab;
+		public Vector3 projectileSpawnOffset = Vector3.up;
+		public float projectileSpawnDistance = 3f;
 		public Bag inventory;
 		public TowerStats stats;
 		public List< Enemy > targets; //Switch this to internal later...
@@ -274,12 +276,12 @@ namespace Excelsion.Towers
 			                                                           transform.position,
 			                                                           projectilePrefab.GetComponent<ProjectileBase>().speed));
 			
-			Vector3 head = transform.position + new Vector3(0.0f, 1.0f, 0.0f);
+			Vector3 head = transform.position + projectileSpawnOffset;
 			Vector3 direction = VectorExtras.Direction(head, targetPos);
 			
 			//Create projectile
 			GameObject projObj = GameObject.Instantiate( projectilePrefab, 
-			                                            VectorExtras.OffsetPosInDirection( head, direction, 3.25f ), //Make sure the projectile doesnt hit the tower.
+			                                            VectorExtras.OffsetPosInDirection( head, direction, projectileSpawnDistance ), //Make sure the projectile doesnt hit the tower.
 			                                            Quaternion.LookRotation( direction, Vector3.up )) as GameObject;
 			ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
 			if( projScript == null )
@@ -332,9 +334,12 @@ namespace Excelsion.Towers
 
 				foreach( Enemy e in targets ) //This causes errors as enemies are destroyed. Ignore it or turn off debug.
 				{
-					if( e == activeTarget )
+					if( e == null )
+						continue;
+					else if( e == activeTarget )
 					{
 						Gizmos.color = Color.white;
+
 						Gizmos.DrawLine( transform.position, e.transform.position );
 						continue;
 					}
@@ -349,11 +354,12 @@ namespace Excelsion.Towers
 		//Called when the mouse is over our collider and is clicked.
 		void OnMouseDown()
 		{
+			/*
 			if( selectedID != -1 )
 			{
 				GetSelected().GetComponent<Renderer> ().material.color = Color.yellow;
 			}
-			this.GetComponent<Renderer>().material.color = Color.blue;
+			this.GetComponent<Renderer>().material.color = Color.blue; */
 			selectedID = myID;
 		}
 
