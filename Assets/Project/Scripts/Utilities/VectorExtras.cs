@@ -3,7 +3,7 @@ using System.Collections;
 
 ///////////////////////////////////
 /// By: Stephan "Bamboy" Ennen ////
-/// Last Updated: 3/11/15      ////
+/// Last Updated: 4/2/15      ////
 ///////////////////////////////////
 
 //This script just holds general functions we might want to use in our other scripts.
@@ -212,8 +212,34 @@ public class VectorExtras : System.Object
 		Vector3 spherePoint = OffsetPosInPointDirection(origin, target, 10.0f) + (Random.insideUnitSphere * Mathf.Clamp(radius, 0.0f, 10.0f));
 		return Direction( origin, spherePoint );
 	}
-	
-	
+
+	//===========================================
+	//=========== Size of Object ================
+	//===========================================
+	//Credit to: http://answers.unity3d.com/questions/475641/gameobject-scale-as-world-coordinates-units.html
+	//Gets the scale of the object in real world units
+	/*
+	public static Vector3 GetWorldScale(GameObject obj) 
+	{
+		Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
+		if( mesh == null )
+		{
+			return new Vector3();
+		}
+
+		Vector3 min = Vector3.one * Mathf.Infinity;
+		Vector3 max = Vector3.one * Mathf.NegativeInfinity;
+		
+		foreach(Vector3 vert in mesh.vertices)
+		{
+			min = Vector3.Min(vert);
+			max = Vector3.Max(vert);
+		}
+		// the size is max-min multiplied by the object scale:
+		return Vector3.Scale(max - min, obj.transform.localScale);
+	} */
+
+
 	//===========================================
 	//=========== Degrees And Vectors ===========
 	//===========================================

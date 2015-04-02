@@ -4,7 +4,7 @@ using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
 using Excelsion.Enemies;
 
-//Stephan Ennen - 3/10/2015
+//Stephan Ennen - 4/2/2015
 
 namespace Excelsion.Inventory
 {
@@ -27,7 +27,6 @@ namespace Excelsion.Inventory
 				val.speed = -0.8f;
 				val.range = -2.5f;
 				val.damage = 12;
-				val.luck = 0f;
 				return val;
 			}
 		}
@@ -50,10 +49,13 @@ namespace Excelsion.Inventory
 		{
 			return;
 		} */
-		
+
+		//TODO - make this evenly distribute projectiles instead of random. (See VectorExtras.DegreesToVector)
+		// also make it angle toward the ground so it hits the point at range distance
+
 		//Use this to create multiple projectiles.
 		public override void OnProjectileCreation( out ProjectileBase[] projectiles, TowerBase tower ) 
-		{
+		{ 
 			projectiles = new ProjectileBase[0]; // THIS IS EXTREMELY MESSY AND I APOLOGIZE! - Steph
 
 			//Spawn 8 projectiles all going in random directions.
@@ -70,12 +72,13 @@ namespace Excelsion.Inventory
 				Vector3 travelDir = new Vector3( direction.x, -0.05f, direction.y ).normalized;
 				//Create projectiles
 				GameObject projObj = GameObject.Instantiate( tower.projectilePrefab, 
-				                                            VectorExtras.OffsetPosInDirection( tower.transform.position, travelDir, 3.25f ), //Make sure the projectile doesnt hit the tower.
+				                                            VectorExtras.OffsetPosInDirection( tower.transform.position + tower.projectileSpawnOffset, travelDir, tower.projectileSpawnDistance ), //Make sure the projectile doesnt hit the tower.
 				                                            Quaternion.identity) as GameObject;
 				ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
 				if( projScript == null )
 				{ Debug.LogError("Prefab given does not have a ProjectileBase script attached!", tower); Debug.Break(); }
 				projScript.travelDir = travelDir;
+
 
 				projectiles = ArrayTools.Push<ProjectileBase>( projectiles, projScript );
 			}

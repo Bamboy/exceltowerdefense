@@ -54,7 +54,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
         }
 
         //Allows for camera strave
-        if (Input.GetKey("q"))
+        if (Input.GetKey("e"))
         {
 			RaycastHit data;
 			if( Physics.Raycast( Camera.main.transform.position, Camera.main.transform.forward, out data ) )
@@ -64,7 +64,7 @@ public class OrbitalCameraFollow : MonoBehaviour {
 
 
         }
-        else if (Input.GetKey("e"))
+        else if (Input.GetKey("q"))
         {
 			RaycastHit data;
 			if( Physics.Raycast( Camera.main.transform.position, Camera.main.transform.forward, out data ) )

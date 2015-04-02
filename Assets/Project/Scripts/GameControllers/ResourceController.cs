@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Stephan Ennen - 4/2/2015
+
 namespace Excelsion.GameManagers
 {
 	public class ResourceController : MonoBehaviour 

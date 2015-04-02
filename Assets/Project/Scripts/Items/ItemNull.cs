@@ -27,7 +27,6 @@ namespace Excelsion.Inventory
 				val.speed = 0f;
 				val.range = 0f;
 				val.damage = 0;
-				val.luck = 0f;
 				return val;
 			}
 		}

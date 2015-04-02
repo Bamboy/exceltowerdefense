@@ -6,7 +6,7 @@ using Excelsion.Enemies;
 using Excelsion.GameManagers;
 using UnityEngine.EventSystems;
 
-//Stephan Ennen - 3/10/2015
+//Stephan Ennen - 4/2/2015
 
 namespace Excelsion.Inventory
 {
@@ -29,7 +29,6 @@ namespace Excelsion.Inventory
 				val.speed = 1.5f;
 				val.range = -6f;
 				val.damage = 6;
-				val.luck = 0.05f;
 				return val;
 			}
 		}

@@ -6,17 +6,17 @@ using Excelsion.Inventory;
 using Excelsion.Towers.Projectiles;
 using Excelsion.GameManagers;
 using Excelsion.Enemies;
+using Excelsion.UI;
 
-//Stephan Ennen - 3/7/2015
+//Stephan Ennen - 4/2/2015
 
 namespace Excelsion.Towers
 {
 	//All towers have this. Manages items, UI, and manages a TurretBase component depending on items.
 	[RequireComponent(typeof(Collider))]
-	public class TowerBase : MonoBehaviour 
+	public class TowerBase : MonoBehaviour, ISelectable
 	{
 		public delegate void OnProjectileCreation( out ProjectileBase[] projectiles, TowerBase tower );
-
 		public OnProjectileCreation onProjectileCreation;
 
 		private bool DO_DEBUG = true;
@@ -36,8 +36,9 @@ namespace Excelsion.Towers
 		#region Statics
 		public static TowerBase[] towers;
 		static int nextTowerID = 0;
-		static int selectedID = -1;
 		private int myID;
+
+		//TODO - Do we need this still?
 		static void Register( TowerBase newTower )
 		{
 			if( towers == null )
@@ -51,23 +52,11 @@ namespace Excelsion.Towers
 			}
 			nextTowerID++;
 		}
-		public static TowerBase GetSelected()
-		{
-			if( selectedID != -1 )
-			{
-				Debug.Log( selectedID );
-				return towers[selectedID];
-			}
-			else
-			{
-				return null;
-			}
-		}
+
 		void OnLevelWasLoaded( int level )
 		{
 			towers = new TowerBase[0];
 			nextTowerID = 0;
-			selectedID = -1;
 		}
 		#endregion
 		void Start () 
@@ -80,28 +69,54 @@ namespace Excelsion.Towers
 
 			//Note that multiple items of the same type is not intended here. (Except for ItemNull)
 			//=======STARTING ITEMS======
-			inventory.contents[0] = new ItemIgnite();
-			inventory.contents[1] = new ItemNull();
-			inventory.contents[2] = new ItemNull();
+			switch( myID )
+			{
+			case 0:
+				inventory.contents[0] = GetRandomItem();
+				inventory.contents[1] = GetRandomItem();
+				inventory.contents[2] = GetRandomItem();
+				break;
+			case 1:
+				inventory.contents[0] = GetRandomItem();
+				inventory.contents[1] = GetRandomItem(); //This is all here just to give a bit of variety between towers.
+				inventory.contents[2] = new ItemNull();
+				break;
+			case 2:
+				inventory.contents[0] = GetRandomItem();
+				inventory.contents[1] = new ItemNull();
+				inventory.contents[2] = new ItemNull();
+				break;
+			}
 			//=======END ITEMS======
 			Debug.Log("Double click me to change initial tower items!");
 			
 			stats = new TowerStats();
 			OnBagModified();
 		}
+		Item GetRandomItem()
+		{
+			switch( Random.Range(0,4) )
+			{
+			case 0:
+				return new ItemPaper();
+			case 1:
+				return new ItemFireball();
+			case 2:
+				return new ItemIgnite();
+			default:
+				return new ItemNull();
+			}
+		}
 
 		void Update () 
 		{
-			if (selectedID != -1)
+			for (int i = 0; i < inventory.contents.Length; i++)
 			{
-				for (int i = 0; i < inventory.contents.Length; i++)
+				if (inventory.contents [i] == null)
+					continue;
+				else
 				{
-					if (inventory.contents [i] == null)
-						continue;
-					else
-					{
-						inventory.contents [i].OnTowerUpdate (); //TODO - sort by priority.
-					}
+					inventory.contents [i].OnTowerUpdate (); //TODO - sort by priority.
 				}
 			}
 
@@ -241,10 +256,19 @@ namespace Excelsion.Towers
 
 		void CreateProjectile()
 		{
-
 			ProjectileBase[] projectiles = new ProjectileBase[0];
 			if( onProjectileCreation != null )
-				onProjectileCreation( out projectiles, this );
+			{
+				//Execute each method in the delegate independently. 
+				//We need to do this because otherwise the 'out' array gets overwritten by the other delegates contained. (We want to add)
+				//Not doing this means that not all of our projectiles will be initialized correctly! (See 10 lines down)
+				foreach( OnProjectileCreation invoke in onProjectileCreation.GetInvocationList() )
+				{
+					ProjectileBase[] projectilesCreated = new ProjectileBase[0];
+					invoke( out projectilesCreated, this );
+					projectiles = ArrayTools.Concat<ProjectileBase>( projectiles, projectilesCreated );
+				}
+			}
 			else
 				projectiles = DefaultProjectileCreation(); //No custom projectile creation specified. Do default.
 
@@ -350,19 +374,17 @@ namespace Excelsion.Towers
 			}
 		}
 
-		#region Interaction
-		//Called when the mouse is over our collider and is clicked.
-		void OnMouseDown()
-		{
-			/*
-			if( selectedID != -1 )
-			{
-				GetSelected().GetComponent<Renderer> ().material.color = Color.yellow;
-			}
-			this.GetComponent<Renderer>().material.color = Color.blue; */
-			selectedID = myID;
-		}
+		#region Selection
 
+		[SerializeField] private Transform selectTrans;
+		public Transform SelectionTransform
+		{
+			get{ return selectTrans; }
+		}
+		public void OnDrawSelectedUI()
+		{
+			return; //See TowerReader.cs for Tower UI. TODO - Move that code here...?
+		}
 
 		#endregion
 
