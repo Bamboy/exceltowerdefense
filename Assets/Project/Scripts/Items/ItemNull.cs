@@ -7,7 +7,8 @@ using Excelsion.Towers.Projectiles;
 
 namespace Excelsion.Inventory
 {
-	//NEVER DELETE THIS DEFINITION!!!
+	//NEVER DELETE THIS DEFINITION!!! 
+	//It is used as a representation of a null item, so that actions can be performed upon it with less error checking required.
 	public class ItemNull : Item
 	{
 		private static Sprite spr;
@@ -35,15 +36,5 @@ namespace Excelsion.Inventory
 		public override string Name{ get{ return "Empty slot"; } }
 		//Return display icon location
 		public override Sprite Icon{ get{ return spr; } }
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 }

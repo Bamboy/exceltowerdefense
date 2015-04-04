@@ -38,9 +38,6 @@ namespace Excelsion.Towers.Projectiles
 		}
 		void Update () 
 		{
-
-
-
 			if( onUpdateEvent != null )
 				onUpdateEvent( this );
 			else

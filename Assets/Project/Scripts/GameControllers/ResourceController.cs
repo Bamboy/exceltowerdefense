@@ -21,7 +21,6 @@ namespace Excelsion.GameManagers
 				return resControl;
 			}
 		}
-		#endregion
 		void Awake() 
 		{
 			if( resControl == null )
@@ -29,15 +28,7 @@ namespace Excelsion.GameManagers
 			else
 				GameObject.Destroy( this.gameObject );
 		}
-
-
-
-		private int wood  = 0;
-		private int stone = 0;
-		private int metal = 0;
-		private int food  = 30;
-		private int pop   = 5;
-
+		#endregion
 
 		/* wood - early resource material
 		 * stone - mostly for early-mid game upgrades 
@@ -47,28 +38,30 @@ namespace Excelsion.GameManagers
 		*/
 
 
-		public bool CanAfford( string resourceType, int amount )
+		//Keep these private from other scripts. Make it so other scripts use functions in order to get or change these values.
+		private int wood  = 0;
+		private int stone = 0;
+		private int metal = 0;
+		private int food  = 30;
+		private int pop   = 5;
+
+		void Start()
 		{
-
-			return false; //TODO
-
+			wood = 5;
+			stone = 5;
+			metal = 3;
+			food = 30;
+			pop = 5;
 		}
 
 
-
-		//TODO resource class holder instead of ints
-		private class Resource
+		//Return true if resource isn't negative if we subtract 'amount' from it. Used if the player tries to buy something, for example.
+		public bool CanAffordWood( int amount )
 		{
-			string type;
-			int amount;
-			//Vector2 valueClamp;
-			//TODO add values for max amount, exc
-			public Resource( string type, int amount )
-			{
-				type = type.ToLower();
-				amount = amount;
-			}
+			return (wood - amount >= 0) ? true : false;
 		}
+
+
 
 
 

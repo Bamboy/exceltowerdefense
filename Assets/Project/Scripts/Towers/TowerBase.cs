@@ -78,11 +78,16 @@ namespace Excelsion.Towers
 				break;
 			case 1:
 				inventory.contents[0] = GetRandomItem();
-				inventory.contents[1] = GetRandomItem(); //This is all here just to give a bit of variety between towers.
-				inventory.contents[2] = new ItemNull();
+				inventory.contents[1] = new ItemFireball(); //This is all here just to give a bit of variety between towers.
+				inventory.contents[2] = new ItemIgnite();
 				break;
 			case 2:
-				inventory.contents[0] = GetRandomItem();
+				inventory.contents[0] = new ItemNull();
+				inventory.contents[1] = new ItemNull();
+				inventory.contents[2] = new ItemNull();
+				break;
+			default:
+				inventory.contents[0] = new ItemNull();
 				inventory.contents[1] = new ItemNull();
 				inventory.contents[2] = new ItemNull();
 				break;
@@ -112,11 +117,11 @@ namespace Excelsion.Towers
 		{
 			for (int i = 0; i < inventory.contents.Length; i++)
 			{
-				if (inventory.contents [i] == null)
+				if (inventory.contents[i] == null || inventory.contents[i] is ItemNull)
 					continue;
 				else
 				{
-					inventory.contents [i].OnTowerUpdate (); //TODO - sort by priority.
+					inventory.contents[i].OnTowerUpdate( this ); //TODO - Sort by priority.
 				}
 			}
 
