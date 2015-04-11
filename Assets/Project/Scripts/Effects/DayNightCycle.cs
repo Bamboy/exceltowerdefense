@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//CLASS IS OBSOLETE. ONLY HERE FOR REFERENCE. DO NOT USE.
+//Use WorldClock.cs and Sun.cs instead.
+
 public class DayNightCycle : MonoBehaviour {
 
     //Setting of timming variables
