@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 42a535fd0dbb83844a40a6c021b42745
-timeCreated: 1428799319
+guid: 0afed95d2742fb446bf0b24e524e9e01
+timeCreated: 1428801388
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,8 +9,8 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder.004
-    7400000: Cylinder.004|Cylinder.012|Cylinder.001|SunAction|Cylinder.001|SunAction
+    4300000: Cylinder.006
+    7400000: Cylinder.006|Cylinder.012|Cylinder.001|SunAction|Cylinder.001|SunAction
     9500000: //RootNode
   materials:
     importMaterials: 1

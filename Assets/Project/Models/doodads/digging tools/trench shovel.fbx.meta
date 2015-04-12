@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 38f973a3a924ab247b18a1734dbeac1d
-timeCreated: 1428590362
+guid: 93087d9518b654640a8e4980ca460efa
+timeCreated: 1428782676
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,9 +9,9 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Box002
+    4300000: Cylinder.002
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -66,5 +66,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: 
+  assetBundleName: doodads
   assetBundleVariant: 

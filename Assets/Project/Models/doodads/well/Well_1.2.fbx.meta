@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 72454483430d6f9429012fd8318d8c63
-timeCreated: 1427995717
+guid: 38f973a3a924ab247b18a1734dbeac1d
+timeCreated: 1428590362
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,11 +9,9 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder.004
-    7400000: Cylinder.004|Cylinder.012|Cylinder.001|SunAction|Cylinder.001|SunAction
-    9500000: //RootNode
+    4300000: Box002
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -34,7 +32,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 0
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -51,7 +49,7 @@ ModelImporter:
     splitTangentsAcrossUV: 1
     normalImportMode: 0
     tangentImportMode: 1
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
@@ -65,7 +63,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

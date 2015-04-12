@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 42a535fd0dbb83844a40a6c021b42745
-timeCreated: 1428799319
+guid: 74d11eb5e316dec4e8bf1bf619d39b2e
+timeCreated: 1428781377
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,11 +9,9 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder.004
-    7400000: Cylinder.004|Cylinder.012|Cylinder.001|SunAction|Cylinder.001|SunAction
-    9500000: //RootNode
+    4300000: main crate
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -65,8 +63,8 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: 
+  assetBundleName: doodads
   assetBundleVariant: 
