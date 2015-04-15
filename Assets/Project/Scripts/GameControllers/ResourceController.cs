@@ -63,13 +63,19 @@ namespace Excelsion.GameManagers
 
 
 
-
-
-
-
-
-
-
+		//So that player could get some Reward for finished Tasks
+		public void GainReward (Reward reward)
+		{
+			this.wood += reward.wood;
+			this.stone += reward.stone;
+			this.metal += reward.metal;
+			this.food += reward.food;
+			if (reward.pop > 0)
+			{
+				VillagerController.Get().CreateNewVillagers(reward.pop - this.pop);
+				this.pop += reward.pop;
+			}
+		}
 
 
 
@@ -81,4 +87,26 @@ namespace Excelsion.GameManagers
 
 
 	}
+}
+
+//Sergey Bedov - 4/12/2015
+[System.Serializable]
+public class Reward
+{
+	public int wood;
+	public int stone;
+	public int metal;
+	public int food;
+	public int pop;
+	
+	public Reward (int wood, int stone, int metal, int food, int pop)
+	{
+		this.wood = wood;
+		this.stone = stone;
+		this.metal = metal;
+		this.food = food;
+		this.pop = pop;
+	}
+	
+	public Reward (): this(0,0,0,0,0) {}
 }
