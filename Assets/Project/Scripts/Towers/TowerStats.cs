@@ -7,12 +7,15 @@ namespace Excelsion.Towers
 {
 	public class TowerStats : System.Object
 	{
-		//Time in seconds between each shot.
+		// Time in seconds between each shot.
+		// MATT SUGGESTION TO-DO: Make Speed "Shots-per-second" rather than this. Or call "Speed" "Rate of Fire" instead.
 		public float speed;
-		//Distance in meters (units) the tower will target an enemy.
+		// Distance in meters (units) the tower will target an enemy.
 		public float range;
 		//How much damage a projectile does.
 		public int damage;
+
+
 
 		public TowerStats()
 		{
