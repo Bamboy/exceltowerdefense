@@ -5,6 +5,7 @@ using Excelsion.Towers.Projectiles;
 using Excelsion.Enemies;
 
 // Matt McGrath - 4/17/2015, using example Item class created by Stephan Ennen.
+using System.Collections.Generic;
 
 namespace Excelsion.Inventory
 {
@@ -34,6 +35,9 @@ namespace Excelsion.Inventory
 				// Let's assume we don't buff or weaken range or speed, for now.
 				val.speed = 0f;
 				val.range = 0f;
+
+				// MATT: Frost causes extra damage. How can we access Frost's damage modifier from here? Makes me think StatusEffects and TowerStats need to be handled slightly differently.
+				// Possible TODO Maybe the Items should contain the StatusEffect(s) they cause.
 				val.damage = 1;
 
 				return val;
@@ -55,16 +59,34 @@ namespace Excelsion.Inventory
 		// Give the enemies status effects or just do some damage.
 		public override void OnEnemiesHit( Enemy[] enemies )
 		{
+			List<StatusEffectType> effectsBeingApplied = new List<StatusEffectType>();
+			effectsBeingApplied.Add (StatusEffectType.Frost);
+			List<StatusEffectType> effectsToIgnore = new List<StatusEffectType>();
+			
 			foreach( Enemy e in enemies )
 			{
-				//e.SetCold(5.0f); 					// Slow the enemy for 5 seconds.
-				//e.coldMovementModifier = 0.25f;	// Slow them down to 25% for now.
-			
-//				StatusEffectFrost frostEffect = new StatusEffectFrost(e, 5.0f);
-//				frostEffect.frostMovementModifier = 0.25f;
-//				e.statusEffects.Add(frostEffect);
-//
-//				frostEffect.SetFrost();
+				// TESTING NOT STACKING EFFECTS:
+				foreach (StatusEffect effect in e.statusEffects)
+				{
+					for (int i = 0; i < effectsBeingApplied.Count; i++)
+					{
+						if (effect.EffectType == effectsBeingApplied[i] && !effect.IsEffectStackable)
+						{
+							// Flag not to create, add, or set off this effect.
+							effectsToIgnore.Add (effect.EffectType);
+							
+							Debug.Log ("We're already suffering from " + effect.EffectType.ToString () + "!");
+						}
+					}
+				}
+				
+				if (!effectsToIgnore.Contains(StatusEffectType.Frost))
+				{
+					StatusEffectFrost frostEffect = new StatusEffectFrost(e, 5.0f);
+					frostEffect.frostMovementModifier = 0.25f;
+					frostEffect.InflictStatusEffect();
+					e.statusEffects.Add (frostEffect);
+				}
 			}
 		}
 		#endregion

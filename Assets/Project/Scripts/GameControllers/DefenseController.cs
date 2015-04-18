@@ -26,7 +26,10 @@ namespace Excelsion.GameManagers
 		#endregion
 		public List< Enemy > enemies;
 
-		//Target of which the enemies are trying to destroy.
+		// Maximum enemies alive at any given time.
+		public int maxEnemies = 20;
+
+		// Target of which the enemies are trying to destroy.
 		public GameObject enemyObjective; 
 
 		public float spawnRadius = 175.0f;
@@ -77,7 +80,7 @@ namespace Excelsion.GameManagers
 		IEnumerator TimedSpawner()
 		{
 			yield return new WaitForSeconds( 0.5f );
-			while( enemies.Count >= 20 )
+			while( enemies.Count >= maxEnemies)
 				yield return null;
 
 			GameObject obj = GameObject.Instantiate( enemyPrefab, GetSpawnPosition(), Quaternion.identity ) as GameObject;
@@ -101,13 +104,6 @@ namespace Excelsion.GameManagers
 			//Converts back into Vector3, with the y axis being at a set height, then returns it.
 			return new Vector3( pos.x, spawnHeight, pos.y );
 		}
-
-
-
-
-
-
-
 
 
 

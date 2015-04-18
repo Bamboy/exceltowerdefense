@@ -96,8 +96,10 @@ namespace Excelsion.Enemies
 		void Update()
 		{
 			//Evaluate status effects.
-//			EvaluateFire();
-//			EvaluateCold();
+			foreach (StatusEffect effect in statusEffects)
+			{
+				effect.EvaluateStatusEffect();
+			}
 		}
 
 		#region Health
@@ -123,13 +125,6 @@ namespace Excelsion.Enemies
 			Debug.Log("BLERHGhnsfm...");
 			return; //TODO add chance to drop resources here.
 		}
-		#endregion
-
-
-		#region Status Effects
-
-		// Put the Cold / Burn code back between here if all else fails.
-
 		#endregion
 	}
 }
