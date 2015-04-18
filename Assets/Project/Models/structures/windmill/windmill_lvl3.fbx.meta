@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 486f1ffd923778e45a5c4166a2cd340b
-timeCreated: 1427387433
+guid: b034b1e26c41a334e8c36b5b6807ca48
+timeCreated: 1429383898
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -19,7 +19,6 @@ ModelImporter:
     4300002: Cube.002_Cube.000
     7400000: Cube_Cube.015|windmill_lvl3_idle
     7400002: Cube.002_Cube.000|windmill_lvl3_idle
-    7400004: idle
     9500000: //RootNode
   materials:
     importMaterials: 0
@@ -38,7 +37,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: idle
+      name: Cube.002_Cube.000|windmill_lvl3_idle
       takeName: Cube.002_Cube.000|windmill_lvl3_idle
       firstFrame: 0
       lastFrame: 179
@@ -47,7 +46,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

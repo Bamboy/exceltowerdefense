@@ -100,18 +100,20 @@ namespace Excelsion.Towers
 		}
 		Item GetRandomItem()
 		{
-			switch( Random.Range(0,6) )
+			switch( Random.Range(0,7) )
 			{
 			case 0:
 				return new ItemPaper();
 			case 1:
-				return new ItemNull();//ItemFireball();
+				return new ItemFireball();
 			case 2:
 				return new ItemIgnite();
 			case 3:
 				return new ItemSpeed();
 			case 4:
 				return new ItemFrost();
+			case 5:
+				return new ItemSniper();
 			default:
 				return new ItemNull();
 			}

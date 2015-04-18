@@ -5,6 +5,7 @@ using Excelsion.Towers.Projectiles;
 using Excelsion.Enemies;
 
 //Stephan Ennen - 3/17/2015
+using System.Collections.Generic;
 
 namespace Excelsion.Inventory
 {
@@ -81,23 +82,40 @@ namespace Excelsion.Inventory
 		//Give the enemies status effects or just do some damage.
 		public override void OnEnemiesHit( Enemy[] enemies )
 		{
+			List<StatusEffectType> effectsBeingApplied = new List<StatusEffectType>();
+			effectsBeingApplied.Add (StatusEffectType.Fire);
+			effectsBeingApplied.Add (StatusEffectType.Cold);
+			List<StatusEffectType> effectsToIgnore = new List<StatusEffectType>();
+
 			foreach( Enemy e in enemies )
 			{
-				//e.SetFire( 5.0f ); //Set fire to the enemy for 5 seconds.
-				//e.SetCold( 2.0f ); //Slow the enemy for 2 seconds.
+				// TESTING NOT STACKING EFFECTS:
+				foreach (StatusEffect effect in e.statusEffects)
+				{
+					for (int i = 0; i < effectsBeingApplied.Count; i++)
+					{
+						if (effect.EffectType == effectsBeingApplied[i] && !effect.IsEffectStackable)
+						{
+							// Flag not to create, add, or set off this effect.
+							effectsToIgnore.Add (effect.EffectType);
 
-				// Create our status effects.
-				StatusEffectFire fireEffect = new StatusEffectFire(e, 5.0f);
-				StatusEffectCold coldEffect = new StatusEffectCold(e, 2.0f);
+							Debug.Log ("We're already suffering from " + effect.EffectType.ToString () + "!");
+						}
+					}
+				}
 
-				// Finally, activate the effects (could be done during effect creation or during the Add method as well. Less flexibility, though.
-				// We could also pass the target enemy to this method instead of the Constructors.
-				fireEffect.SetFire(); // PROBLEM WITH THIS: GIVES ERRORS IN DEBUG LOGGER DURING RUNTIME -- WHY?
-
-				// Add them to the Enemy's list of status effects.
-				// TODO DO WE WANT TO KEEP ADDING THIS, OR JUST ADD ONCE AND THEN CHECK TO ENSURE IT'S NEVER ADDED AGAIN?
-				e.statusEffects.Add(fireEffect);
-				e.statusEffects.Add(coldEffect);
+				if (!effectsToIgnore.Contains(StatusEffectType.Fire))
+				{
+					StatusEffectFire fireEffect = new StatusEffectFire(e, 5.0f);
+					fireEffect.InflictStatusEffect();
+					e.statusEffects.Add (fireEffect);
+				}
+				if (!effectsToIgnore.Contains(StatusEffectType.Cold))
+				{
+					StatusEffectCold coldEffect = new StatusEffectCold(e, 5.0f);
+					coldEffect.InflictStatusEffect();
+					e.statusEffects.Add (coldEffect);
+				}
 			}
 		}
 		#endregion
