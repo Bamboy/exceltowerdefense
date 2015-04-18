@@ -14,7 +14,7 @@ namespace Excelsion.Inventory
 	{
 		#region ItemSpeed-specific variables
 		// How much to increase the speed of the Tower by.
-		public float speedIncrease = 30f; 		// Let's make this high so it's obvious when a tower has it.
+		public float speedIncrease = 6f; 		// Let's make this high so it's obvious when a tower has it.
 		#endregion
 
 		private static Sprite spr;
@@ -37,9 +37,11 @@ namespace Excelsion.Inventory
 			get
 			{ 
 				TowerStats val = new TowerStats();
-
+			
 				// We only want to modify the speed stat.
-				val.speed += speedIncrease;
+				val.speed = speedIncrease;
+				val.range = 0f;
+				val.damage = 0;
 
 				return val;
 			}

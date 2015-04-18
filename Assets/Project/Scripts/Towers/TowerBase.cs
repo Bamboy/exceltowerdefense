@@ -100,7 +100,7 @@ namespace Excelsion.Towers
 		}
 		Item GetRandomItem()
 		{
-			switch( Random.Range(0,5) )
+			switch( Random.Range(0,6) )
 			{
 			case 0:
 				return new ItemPaper();
@@ -110,6 +110,8 @@ namespace Excelsion.Towers
 				return new ItemIgnite();
 			case 3:
 				return new ItemSpeed();
+			case 4:
+				return new ItemFrost();
 			default:
 				return new ItemNull();
 			}
@@ -298,7 +300,8 @@ namespace Excelsion.Towers
 				}
 			}
 
-			cooldown = stats.speed; //trigger our cooldown
+			// Matt: Testing new cooldown / Speed changes.
+			cooldown = stats.coolDown;//stats.speed; //trigger our cooldown
 		}
 		ProjectileBase[] DefaultProjectileCreation()
 		{

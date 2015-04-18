@@ -22,7 +22,7 @@ namespace Excelsion.Enemies
 				navigation.speed = this.speed;
 			} 
 		}
-		private float defaultSpeed; //We use this to remove status effects.
+		private float defaultSpeed; 	// We use this to remove status effects.
 		private NavMeshAgent navigation;
 
 		private Vector3 targetPosition;
@@ -88,7 +88,6 @@ namespace Excelsion.Enemies
 		#endregion
 
 
-
 		void Update()
 		{
 			//Evaluate status effects.
@@ -120,9 +119,6 @@ namespace Excelsion.Enemies
 			return; //TODO add chance to drop resources here.
 		}
 		#endregion
-
-
-
 
 
 		#region Status Effects
@@ -168,13 +164,13 @@ namespace Excelsion.Enemies
 		//=========== COLD ===========
 		public float cold = 0.0f;
 		public bool IsCold{ get{ return cold > 0.0f; } }
-		public float coldMovementModifier = 0.50f; //Percentage at which effected enemies will move at. (50% normal speed, here)
+		public float coldMovementModifier = 0.50f; 	// Percentage at which effected enemies will move at. (50% normal speed, here)
 		public void SetCold( float duration )
 		{
 			if( IsCold )
 				cold += duration;
 			else
-			{   //Start new cold
+			{   // Start new cold
 				Speed = coldMovementModifier * defaultSpeed;
 				cold = duration;
 				healthDisplay.ShowCold(true);
@@ -194,9 +190,5 @@ namespace Excelsion.Enemies
 			}
 		}
 		#endregion
-
-
-
-
 	}
 }

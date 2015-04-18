@@ -24,7 +24,7 @@ namespace Excelsion.Inventory
 		public override TowerStats Stats{ 
 			get{ 
 				TowerStats val = new TowerStats();
-				val.speed = -0.8f;
+				val.speed = 1.0f / -0.8f;
 				val.range = -2.5f;
 				val.damage = 12;
 				return val;

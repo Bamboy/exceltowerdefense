@@ -87,16 +87,5 @@ namespace Excelsion.Towers.Projectiles
 			yield return new WaitForSeconds( 10.0f );
 			GameObject.Destroy( this.gameObject );
 		}
-
-
-
-
-
-
-
-
-
-
-
 	}
 }
