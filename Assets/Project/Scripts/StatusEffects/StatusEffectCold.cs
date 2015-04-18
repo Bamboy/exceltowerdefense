@@ -10,22 +10,25 @@ public class StatusEffectCold : StatusEffect
 	public float cold = 0.0f;								// This acts as our timer.
 	public bool IsCold{ get{ return cold > 0.0f; } }		// Return true if our timer is active.
 	public float coldMovementModifier = 0.50f; 				// Percentage at which effected enemies will move at. (50% normal speed, here)
-
+	
+	// Constructor which takes the Enemy that was hit and the duration he should be set on fire.
 	public StatusEffectCold(Enemy targetEnemy, float duration)
 	{
 		enemyAffected = targetEnemy;
 		effectDuration = duration;
 
 		statusEffectType = StatusEffectType.Cold;
+		
+		IsEffectStackable = false;
 	}
-
+	
 	public override void EvaluateStatusEffect ()
 	{
 		EvaluateCold();
 	}
 
 	// We can use this Constructor if we create an instance of StatusEffectFire and pass it our desired duration.
-	public void SetCold()
+	public override void InflictStatusEffect()
 	{
 		SetCold(effectDuration);
 	}
@@ -36,7 +39,7 @@ public class StatusEffectCold : StatusEffect
 			cold += duration;
 		else
 		{   // Start new cold
-			enemyAffected.Speed = coldMovementModifier * 2f;//enemyAffected.defaultSpeed;
+			enemyAffected.Speed = coldMovementModifier * enemyAffected.defaultSpeed;
 			cold = duration;
 			enemyAffected.healthDisplay.ShowCold(true);
 		}
