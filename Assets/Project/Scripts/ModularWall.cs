@@ -53,11 +53,6 @@ public class ModularWall : MonoBehaviour
 		CalculateSpikes();
 		SpawnSpikes();
 	}
-
-	void Update()
-	{
-
-	}
 	
 
 	void CalculateSpikes()
@@ -115,7 +110,12 @@ public class ModularWall : MonoBehaviour
 		//Spawn our spikes!
 		foreach( Vector3 point in spikePoints )
 		{
-			GameObject newSpike = (GameObject)Instantiate( ArrayTools.Shuffle<GameObject>( wallspikes )[0], point, Quaternion.identity );
+			wallspikes = ArrayTools.Shuffle<GameObject>( wallspikes );
+			int r = Random.Range( 0, 3 );
+			GameObject newSpike = (GameObject)Instantiate( wallspikes[r], point, 
+			           wallspikes[r].transform.rotation * Quaternion.Euler(0f,0f,Random.Range(0f, 360f)) );
+
+			newSpike.transform.localScale = new Vector3( 1f, 1f, Random.Range(0.9f, 1.25f) );
 			newSpike.transform.parent = this.transform;
 		}
 	}
