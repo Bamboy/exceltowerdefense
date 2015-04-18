@@ -105,7 +105,7 @@ namespace Excelsion.Towers
 			case 0:
 				return new ItemPaper();
 			case 1:
-				return new ItemFireball();
+				return new ItemNull();//ItemFireball();
 			case 2:
 				return new ItemIgnite();
 			case 3:

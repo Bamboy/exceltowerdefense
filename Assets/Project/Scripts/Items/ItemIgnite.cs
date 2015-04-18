@@ -83,8 +83,21 @@ namespace Excelsion.Inventory
 		{
 			foreach( Enemy e in enemies )
 			{
-				e.SetFire( 5.0f ); //Set fire to the enemy for 5 seconds.
-				e.SetCold( 2.0f ); //Slow the enemy for 2 seconds.
+				//e.SetFire( 5.0f ); //Set fire to the enemy for 5 seconds.
+				//e.SetCold( 2.0f ); //Slow the enemy for 2 seconds.
+
+				// Create our status effects.
+				StatusEffectFire fireEffect = new StatusEffectFire(e, 5.0f);
+				StatusEffectCold coldEffect = new StatusEffectCold(e, 2.0f);
+
+				// Finally, activate the effects (could be done during effect creation or during the Add method as well. Less flexibility, though.
+				// We could also pass the target enemy to this method instead of the Constructors.
+				fireEffect.SetFire(); // PROBLEM WITH THIS: GIVES ERRORS IN DEBUG LOGGER DURING RUNTIME -- WHY?
+
+				// Add them to the Enemy's list of status effects.
+				// TODO DO WE WANT TO KEEP ADDING THIS, OR JUST ADD ONCE AND THEN CHECK TO ENSURE IT'S NEVER ADDED AGAIN?
+				e.statusEffects.Add(fireEffect);
+				e.statusEffects.Add(coldEffect);
 			}
 		}
 		#endregion

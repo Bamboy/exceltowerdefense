@@ -57,8 +57,14 @@ namespace Excelsion.Inventory
 		{
 			foreach( Enemy e in enemies )
 			{
-				e.SetCold(5.0f); 					// Slow the enemy for 5 seconds.
-				e.coldMovementModifier = 0.25f;		// Slow them down to 25% for now.
+				//e.SetCold(5.0f); 					// Slow the enemy for 5 seconds.
+				//e.coldMovementModifier = 0.25f;	// Slow them down to 25% for now.
+			
+//				StatusEffectFrost frostEffect = new StatusEffectFrost(e, 5.0f);
+//				frostEffect.frostMovementModifier = 0.25f;
+//				e.statusEffects.Add(frostEffect);
+//
+//				frostEffect.SetFrost();
 			}
 		}
 		#endregion

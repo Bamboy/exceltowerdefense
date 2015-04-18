@@ -85,6 +85,8 @@ namespace Excelsion.Inventory
 		}
 
 		#endregion
+
+
 		#region Projectile Functions
 
 		//Called after our projectile is created. Use this to pass delegates or other info to the projectile.
@@ -114,16 +116,6 @@ namespace Excelsion.Inventory
 			return;
 		} */
 		#endregion
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 	}
 }
