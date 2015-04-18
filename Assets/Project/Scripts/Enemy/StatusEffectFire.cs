@@ -10,6 +10,12 @@ public class StatusEffectFire : StatusEffect
 	public float fire = 0.0f; 								// This acts as our timer.
 	public bool OnFire{ get{ return fire > 0.0f; } } 		// Return true if our timer is active.
 	public int fireTickDamage = 2; 							// Damage to do every second
+
+
+	// Trying this to replace use of co-routine.
+	private float tickTime = 0f;							// We'll apply damage-over-time, once every second (is 1 second standard? if not this will need to be public).
+	private bool isBurning = false;
+	private int numberOfTicks = 0;
 	
 	public StatusEffectFire(Enemy targetEnemy, float duration)
 	{
@@ -32,10 +38,11 @@ public class StatusEffectFire : StatusEffect
 	}
 
 	// We don't need the duration paramater really, but lets keep this until we work more on this.
-	public void SetFire(float duration )
+	public void SetFire(float duration)
 	{
 		if(OnFire)
 		{
+			Debug.Log("We're on Fire and adding the fire duration");
 			// Add time to existing fire.
 			fire += duration;
 		}
@@ -44,8 +51,11 @@ public class StatusEffectFire : StatusEffect
 			// Start new fire.
 			Debug.Log ("Starting new fire");
 			fire = duration;
+
+			//  Attempting to remove co-routine and do logic in an update loop.
 			//StartCoroutine("FireTick", 1.0f);
-			Debug.Log ("After StartCoRoutine is called");		// This never gets called: Problem with StartCoroutine?
+
+
 			enemyAffected.healthDisplay.ShowFire(true);
 			Debug.Log("Enemy Effect = " + enemyAffected.ToString());
 		}
@@ -58,20 +68,41 @@ public class StatusEffectFire : StatusEffect
 			fire -= Time.deltaTime;
 			if( OnFire == false )
 			{
-				fire = 0.0f; //Stop fire.
-				StopCoroutine("FireTick");
+				// We're no longer burning; stop the fire.
+				fire = 0.0f;
+
+				//StopCoroutine("FireTick");
+				isBurning = false;				// Let's stop the process with a flag rather than stopping coroutine.
+
+				// Stop the Fire indicator as well.
 				enemyAffected.healthDisplay.ShowFire(false);
 			}
 		}
-	}
-	IEnumerator FireTick(float tickTime)
-	{
-		yield return null;
-		while( OnFire == true )
+
+
+
+		// FireTick stuff.
+		//yield return null;
+		//while( OnFire == true )
+		if (isBurning)
 		{
-			enemyAffected.Damage( fireTickDamage ); //Deal damage then wait 'tickTime'.
-			yield return new WaitForSeconds( tickTime );
+			if (OnFire == true)
+			{
+				tickTime -= Time.deltaTime;
+			}
+			if (OnFire == true && tickTime <= 0f)
+			{
+				numberOfTicks++;
+				Debug.Log("Time to Tick Damage: " + numberOfTicks.ToString ());
+				// Deal the damage, but then wait until tickTime before dealing it again.
+				enemyAffected.Damage( fireTickDamage );
+				
+				
+				//yield return new WaitForSeconds( tickTime );
+				// Instead of yielding, we'll reset our tickTime so we do not enter this if statement until tickTime is reached again.
+				tickTime = 1.0f;		// Again, if one second is not standard, we'll need another variable here.
+			}
+			Debug.Log("Escaped the flames!", this);
 		}
-		Debug.Log("Escaped the flames!", this);
 	}
 }
