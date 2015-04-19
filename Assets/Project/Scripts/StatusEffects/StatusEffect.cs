@@ -16,7 +16,7 @@ public enum StatusEffectType
 // VERY rough, quick draft for collecting the hard-coded effects handling (found in Enemy.cs) into here.
 // Eventually this will probably be an abstract class, with each status effect being its own class with its own unique methods.
 // So far I gather each Effect will have a Duration, as well as an update function.
-public abstract class StatusEffect : MonoBehaviour 
+public abstract class StatusEffect 
 {
 	// Let's internally set the enum type, in case we want to iterate through effects and do things depending on its type.
 	// For example: Let's say we apply freeze to an enemy and in the design it calls for removing the fire effect. We simply

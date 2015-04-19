@@ -75,7 +75,7 @@ namespace Excelsion.Inventory
 							// Flag not to create, add, or set off this effect.
 							effectsToIgnore.Add (effect.EffectType);
 							
-							Debug.Log ("We're already suffering from " + effect.EffectType.ToString () + "!");
+							//Debug.Log ("We're already suffering from " + effect.EffectType.ToString () + "!");
 						}
 					}
 				}
