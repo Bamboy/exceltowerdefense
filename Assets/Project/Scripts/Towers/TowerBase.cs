@@ -83,7 +83,7 @@ namespace Excelsion.Towers
 				break;
 			case 2:
 				inventory.contents[0] = new ItemNull();
-				inventory.contents[1] = new ItemNull();
+				inventory.contents[1] = new ItemPoison();
 				inventory.contents[2] = new ItemNull();
 				break;
 			default:

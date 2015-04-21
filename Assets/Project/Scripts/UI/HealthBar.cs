@@ -20,6 +20,7 @@ namespace Excelsion.UI
 
 		public ParticleSystem fire; //TODO - set serializable instead of public
 		public ParticleSystem cold;
+		public ParticleSystem poison;
 
 		void Start () 
 		{
@@ -170,6 +171,17 @@ namespace Excelsion.UI
 			}
 		}
 
+		public void ShowPoison( bool state )
+		{
+			if( state == true )
+			{
+				poison.Play(true);
+			}
+			else
+			{
+				poison.Stop(true);
+			}
+		}
 
 		#endregion
 
