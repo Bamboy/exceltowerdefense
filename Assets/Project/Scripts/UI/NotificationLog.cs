@@ -9,6 +9,8 @@ using UnityEngine.UI;
 // It will do so in a typical MMO chat-log type way, where messages slowly 
 // disappear after a given amount of time.
 // TODO bug where the last full log of messages all show up as the last message sent rather than appropriately deleting and shifting downward.
+// TODO make singleton
+// TODO error checking and prevention
 public class NotificationLog : MonoBehaviour 
 {
 	// A List (Array or other data structure later if you want lol) of logged notifications. We drag these from the scene and into our NotificationLog in the hierarchy.

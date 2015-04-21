@@ -5,6 +5,7 @@ using Excelsion.UI;
 
 //Stephan Ennen - 3/17/2015
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Excelsion.Enemies
 {
@@ -123,9 +124,50 @@ namespace Excelsion.Enemies
 		{
 			DefenseController.money += moneyValue;
 			Debug.Log("BLERHGhnsfm...");
+
+			GiveRandomRewards();
+
 			return; //TODO add chance to drop resources here.
 		}
 		#endregion
+
+		// Matt McGrath 4/21/2015: Temporary for testing usability of ResourceController from other scripts.
+		private void GiveRandomRewards()
+		{
+			// Defaults our rewards to one of each resource type.
+			Reward reward = new Reward();
+
+			reward.pop = 0;				// We don't reward population.
+
+			if (Random.Range (0f, 100f) <= ResourceFood.baseDropChance)
+		    {
+				// Reward 1 food.
+				reward.food = 1;
+			}
+
+			if (Random.Range (0f, 100f) <= ResourceWood.baseDropChance)
+			{
+				reward.wood = 1;
+			}
+
+			if (Random.Range (0f, 100f) <= ResourceStone.baseDropChance)
+			{
+				reward.stone = 1;
+			}
+
+			if (Random.Range (0f, 100f) <= ResourceMetal.baseDropChance)
+			{
+				reward.metal = 1;
+			}
+
+			ResourceController.Get().GainReward(reward);
+
+			Debug.Log ("Enemy Gave Rewards!: Food: " + reward.food.ToString () + ", Wood: " + reward.wood.ToString () 
+			           + ", Stone: " + reward.stone.ToString () + ", Metal: " + reward.metal.ToString ());
+
+			GameObject obj = GameObject.Find ("Food Text");
+			obj.GetComponent<Text>().text = "Food: " + ResourceController.Get().ResourceAmount(ResourceType.Food);
+		}
 	}
 }
 
