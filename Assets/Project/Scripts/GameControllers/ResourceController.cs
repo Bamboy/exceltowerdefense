@@ -2,6 +2,7 @@
 using System.Collections;
 
 //Stephan Ennen - 4/2/2015
+using UnityEngine.UI;
 
 namespace Excelsion.GameManagers
 {
@@ -27,6 +28,25 @@ namespace Excelsion.GameManagers
 				resControl = this;
 			else
 				GameObject.Destroy( this.gameObject );
+
+			// Cache references to our UI Text fields.
+//			if (GameObject.Find ("Resource Info") == null)
+//				return;
+
+			GameObject pText = GameObject.Find ("Population Text");
+			populationText = pText.GetComponent<Text>();
+			
+			GameObject fText = GameObject.Find ("Food Text");
+			foodText = fText.GetComponent<Text>();
+			
+			GameObject wText = GameObject.Find ("Wood Text");
+			woodText = wText.GetComponent<Text>();
+			
+			GameObject sText = GameObject.Find ("Stone Text");
+			stoneText = sText.GetComponent<Text>();
+			
+			GameObject mText = GameObject.Find ("Metal Text");
+			metalText = mText.GetComponent<Text>();
 		}
 		#endregion
 
@@ -47,12 +67,18 @@ namespace Excelsion.GameManagers
 
 		// MATT - 4/21/2015: Temporary testing. This could be part of this Controller or the Resource classes (if we choose to keep them).
 		// Numbers are obviously temporary bs and temporarily public for testing -- we [probably] don't want them that way in the end!
-		public int maxNumberOfWood = 1000;
-		public int maxNumberOfStone = 750;
-		public int maxNumberOfMetal = 500;
-		public int maxNumberOfFood = 1000;
-		public int maxNumberOfPopulation = 100;
+		private int maxNumberOfWood = 1000;
+		private int maxNumberOfStone = 750;
+		private int maxNumberOfMetal = 500;
+		private int maxNumberOfFood = 1000;
+		private int maxNumberOfPopulation = 100;
 
+		// UI References - Should probably have a UI Manager where all this bloat gets put and cached.
+		Text populationText;
+		Text foodText;
+		Text woodText;
+		Text stoneText;
+		Text metalText;
 
 		void Start()
 		{
@@ -104,7 +130,8 @@ namespace Excelsion.GameManagers
 				break;
 				//TODO: Should have a better default case if we somehow manage to provide a value not in here.
 			default:
-				resourceAmount = numberOfWood;
+				Debug.Log ("Undefined ResourceType provided!");
+				resourceAmount = 0;
 				break;
 			}
 			
@@ -147,10 +174,8 @@ namespace Excelsion.GameManagers
 				numberOfMetal += amount;
 				numberOfMetal = Mathf.Clamp(numberOfFood, 0, maxNumberOfMetal);
 				break;
-			//TODO: Should have a better default case if we somehow manage to provide a value not in here.
 			default:
-				numberOfFood += amount;
-				numberOfFood = Mathf.Clamp(numberOfFood, 0, maxNumberOfFood);
+				Debug.Log ("Undefined ResourceType provided!");
 				break;
 			}
 		}
@@ -183,24 +208,95 @@ namespace Excelsion.GameManagers
 				numberOfMetal -= amount;
 				numberOfMetal = Mathf.Clamp(numberOfFood, 0, maxNumberOfMetal);
 				break;
-			//TODO: Should have a better default case if we somehow manage to provide a value not in here.
 			default:
-				numberOfFood -= amount;
-				numberOfFood = Mathf.Clamp(numberOfFood, 0, maxNumberOfFood);
+				Debug.Log ("Undefined ResourceType provided!");
 				break;
 			}
 		}
+
+		// Matt McGrath - 4/21/2015
+		// Returns the Maximum amount of this resource the player is allowed to have.
+		public int MaximumAmountOfResource(ResourceType resourceType)
+		{
+			int maxAmount;
+
+			// Could avoid switch-case if we change other parts of this class, but I'm trying not to to tweak any code you guys have already done...yet.
+			switch (resourceType)
+			{
+			case ResourceType.Population:
+				maxAmount =  maxNumberOfWood;
+				break;
+			case ResourceType.Food:
+				maxAmount = maxNumberOfFood;
+				break;
+			case ResourceType.Wood:
+				maxAmount =  maxNumberOfWood;
+				break;
+			case ResourceType.Stone:
+				maxAmount =  maxNumberOfStone;
+				break;
+			case ResourceType.Metal:
+				maxAmount =  maxNumberOfMetal;
+				break;
+			default:
+				Debug.Log ("Undefined ResourceType provided!");
+				maxAmount = 0;
+				break;
+			}
+
+			return maxAmount;
+		}
+
+		public void SetMaximumAmountOfResource(ResourceType resourceType, int amount)
+		{
+			// Could avoid switch-case if we change other parts of this class, but I'm trying not to to tweak any code you guys have already done...yet.
+			switch (resourceType)
+			{
+			case ResourceType.Population:
+				maxNumberOfWood = amount;
+				break;
+			case ResourceType.Food:
+				maxNumberOfFood = amount;
+				break;
+			case ResourceType.Wood:
+				maxNumberOfWood = amount;
+				break;
+			case ResourceType.Stone:
+				maxNumberOfStone = amount;
+				break;
+			case ResourceType.Metal:
+				maxNumberOfMetal = amount;
+				break;
+			default:
+				Debug.Log ("Undefined ResourceType provided!");
+				break;
+			}
+		}
+
+		// MonoBehaviour's Update function. 
+		void Update()
+		{
+			// For now, let's keep the Resource UI constantly updated. Ideally we'll only want to do this with an OnResourcesChanged method for efficiency.
+			UpdateResourceUI();
+		}
+
+		public void UpdateResourceUI()
+		{
+			// Too expensive to call this each update.
+//			if (GameObject.Find ("Resource Info") == null)
+//				return;
+
+			// Going to ASSUME if ResourceInfo is found, none of these will be null.
+			populationText.text = "Population: " + ResourceController.Get().ResourceAmount(ResourceType.Population);
+			foodText.text = "Food: " + ResourceController.Get().ResourceAmount(ResourceType.Food);
+			woodText.text = "Wood: " + ResourceController.Get().ResourceAmount(ResourceType.Wood);
+			stoneText.text = "Stone: " + ResourceController.Get().ResourceAmount(ResourceType.Stone);
+			metalText.text = "Metal: " + ResourceController.Get().ResourceAmount(ResourceType.Metal);
+		}
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// End of Matt's possibly awful / buggy / game-breaking code                                                                ///
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
 
 
 

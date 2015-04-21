@@ -13,6 +13,41 @@ using UnityEngine.UI;
 // TODO error checking and prevention
 public class NotificationLog : MonoBehaviour 
 {
+	#region Access Instance Anywhere
+	private static NotificationLog notControl;
+
+	public static NotificationLog Get()
+	{
+		if( notControl != null )
+			return notControl;
+		else
+		{
+			GameObject go = Instantiate(Resources.Load("Notification Log")) as GameObject; 
+			go.tag = "NotificationLog";
+			return notControl;
+		}
+	}
+
+	void Awake() 
+	{
+		if( notControl == null )
+			notControl = this;
+		else
+			GameObject.Destroy( this.gameObject );
+	}
+	#endregion
+
+
+
+
+
+
+
+
+
+
+
+
 	// A List (Array or other data structure later if you want lol) of logged notifications. We drag these from the scene and into our NotificationLog in the hierarchy.
 	public List<Notification> loggedNotifications = new List<Notification>();	
 	public int displayLimit = 3;	// How many notifications to display at once?
