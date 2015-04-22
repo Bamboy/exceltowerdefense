@@ -74,6 +74,9 @@ namespace Excelsion.Inventory
 				GameObject projObj = GameObject.Instantiate( tower.projectilePrefab, 
 				                                            VectorExtras.OffsetPosInDirection( tower.transform.position + tower.projectileSpawnOffset, travelDir, tower.projectileSpawnDistance ), //Make sure the projectile doesnt hit the tower.
 				                                            Quaternion.identity) as GameObject;
+				// MATT TESTING
+				projObj.transform.parent = TowerBase.projectileParentTransform;
+				// END MATT TESTING
 				ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
 				if( projScript == null )
 				{ Debug.LogError("Prefab given does not have a ProjectileBase script attached!", tower); Debug.Break(); }

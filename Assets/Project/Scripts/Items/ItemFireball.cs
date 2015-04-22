@@ -16,7 +16,7 @@ namespace Excelsion.Inventory
 		public ItemFireball()
 		{
 			if( spr == null )
-				spr = Sprite.Create(Resources.Load( "GUI/Items/Testing/flame" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
+				spr = Sprite.Create(Resources.Load( "GUI/Items/Testing/item_fireball" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
 		}
 		
 		//Lower values will be overwritten by higher values.
