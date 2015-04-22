@@ -49,7 +49,13 @@ namespace Excelsion.Enemies
 			GetComponent<Rigidbody>().isKinematic = true;
 			currentHeading = transform.forward;
 
-			targetPosition = DefenseController.Get().enemyObjective.transform.position;
+			//Set the target position based on the closest house thats setup.
+			if (DefenseController.Get().houses.Count > 1 ){
+				targetPosition = GetClosestTarget(DefenseController.Get().houses);
+			}
+			else {
+				targetPosition = DefenseController.Get().enemyObjective.transform.position;
+			}
             navigation = GetComponent<NavMeshAgent>();
             navigation.destination = targetPosition;
 			Speed = speed;
@@ -60,7 +66,8 @@ namespace Excelsion.Enemies
 
 		public virtual void DoMovement()
 		{
-			targetPosition = DefenseController.Get().enemyObjective.transform.position;
+			//targetPosition = DefenseController.Get().enemyObjective.transform.position;
+			targetPosition = GetClosestTarget(DefenseController.Get().houses);
 			targetInRangePosition = VectorExtras.OffsetPosInPointDirection( new Vector3(targetPosition.x, transform.position.y, targetPosition.z), 
 			                        transform.position, 8.0f );
 			if( Vector3.Distance( transform.position, targetInRangePosition ) <= 1.0f )
@@ -104,6 +111,12 @@ namespace Excelsion.Enemies
 			{
 				effect.EvaluateStatusEffect();
 			}
+			//If enemy reaches the target, destroy itself.
+			if (Vector3.Distance(transform.position,targetPosition) <= 5f) {
+				Kill (false);
+				//Here we will deduct population or whatever else we want to happen when enemy reaches a house.
+			}
+
 		}
 
 		#region Health
@@ -112,13 +125,15 @@ namespace Excelsion.Enemies
 			health -= val;
 			if( health <= 0 )
 			{
-				Kill();
+				Kill(true);
 			}
 			healthDisplay.CurrentHealth = health;
 		}
-		public void Kill()
+		public void Kill(bool giveRewards)
 		{
-			OnKilled();
+			if (giveRewards){
+				OnKilled();
+			}
 			DefenseController.Get().enemies.Remove( this );
 			Destroy( this.gameObject );
 		}
@@ -126,9 +141,7 @@ namespace Excelsion.Enemies
 		public virtual void OnKilled()
 		{
 			DefenseController.money += moneyValue;
-			Debug.Log("BLERHGhnsfm...");
 
-			
 			Reward reward = null;
 			GiveRandomRewards(out reward);
 
@@ -175,6 +188,33 @@ namespace Excelsion.Enemies
 
 //			Debug.Log ("Enemy Gave Rewards!: Food: " + reward.food.ToString () + ", Wood: " + reward.wood.ToString () 
 //			           + ", Stone: " + reward.stone.ToString () + ", Metal: " + reward.metal.ToString ());
+		}
+
+		//Jimmy Westcott Apr 22,2015 - Evaluate what the closest target is
+		private Vector3 GetClosestTarget(List<GameObject> houses) {
+
+			Vector3 position = new Vector3();
+			float shortestDistance = 0f;
+			float currentDistance = 0f;
+			bool first = true;
+
+			foreach( GameObject house in houses) {
+
+				currentDistance = Vector3.Distance(transform.position,house.transform.position);
+				if (first){
+					shortestDistance = currentDistance;
+					position = house.transform.position;
+					first = false;
+				}
+
+				if (currentDistance < shortestDistance) {
+					position = house.transform.position;
+					shortestDistance = currentDistance;
+					//Debug.Log ("Closest house is: " + house.name);
+				}
+			}
+
+			return position;
 		}
 	}
 }
