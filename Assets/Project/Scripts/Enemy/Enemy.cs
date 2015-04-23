@@ -147,7 +147,7 @@ namespace Excelsion.Enemies
 
 			string randomName = names[Random.Range (0, names.Length)];
 			NotificationLog.Get ().PushNotification(new Notification(randomName + " Died!" + " Dropped: " + reward.food + "f, " + reward.wood + "w, " 
-			                                                         + reward.stone + "s, " + reward.metal + "m", Color.yellow, 5.0f));
+			                                                         + reward.stone + "s, " + reward.metal + "m", Color.yellow, 7.0f));
 
 			return; //TODO add chance to drop resources here.
 		}
@@ -185,14 +185,11 @@ namespace Excelsion.Enemies
 			ResourceController.Get().GainReward(reward);
 
 			rewards = reward;
-
-//			Debug.Log ("Enemy Gave Rewards!: Food: " + reward.food.ToString () + ", Wood: " + reward.wood.ToString () 
-//			           + ", Stone: " + reward.stone.ToString () + ", Metal: " + reward.metal.ToString ());
 		}
 
-		//Jimmy Westcott Apr 22,2015 - Evaluate what the closest target is
-		private Vector3 GetClosestTarget(List<GameObject> houses) {
-
+		// Jimmy Westcott Apr 22,2015 - Evaluate what the closest target is
+		private Vector3 GetClosestTarget(List<GameObject> houses) 
+		{
 			Vector3 position = new Vector3();
 			float shortestDistance = 0f;
 			float currentDistance = 0f;
