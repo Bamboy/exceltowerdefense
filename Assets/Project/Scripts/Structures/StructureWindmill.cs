@@ -8,11 +8,11 @@ using Excelsion.GameManagers;
 
 // Matt McGrath - 4/22/2015, using Sergey Bedov's Villager code as a reference to maintain some consistency.
 
-// A House is a type of Structure that does...something...						
-public class StructureHouse : Structure
+// A Windowmill is a type of Structure that does...something...						
+public class StructureWindmill : Structure
 {
 	#region Fields
-
+	
 	#endregion
 	
 	void Awake () 
@@ -20,9 +20,9 @@ public class StructureHouse : Structure
 		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
 		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
 		
-		Name = "House of " + names[Random.Range(0, names.Length)];
-		StructureType = StructureType.House;
-		Icon = Sprite.Create(Resources.Load( "GUI/Structure Icons/Testing/structure_house" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
+		Name = "Windmill of " + names[Random.Range(0, names.Length)];
+		StructureType = StructureType.Windmill;
+		Icon = Sprite.Create(Resources.Load( "GUI/Structure Icons/Testing/structure_windmill" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
 	}
 	
 	public override void Update()
