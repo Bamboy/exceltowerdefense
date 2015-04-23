@@ -41,7 +41,7 @@ public class StructureController : MonoBehaviour
 	#endregion
 	
 	#region Create Structure(s)
-	public void CreateNewStructure(string name, float age, Sprite icon, Vector3 pos)
+	public void CreateNewStructure(string name, int age, Sprite icon, Vector3 pos)
 	{
 		GameObject instance = Instantiate (Resources.Load ("Prefabs/Structures/StructureGO")) as GameObject;
 		Structure structureInstance = instance.GetComponent<Structure>();

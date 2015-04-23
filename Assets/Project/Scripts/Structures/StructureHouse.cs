@@ -12,13 +12,18 @@ using Excelsion.GameManagers;
 public class StructureHouse : Structure
 {
 	#region Fields
+	public override GameResources[] ResourceRequirements 
+	{ 
+		get { return houseRequirements; }
+	}
+
+	private GameResources[] houseRequirements;
 
 	#endregion
 	
-	void Awake () 
+	protected override void Awake ()
 	{
-		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
-		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
+		base.Awake();
 		
 		Name = "House of " + names[Random.Range(0, names.Length)];
 		StructureType = StructureType.House;
@@ -27,8 +32,10 @@ public class StructureHouse : Structure
 	
 	public override void Update()
 	{
-		// Do this for now. We'll want to use Days (or hours) through the WorldClock functionality later.
-		Age += Time.deltaTime;
+		// Update our Age.
+		base.Update ();
+
+		// House logic.
 	}
 	
 	// Places the Structure at the given location.

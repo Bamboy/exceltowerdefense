@@ -12,10 +12,15 @@ using Excelsion.GameManagers;
 public class StructureTownhall : Structure
 {
 	#region Fields
+	public override GameResources[] ResourceRequirements 
+	{ 
+		get { return townhallRequirements; }
+	}
 	
+	private GameResources[] townhallRequirements;
 	#endregion
 	
-	void Awake () 
+	protected override void Awake () 
 	{
 		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
 		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
@@ -27,8 +32,10 @@ public class StructureTownhall : Structure
 	
 	public override void Update()
 	{
-		// Do this for now. We'll want to use Days (or hours) through the WorldClock functionality later.
-		Age += Time.deltaTime;
+		// Update our Age.
+		base.Update();
+
+		// Town Hall logic.
 	}
 	
 	// Places the Structure at the given location.

@@ -1,8 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 //Stephan Ennen - 4/2/2015
-using UnityEngine.UI;
+
+// Matt McGrath - 4/23/2014
+// Structure to keep our Resources. GameResources prevents confusion with Unity's Resources definition.
+public struct GameResources
+{
+	public int Population;
+	public int Food;
+	public int Wood;
+	public int Stone;
+	public int Metal;
+
+	// Constructor simply sets up amount of each resource.
+	public GameResources(int p, int f, int w, int s, int m)
+	{
+		Population = p;
+		Food = f;
+		Wood = w;
+		Stone = s;
+		Metal = m;
+	}
+};
 
 namespace Excelsion.GameManagers
 {
@@ -99,11 +120,11 @@ namespace Excelsion.GameManagers
 
 
 
-
+		#region Matt - Testing Public Methods -- Might redo this approach depending on if we keep Resource enum and / or Resource classes.
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// Matt McGrath - 4/21/2015: Adding required tasked functionality + also experimenting with different approach to resources ///
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// 
+
 		// Matt McGrath - 4/21/2015
 		// Return the value of a resource type.
 		public int ResourceAmount(ResourceType resourceType)
@@ -272,6 +293,24 @@ namespace Excelsion.GameManagers
 				break;
 			}
 		}
+
+		// Matt McGrath -- 4/23/2015
+		private GameResources gameResources;		// Should use this instead of variables for each resource type? But for now...
+
+		public GameResources GetResources()
+		{	
+			// ...We'll create a new GameResources and grab each of those variables.
+			GameResources resources = new GameResources(numberOfPopulation, numberOfFood, numberOfWood, numberOfStone, numberOfMetal);
+			return resources;
+		}
+		#endregion
+
+
+
+
+
+
+
 
 		// MonoBehaviour's Update function. 
 		void Update()

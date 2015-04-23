@@ -17,7 +17,7 @@ namespace Excelsion.Tasks
 	public class Task : MonoBehaviour
 	{
 		// this are to make Tasks prefabs
-		public enum TaskType{Stay,GoTo,Gather}
+		public enum TaskType{Stay, GoTo, Gather, Build}
 		public TaskType TheTaskType;
 
 		public delegate void SetupTask();
@@ -59,6 +59,9 @@ namespace Excelsion.Tasks
 			case TaskType.Gather:
 				setupTask = setupGatherTask;
 				break;
+			case TaskType.Build:
+				setupTask = setupBuildTask;
+				break;
 			default: // same that TaskType.Stay
 				setupTask = setupStayTask;
 				break;
@@ -89,6 +92,10 @@ namespace Excelsion.Tasks
 
 
 		}
+		void setupBuildTask()
+		{
+		}
+
 		#endregion
 
 		private GameObject ClosestWithTag(string theTagObject)

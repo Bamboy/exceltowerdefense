@@ -12,6 +12,13 @@ using Excelsion.GameManagers;
 public class StructureWindmill : Structure
 {
 	#region Fields
+	public override GameResources[] ResourceRequirements 
+	{ 
+		get { return windmillRequirements; }
+	}
+	
+	private GameResources[] windmillRequirements;
+
 	public float foodProductionRate = 1.0f / 10f;							// Example: One food produced every 10 seconds.
 
 	// Won't have a Set because this will most likely be calculated internally based on level / # of  villagers working here.
@@ -19,7 +26,7 @@ public class StructureWindmill : Structure
 	{
 		get 
 		{ 
-			if (Level > 0)
+			if (Level >= 0)
 			{
 				return timeUntilFoodProduction;// / (Level * 0.5f);
 			}
@@ -42,11 +49,10 @@ public class StructureWindmill : Structure
 	#endregion
 
 	#region Initialization
-	void Awake () 
+	protected override void Awake () 
 	{
-		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
-		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
-		
+		base.Awake ();
+	
 		Name = "Windmill of " + names[Random.Range(0, names.Length)];
 		StructureType = StructureType.Windmill;
 		Icon = Sprite.Create(Resources.Load( "GUI/Structure Icons/Testing/structure_windmill" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
@@ -56,7 +62,12 @@ public class StructureWindmill : Structure
 
 		// WorldClock.day starts off at 0 for a few seconds.
 		day = WorldClock.day;
-		//Debug.Log ("InAwake(): Windmill Day = " + day.ToString () + ", Clock's Day = " + WorldClock.day.ToString ());
+
+		GameResources levelOneResources = new GameResources(0, 5, 0, 0, 0);
+		GameResources levelTwoResources = new GameResources(0, 10, 0, 0, 0);
+		GameResources levelThreeResources = new GameResources(0, 20, 0, 0, 0);
+		GameResources levelFourResources = new GameResources(0, 80, 1, 0, 0);
+		windmillRequirements = new GameResources[4] { levelOneResources, levelTwoResources, levelThreeResources, levelFourResources };
 	}
 	#endregion
 
@@ -65,12 +76,10 @@ public class StructureWindmill : Structure
 	{
 		if (IsNewDay())
 		{
+			Age += 1;
 			OnNewDay();
 		}
-
-		// Do this for now. We'll want to use Days (or hours) through the WorldClock functionality later.
-		Age += Time.deltaTime;
-
+	
 		timerHelper -= Time.deltaTime;
 		if (timerHelper <= 0f)
 		{
@@ -121,9 +130,52 @@ public class StructureWindmill : Structure
 
 	private void OnNewDay()
 	{
-		// Increase this Windmill's Level.
+		if (Age > 0)
+		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Age " + Age.ToString() + "!", Color.green, 5.0f));
+
+		if (CheckIfWeCanUpgrade(Level))
+		{
+//			Level++;
+//			NotificationLog.Get ().PushNotification(new Notification(Name + " reached Level " + Level.ToString() + "!", Color.green, 5.0f));
+		}
+		else
+		{
+			//NotificationLog.Get ().PushNotification(new Notification(Name + " doesn't meet resource requirement to level up :(", Color.green, 5.0f));
+		}
+	}
+
+	private bool CheckIfWeCanUpgrade(int currentLevel)
+	{
+		// We're already at max level.
+		if (currentLevel >= windmillRequirements.Length)
+			return false;
+
+		// Grab a reference to all our resources.
+		GameResources res = ResourceController.Get ().GetResources();
+
+		if (res.Population < windmillRequirements[currentLevel].Population)
+			return false;
+		if (res.Food < windmillRequirements[currentLevel].Food)
+			return false;
+		if (res.Wood < windmillRequirements[currentLevel].Wood)
+			return false;
+		if (res.Stone < windmillRequirements[currentLevel].Stone)
+			return false;
+		if (res.Metal < windmillRequirements[currentLevel].Metal)
+			return false;
+
+
+		ResourceController.Get ().RemoveResource(ResourceType.Population,  windmillRequirements[currentLevel].Population);
+		ResourceController.Get ().RemoveResource(ResourceType.Food,  windmillRequirements[currentLevel].Food);
+		ResourceController.Get ().RemoveResource(ResourceType.Wood,  windmillRequirements[currentLevel].Wood);
+		ResourceController.Get ().RemoveResource(ResourceType.Stone,  windmillRequirements[currentLevel].Stone);
+		ResourceController.Get ().RemoveResource(ResourceType.Population,  windmillRequirements[currentLevel].Metal);
+
 		Level++;
 		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Level " + Level.ToString() + "!", Color.green, 5.0f));
+
+		return true;
+
 	}
 
 	// TODO: Add specialized UI stuff for this type of structure. Example: Production rate, production amount.

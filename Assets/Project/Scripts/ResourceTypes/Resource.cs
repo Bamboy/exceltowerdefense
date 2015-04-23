@@ -19,7 +19,7 @@ public enum ResourceType
 
 // A Resource has purchasing power for various purposes.
 // Resources will be managed by the ResourceController.
-public abstract class Resource : MonoBehaviour 
+public abstract class Resource 
 {
 	// The enum for the type of Resource we're dealing with.
 	public ResourceType ResourceType

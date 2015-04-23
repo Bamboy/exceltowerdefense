@@ -6,7 +6,7 @@ using Excelsion.Tasks;
 using Excelsion.UI;
 using Excelsion.GameManagers;
 
-// Types of Structures we'll be dealing with.
+// Types of Structures we'll be dealing with. * Don't "NEED" but keeping for now.
 public enum StructureType
 {
 	House,
@@ -23,10 +23,8 @@ public enum StructureType
 
 // Matt McGrath - 4/22/2015, using Sergey Bedov's Villager code as a reference to maintain some consistency.
 
-// A Structure is non-Tower building...? I guess...Not much information on them provided.
-// They do things and stuff, apparently.
-// TODO: We'll make this abstract and a base class later. For now let's make it behave like specific Structure.
-[RequireComponent(typeof(Collider))]						// We require a Collider for ISelectable 
+// A Structure is the abstract bass class for what are essentially buildings that villagers can be tasked to.
+[RequireComponent(typeof(Collider))]							// We require a Collider for ISelectable 
 public abstract class Structure : MonoBehaviour, ISelectable
 {
 	#region Fields
@@ -38,40 +36,41 @@ public abstract class Structure : MonoBehaviour, ISelectable
 	}
 	protected StructureType structureType;
 
-	public string Name;
-	public float Age;
-	public Sprite Icon;
-	public int Level;
+	public string Name;								// Our building name.
+	public int Age;									// Our building's age (in full days).
+	public int Level;								// Our building's level. Higher means more tasks and features.
+	public Sprite Icon;								// An icon for UI purposes. (Need?)
 
+	// Construction-related fields.
+	int constructionTime;							// How many days to construct the Structure.
+	protected bool isBeingBuilt = false;			// Is this currently being built?
+	public abstract GameResources[] ResourceRequirements { get; }	// List of the resources and amounts of each we require to construct this. The index is for Level.
+	
+	// For funsies.
 	public string[] names = new string[]{ "Bryan", "Sergey", "Tristan", "Stephan", "Bryan", "Dann", "David", "Imran", "Jake", "Jessin", "Matt", "Jimmy", "Joshua" };
 	
 	[SerializeField]
 	protected StructureController structureController;
-
-	// Construction-related fields.
-	float constructionTime;				// How long (real-life time? in-game hours? no clue...) to construct the Structure.
-	Resource[] resourcesNeeded;			// Which Resource types do we require to construct this?
-	int[] resourcesAmountNeeded;		// And how many of each? (Ensure index of both arrays match).
-
-	// Possible stuff needed?
-	// int villagersRequired;			// Amount of villagers it takes to construct this.
-	// Villager[] villagers;			// The villager(s) assigned to the construction.
+	
 	#endregion
 
-	void Awake() 
+	protected virtual void Awake() 
 	{
 		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
 		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
 
-		Name = "House of " + names[Random.Range(0, names.Length)];
-		StructureType = StructureType.House;
+		// Temp.
+		day = WorldClock.day;
 	}
-
+	
+	// Override & don't call base.Update() if you don't need this basic logic in one of the structure classes.
 	public virtual void Update()
 	{
-		// Do this for now. We'll want to use Days (or hours) through the WorldClock functionality later.
-		Age += Time.deltaTime;
-
+		// On each new Day, we will increment our age.
+		if (IsNewDay())
+		{
+			Age += 1;
+		}
 	}
 	
 	// Places the Structure at the given location.
@@ -83,14 +82,32 @@ public abstract class Structure : MonoBehaviour, ISelectable
 		// TODO: Set a "birth" age so we can calculate total age of building.
 	}
 
-	// Let the StructureController we are no longer managing this Structure.
+	// Let the StructureController know we are no longer managing this Structure.
 	public virtual void OnDestroy()
 	{
 		structureController.UnSubscribeStructure(this);
 	}
 
+	private int day;
 
-	#region Selection
+	// Temporary helper method until something similar is built into WorldClock.
+	private bool IsNewDay()
+	{
+		if (WorldClock.day > 0)
+		{
+			// If this happens, our Day must have changed.
+			if (WorldClock.day != day)
+			{
+				//Debug.Log ("In IsNewDay(): Windmill Day = " + day.ToString () + ", Clock's Day = " + WorldClock.day.ToString ());
+				day = WorldClock.day;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	#region ISelection
 	[SerializeField] protected Transform selectTrans;
 	public virtual Transform SelectionTransform
 	{
