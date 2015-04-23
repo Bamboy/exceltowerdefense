@@ -1,24 +1,24 @@
 fileFormatVersion: 2
-guid: 9799e196ed45f8f48b9566ce437c622d
+guid: 621c44beea1b67c4b9d72bd6c8f3f45b
 timeCreated: 1429708341
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: polySurface30
-    100002: polySurface30.001
+    100000: polySurface31
+    100002: polySurface31.001
     100004: //RootNode
-    400000: polySurface30
-    400002: polySurface30.001
+    400000: polySurface31
+    400002: polySurface31.001
     400004: //RootNode
-    2300000: polySurface30
-    2300002: polySurface30.001
-    3300000: polySurface30
-    3300002: polySurface30.001
-    4300000: polySurface30.001
-    4300002: polySurface30
-    7400000: polySurface30.001|polySurface30.001Action
-    7400002: polySurface30|polySurface30.001Action
+    2300000: polySurface31
+    2300002: polySurface31.001
+    3300000: polySurface31
+    3300002: polySurface31.001
+    4300000: polySurface31.001
+    4300002: polySurface31
+    7400000: polySurface31.001|polySurface31.001Action
+    7400002: polySurface31|polySurface31.001Action
     9500000: //RootNode
   materials:
     importMaterials: 0
@@ -37,8 +37,8 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: polySurface30.001|polySurface30.001Action
-      takeName: polySurface30.001|polySurface30.001Action
+      name: polySurface31.001|polySurface31.001Action
+      takeName: polySurface31.001|polySurface31.001Action
       firstFrame: 0
       lastFrame: 180
       wrapMode: 0
@@ -62,9 +62,9 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: polySurface30
+      - path: polySurface31
         weight: 1
-      - path: polySurface30.001
+      - path: polySurface31.001
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
