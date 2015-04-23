@@ -25,7 +25,8 @@ namespace Excelsion.GameManagers
 		}
 		#endregion
 		public List< Enemy > enemies;
-
+		//list of available houses
+		public List< GameObject> houses;
 		// Maximum enemies alive at any given time.
 		public int maxEnemies = 20;
 
@@ -105,6 +106,13 @@ namespace Excelsion.GameManagers
 			return new Vector3( pos.x, spawnHeight, pos.y );
 		}
 
+		public void AddHouse(GameObject house) {
+			houses.Add(house);
+		}
+
+		public void RemoveHouse(GameObject house) {
+			houses.Remove(house);
+		}
 
 
 	}

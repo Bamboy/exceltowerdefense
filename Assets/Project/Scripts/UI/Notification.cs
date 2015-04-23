@@ -13,6 +13,7 @@ public class Notification
 	public string message = string.Empty;
 	public Color fontColor = Color.white;		// The color of the font. Probably white by default -- maybe important things will be red or whatever.
 	public float displayTime = 5f;				// How long to display in the Notification log.
+	public AudioClip notificationSound;			// Sound that plays when the Notification pops.
 
 	public bool IsDead { get { return displayTime <= 0f; } }
 	
@@ -21,6 +22,8 @@ public class Notification
 		message = text;
 		fontColor = color;
 		displayTime = time;
+
+		notificationSound = (AudioClip)Resources.Load("Audio/Testing/NotificationPop01");
 	}
 
 	// Update is called once per frame

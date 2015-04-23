@@ -33,6 +33,10 @@ namespace Excelsion.Towers
 		private float cooldown = 0.0f; //Firing speed timer.
 		private int tick;
 
+		// MATT TESTING
+		public static Transform projectileParentTransform;
+		// END MATT TESTING
+
 		#region Statics
 		public static TowerBase[] towers;
 		static int nextTowerID = 0;
@@ -59,8 +63,25 @@ namespace Excelsion.Towers
 			nextTowerID = 0;
 		}
 		#endregion
+
+		void Awake()
+		{
+		}
 		void Start () 
 		{
+			GameObject parentObj = GameObject.Find("Projectiles");
+			if (parentObj == null)
+			{
+				Debug.Log("No Projectiles object found: Creating new one.");
+
+				GameObject obj = new GameObject("Projectiles");
+				projectileParentTransform = obj.transform;
+			}
+			else
+			{
+				projectileParentTransform = parentObj.transform;
+			}
+
 			myID = nextTowerID;
 			Register( this );
 
@@ -100,7 +121,7 @@ namespace Excelsion.Towers
 		}
 		Item GetRandomItem()
 		{
-			switch( Random.Range(0,7) )
+			switch( Random.Range(0,8) )
 			{
 			case 0:
 				return new ItemPaper();
@@ -114,6 +135,8 @@ namespace Excelsion.Towers
 				return new ItemFrost();
 			case 5:
 				return new ItemSniper();
+			case 6:
+				return new ItemPoison();
 			default:
 				return new ItemNull();
 			}
@@ -319,6 +342,9 @@ namespace Excelsion.Towers
 			GameObject projObj = GameObject.Instantiate( projectilePrefab, 
 			                                            VectorExtras.OffsetPosInDirection( head, direction, projectileSpawnDistance ), //Make sure the projectile doesnt hit the tower.
 			                                            Quaternion.LookRotation( direction, Vector3.up )) as GameObject;
+			// MATT TESTING
+			projObj.transform.parent = projectileParentTransform;
+			// END MATT TESTING
 			ProjectileBase projScript = projObj.GetComponent< ProjectileBase >();
 			if( projScript == null )
 			{ Debug.LogError("Prefab given does not have a ProjectileBase script attached!", this); Debug.Break(); }

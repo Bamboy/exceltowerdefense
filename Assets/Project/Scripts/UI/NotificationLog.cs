@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 // Matt McGrath - 4/18/2015
 
@@ -37,20 +38,14 @@ public class NotificationLog : MonoBehaviour
 	}
 	#endregion
 
-
-
-
-
-
-
-
-
-
-
-
-	// A List (Array or other data structure later if you want lol) of logged notifications. We drag these from the scene and into our NotificationLog in the hierarchy.
+	// A List (Array or other data structure later if you want) of logged notifications.
 	public List<Notification> loggedNotifications = new List<Notification>();	
-	public int displayLimit = 3;	// How many notifications to display at once?
+	public int displayLimit = 5;					// How many notifications to display at once?
+
+	// How long to display notification? (Or should we allow Notification to customize their own timings, so very important messages stay longer? 
+	// Would probably need a different data structure and approach since we no longer assume we're removing the first index from the List.
+	public float displayTime = 5f;					
+	public bool playNotificationSounds = true;		// Should we play the Notification sounds?
 
 	// Variables for testing.
 	//private float timeSinceLastNotification = 0.5f;
@@ -60,7 +55,9 @@ public class NotificationLog : MonoBehaviour
 	
 	public List<Text> textReferences = new List<Text>();
 
-	Color defaultImageColor = new Color(0f, 0f, 0f, 0.5f);
+	Color defaultImageColor = new Color(0f, 0f, 0f, 0.25f);
+
+	public AudioSource audioSource;
 
 	// Use this for initialization
 	void Start () 
@@ -71,30 +68,20 @@ public class NotificationLog : MonoBehaviour
 		{
 			text.text = string.Empty;
 		}
+
+		audioSource = this.gameObject.AddComponent<AudioSource>();
+		audioSource.volume = 0.25f;
 	}
 	
 	// Update is called once per frame. Here we will manage the Notifications on the Log.
 	void Update () 
 	{
-//		timeSinceLastNotification -= Time.deltaTime;
-//		if (timeSinceLastNotification <= 0f)
-//		{
-//			//if (loggedNotifications.Count < displayLimit &&  notificationNumber < maxAutoMessages)
-//			if (notificationNumber < maxAutoMessages)
-//			{
-//				notificationNumber++;
-//				Notification notification = new Notification("Message #" + notificationNumber.ToString (), Color.white, 7.5f);
-//				PushNotification(notification);
-//
-//				timeSinceLastNotification = autoNotificationTestTimer;
-//			}
-//		}
-
 		// TEMP TESTING
 		if (Input.GetKeyDown (KeyCode.L))
 		{
 			notificationNumber++;
-			Notification notification = new Notification("Testing Notifications! Message #" + notificationNumber.ToString (), Color.yellow, 4.0f);
+			float randomDisplayTime = UnityEngine.Random.Range (2f, 10f);
+			Notification notification = new Notification("Testing Notifications! Message #" + notificationNumber.ToString (), Color.white, 4.0f);
 			PushNotification(notification);
 		}
 
@@ -121,7 +108,6 @@ public class NotificationLog : MonoBehaviour
 			// If so, probably remove the UI backdrop. Eventually fade it out or something fancy.
 			// TODO grab reference to the background image and disable its rendering.
 			this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
-
 		}
 		else
 		{
@@ -129,6 +115,11 @@ public class NotificationLog : MonoBehaviour
 			// TODO grab reference to the background image and keep it enabled or re-enable it.
 			this.gameObject.GetComponent<Image>().color = defaultImageColor;
 		}
+	}
+
+	void LateUpdate()
+	{
+		UpdateText();
 	}
 
 
@@ -141,7 +132,8 @@ public class NotificationLog : MonoBehaviour
 		// For now let's pretend we remove the oldest message anyways, even if it's not ready to "die" off.
 		if (loggedNotifications.Count >= displayLimit)
 		{
-			Debug.Log ("We're at max capacity! We'll push new message anyways?");
+			//Debug.Log ("We're at max capacity! We'll push new message anyways?");
+
 			// Remove  the oldest.
 			//if (loggedNotifications[loggedNotifications.Count - 1] != null)
 			{
@@ -155,12 +147,18 @@ public class NotificationLog : MonoBehaviour
 				RemoveNotification(oldestNotification);
 
 				// Now push the new notification regularly.
+				// DONT SEEM TO NEED
 				pushIndex = loggedNotifications.Count;
 				pushIndex = Mathf.Clamp (pushIndex, 0, displayLimit - 1);
 				textReferences[pushIndex].text = notification.message;
+				// END DONT SEEM TO NEED
+
 				loggedNotifications.Add (notification);
+
+				audioSource.PlayOneShot(notification.notificationSound);
 			}
 		}
+
 		// Otherwise, push the new notification without removing.
 		else
 		{
@@ -170,36 +168,44 @@ public class NotificationLog : MonoBehaviour
 				Debug.Log ("TextReferences Is Null");
 			textReferences[pushIndex].text = notification.message;
 			loggedNotifications.Add (notification);
+
+			audioSource.PlayOneShot(notification.notificationSound);
 		}
+
+		//UpdateText();
 	}
 
 	// Removes a notification from the Notification Log.
+	// Since we do our update logic here (for efficiency) there are sometimes brief moments between removals where font colors aren't given to the right messages.
 	public void RemoveNotification(Notification notification)
 	{
-		//Debug.Log ("Removing notification " + notification.message);
-		notification.message = "";
-
-		// Otherwise, blank out the bottom text field.
-		textReferences[0].text = "";
-
 		// Remove this notification from our logger.
 		loggedNotifications.Remove (notification);
 		notification = null;							// Clean-up, just in case.
 
-		for (int i = 0; i < displayLimit - 1; i++)
-		{
-			if (i > displayLimit)
-				break;
+		//UpdateText();
+	}
 
-			textReferences[i].text = textReferences[i + 1].text;
+	private void UpdateText()
+	{
+		Debug.Log("TextReference.Count = " + textReferences.Count.ToString());
+		Debug.Log("Log Count.Count = " + loggedNotifications.Count.ToString());
+
+		// Make all our referenced Text UI's empty.
+		for (int i = 0; i < textReferences.Count; i++)
+		{
+			textReferences[i].text = string.Empty;
 		}
-
-		if (loggedNotifications.Count == 0)
+		
+		// Now fill up the referenced Text UI's with our logged Notifications.
+		for (int i = 0; i < loggedNotifications.Count; i++)
 		{
-			foreach (Text text in textReferences)
-			{
-				text.text = "";
-			}
+			// If somehow this happens between updates,  prevent it. It will resolve itself next frame.
+//			if (i >= textReferences.Count)
+//				break;
+
+			textReferences[i].text = loggedNotifications[i].message;
+			textReferences[i].color = loggedNotifications[i].fontColor;
 		}
 	}
 }
