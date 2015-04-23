@@ -188,9 +188,6 @@ public class NotificationLog : MonoBehaviour
 
 	private void UpdateText()
 	{
-		Debug.Log("TextReference.Count = " + textReferences.Count.ToString());
-		Debug.Log("Log Count.Count = " + loggedNotifications.Count.ToString());
-
 		// Make all our referenced Text UI's empty.
 		for (int i = 0; i < textReferences.Count; i++)
 		{

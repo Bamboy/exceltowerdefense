@@ -41,6 +41,7 @@ public abstract class Structure : MonoBehaviour, ISelectable
 	public string Name;
 	public float Age;
 	public Sprite Icon;
+	public int Level;
 
 	public string[] names = new string[]{ "Bryan", "Sergey", "Tristan", "Stephan", "Bryan", "Dann", "David", "Imran", "Jake", "Jessin", "Matt", "Jimmy", "Joshua" };
 	
