@@ -32,6 +32,14 @@ namespace Excelsion.GameManagers
 		}
 		#endregion
 
+		#region Events
+		//Time related events for the start of a new day and the start of a new night.
+		public delegate void OnDawn( int day );
+		public delegate void OnDusk();
+		public static OnDawn onDawn;
+		public static OnDusk onDusk;
+		#endregion
+
 		#region Public Time Variables
 		public static float rawTime = 0.0f; //Raw time, in seconds.
 		public static int day { //What day it is.
@@ -40,12 +48,25 @@ namespace Excelsion.GameManagers
 		public static float totalDayProgress { //Progress of the day. (Not a percentage!)
 			get{ return rawTime % totalDayLength; }
 		}
+		private static bool _lastDaytimeValue;
 		public static bool isDaytime { //Is it day or night time?
 			get{ 
 				if( totalDayProgress <= dayLength )
+				{
+					if( _lastDaytimeValue == false )
+						if( onDawn != null )
+							onDawn( day );
+					_lastDaytimeValue = true;
 					return true;
+				}
 				else
+				{
+					if( _lastDaytimeValue == true )
+						if( onDusk != null )
+							onDusk();
+					_lastDaytimeValue = false;
 					return false;
+				}
 			}
 		}
 		public static float timeUntilDayNightSwitch { //Time in seconds until dawn or dusk
@@ -63,7 +84,11 @@ namespace Excelsion.GameManagers
 		public static bool Pause{
 			get{ return paused; }
 			set{ 
-				paused = value; 
+				paused = value;
+				//if( value )
+				//	Time.timeScale = 0f; //TODO - make our own timescale var instead of modifying the global one?
+				//else
+				//	Time.timeScale = 1f;
 			}
 		}
 
@@ -78,7 +103,15 @@ namespace Excelsion.GameManagers
 		public static void WipeStatics() //Wipe static variables. Call this when loading a new game.
 		{
 			rawTime = 0f;
+			Pause = false;
+			onDawn = null;
+			onDawn += DawnPause;
+			onDusk = null;
+			onDusk += DuskTest;
 		}
+		private static void DawnPause( int day ){ Debug.Log("New dawn! "+ day); /*Pause = true;*/ } //TODO - dawn will be unpaused elsewhere via UI.
+		private static void DuskTest(){ Debug.Log("New night!"); }
+
 
 		[SerializeField] private Transform clockSpinner;
 		[SerializeField] private Text clockDayCounter;
@@ -86,6 +119,8 @@ namespace Excelsion.GameManagers
 		{
 			if( clockSpinner == null )
 				Debug.LogError ("ClockSpinner variable is null!");
+
+			WipeStatics();
 		}
 
 		void Update () 
@@ -106,6 +141,9 @@ namespace Excelsion.GameManagers
 			clockDayCounter.text = "Day: \n"+ day;
 			clockSpinner.localRotation = Quaternion.Euler(0,0, (totalDayProgress / totalDayLength) * -360.0f );
 			//Debug.Log("Daytime?: "+ isDaytime +", Time unitl next switch: "+ timeUntilDayNightSwitch );
+
+			if( isDaytime ) //This will trigger any scripts interested in changes of this value. (OnDawn, OnDusk)
+				return;
 		}
 	}
 }
