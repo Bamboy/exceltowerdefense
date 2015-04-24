@@ -15,13 +15,13 @@ public struct GameResources
 	public int Metal;
 
 	// Constructor simply sets up amount of each resource.
-	public GameResources(int p, int f, int w, int s, int m)
+	public GameResources(int pop, int food, int wood, int stone, int metal)
 	{
-		Population = p;
-		Food = f;
-		Wood = w;
-		Stone = s;
-		Metal = m;
+		Population = pop;
+		Food = food;
+		Wood = wood;
+		Stone = stone;
+		Metal = metal;
 	}
 };
 
@@ -78,13 +78,10 @@ namespace Excelsion.GameManagers
 		 * population - your lifeline
 		*/
 
+		// Matt 4/23 -- Use a structure instead of each  resource variable separate?
+		// Keep this private from other scripts. Make it so other scripts use functions in order to get or change this structure's values.
+		private GameResources gameResources = new GameResources(5, 30, 0, 0, 0);
 
-		//Keep these private from other scripts. Make it so other scripts use functions in order to get or change these values.
-		private int numberOfWood  = 0;
-		private int numberOfStone = 0;
-		private int numberOfMetal = 0;
-		private int numberOfFood  = 30;
-		private int numberOfPopulation   = 5;
 
 		// MATT - 4/21/2015: Temporary testing. This could be part of this Controller or the Resource classes (if we choose to keep them).
 		// Numbers are obviously temporary bs and temporarily public for testing -- we [probably] don't want them that way in the end!
@@ -103,22 +100,8 @@ namespace Excelsion.GameManagers
 
 		void Start()
 		{
-			numberOfWood = 5;
-			numberOfStone = 5;
-			numberOfMetal = 3;
-			numberOfFood = 30;
-			numberOfPopulation = 5;
+			gameResources = new GameResources(5, 30, 0, 0, 0);
 		}
-
-
-		//Return true if resource isn't negative if we subtract 'amount' from it. Used if the player tries to buy something, for example.
-		public bool CanAffordWood( int amount )
-		{
-			return (numberOfWood - amount >= 0) ? true : false;
-		}
-
-
-
 
 		#region Matt - Testing Public Methods -- Might redo this approach depending on if we keep Resource enum and / or Resource classes.
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +109,7 @@ namespace Excelsion.GameManagers
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Matt McGrath - 4/21/2015
-		// Return the value of a resource type.
+		// Return the value of a specified resource type.
 		public int ResourceAmount(ResourceType resourceType)
 		{
 			int resourceAmount;
@@ -135,21 +118,20 @@ namespace Excelsion.GameManagers
 			switch (resourceType)
 			{
 			case ResourceType.Population:
-				resourceAmount = numberOfPopulation;
+				resourceAmount = gameResources.Population;
 				break;
 			case ResourceType.Food:
-				resourceAmount = numberOfFood;
+				resourceAmount = gameResources.Food;
 				break;
 			case ResourceType.Wood:
-				resourceAmount = numberOfWood;
+				resourceAmount = gameResources.Wood;
 				break;
 			case ResourceType.Stone:
-				resourceAmount = numberOfStone;
+				resourceAmount = gameResources.Stone;
 				break;
 			case ResourceType.Metal:
-				resourceAmount = numberOfMetal;
+				resourceAmount = gameResources.Metal;
 				break;
-				//TODO: Should have a better default case if we somehow manage to provide a value not in here.
 			default:
 				Debug.Log ("Undefined ResourceType provided!");
 				resourceAmount = 0;
@@ -176,24 +158,24 @@ namespace Excelsion.GameManagers
 			switch (resourceType)
 			{
 			case ResourceType.Population:
-				numberOfPopulation += amount;
-				numberOfPopulation = Mathf.Clamp(numberOfPopulation, 0, maxNumberOfPopulation);
+				gameResources.Population += amount;
+				gameResources.Population = Mathf.Clamp(gameResources.Population, 0, maxNumberOfPopulation);
 				break;
 			case ResourceType.Food:
-				numberOfFood += amount;
-				numberOfFood = Mathf.Clamp(numberOfFood, 0, maxNumberOfFood);
+				gameResources.Food += amount;
+				gameResources.Food = Mathf.Clamp(gameResources.Food, 0, maxNumberOfFood);
 				break;
 			case ResourceType.Wood:
-				numberOfWood += amount;
-				numberOfWood = Mathf.Clamp(numberOfWood, 0, maxNumberOfWood);
+				gameResources.Wood += amount;
+				gameResources.Wood = Mathf.Clamp(gameResources.Wood, 0, maxNumberOfWood);
 				break;
 			case ResourceType.Stone:
-				numberOfStone += amount;
-				numberOfStone = Mathf.Clamp(numberOfStone, 0, maxNumberOfStone);
+				gameResources.Stone += amount;
+				gameResources.Stone = Mathf.Clamp(gameResources.Stone, 0, maxNumberOfStone);
 				break;
 			case ResourceType.Metal:
-				numberOfMetal += amount;
-				numberOfMetal = Mathf.Clamp(numberOfFood, 0, maxNumberOfMetal);
+				gameResources.Metal += amount;
+				gameResources.Metal = Mathf.Clamp(gameResources.Metal, 0, maxNumberOfMetal);
 				break;
 			default:
 				Debug.Log ("Undefined ResourceType provided!");
@@ -210,24 +192,24 @@ namespace Excelsion.GameManagers
 			switch (resourceType)
 			{
 			case ResourceType.Population:
-				numberOfPopulation -= amount;
-				numberOfPopulation = Mathf.Clamp(numberOfPopulation, 0, maxNumberOfPopulation);
+				gameResources.Population -= amount;
+				gameResources.Population = Mathf.Clamp(gameResources.Population, 0, maxNumberOfPopulation);
 				break;
 			case ResourceType.Food:
-				numberOfFood -= amount;
-				numberOfFood = Mathf.Clamp(numberOfFood, 0, maxNumberOfFood);
+				gameResources.Food -= amount;
+				gameResources.Food = Mathf.Clamp(gameResources.Food, 0, maxNumberOfFood);
 				break;
 			case ResourceType.Wood:
-				numberOfWood -= amount;
-				numberOfWood = Mathf.Clamp(numberOfWood, 0, maxNumberOfWood);
+				gameResources.Wood -= amount;
+				gameResources.Wood = Mathf.Clamp(gameResources.Wood, 0, maxNumberOfWood);
 				break;
 			case ResourceType.Stone:
-				numberOfStone -= amount;
-				numberOfStone = Mathf.Clamp(numberOfStone, 0, maxNumberOfStone);
+				gameResources.Stone -= amount;
+				gameResources.Stone = Mathf.Clamp(gameResources.Stone, 0, maxNumberOfStone);
 				break;
 			case ResourceType.Metal:
-				numberOfMetal -= amount;
-				numberOfMetal = Mathf.Clamp(numberOfFood, 0, maxNumberOfMetal);
+				gameResources.Metal -= amount;
+				gameResources.Metal = Mathf.Clamp(gameResources.Metal, 0, maxNumberOfMetal);
 				break;
 			default:
 				Debug.Log ("Undefined ResourceType provided!");
@@ -294,23 +276,33 @@ namespace Excelsion.GameManagers
 			}
 		}
 
-		// Matt McGrath -- 4/23/2015
-		private GameResources gameResources;		// Should use this instead of variables for each resource type? But for now...
-
+		// Matt - 4/22
 		public GameResources GetResources()
 		{	
-			// ...We'll create a new GameResources and grab each of those variables.
-			GameResources resources = new GameResources(numberOfPopulation, numberOfFood, numberOfWood, numberOfStone, numberOfMetal);
-			return resources;
+			return gameResources;
 		}
+
+		// Matt McGrath - 4/24/2015: 
+		// Removes an amount of all resources, keeping it within min and max bounds.
+		public void RemoveResources(GameResources resourcesToRemove)
+		{
+			gameResources.Population -= resourcesToRemove.Population;
+			Mathf.Clamp(gameResources.Population, 0, maxNumberOfPopulation);
+
+			gameResources.Food -= resourcesToRemove.Food;
+			Mathf.Clamp(gameResources.Food, 0, maxNumberOfFood);
+
+			gameResources.Wood -= resourcesToRemove.Wood;
+			Mathf.Clamp(gameResources.Wood, 0, maxNumberOfWood);
+
+			gameResources.Stone -= resourcesToRemove.Stone;
+			Mathf.Clamp(gameResources.Stone, 0, maxNumberOfStone);
+
+			gameResources.Metal -= resourcesToRemove.Metal;
+			Mathf.Clamp(gameResources.Metal, 0, maxNumberOfMetal);
+		}
+
 		#endregion
-
-
-
-
-
-
-
 
 		// MonoBehaviour's Update function. 
 		void Update()
@@ -321,16 +313,15 @@ namespace Excelsion.GameManagers
 
 		public void UpdateResourceUI()
 		{
-			// Too expensive to call this each update.
+			// Too expensive to call this each update. For now make sure you have Resource Info prefab under Screen Canvas
 //			if (GameObject.Find ("Resource Info") == null)
 //				return;
 
-			// Going to ASSUME if ResourceInfo is found, none of these will be null.
-			populationText.text = "Population: " + ResourceController.Get().ResourceAmount(ResourceType.Population);
-			foodText.text = "Food: " + ResourceController.Get().ResourceAmount(ResourceType.Food);
-			woodText.text = "Wood: " + ResourceController.Get().ResourceAmount(ResourceType.Wood);
-			stoneText.text = "Stone: " + ResourceController.Get().ResourceAmount(ResourceType.Stone);
-			metalText.text = "Metal: " + ResourceController.Get().ResourceAmount(ResourceType.Metal);
+			populationText.text = "Population: " + ResourceAmount(ResourceType.Population);
+			foodText.text = "Food: " + ResourceAmount(ResourceType.Food);
+			woodText.text = "Wood: " + ResourceAmount(ResourceType.Wood);
+			stoneText.text = "Stone: " + ResourceAmount(ResourceType.Stone);
+			metalText.text = "Metal: " + ResourceAmount(ResourceType.Metal);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,19 +333,17 @@ namespace Excelsion.GameManagers
 		// So that player could get some Reward for finished Tasks
 		public void GainReward (Reward reward)
 		{
-			this.numberOfWood += reward.wood;
-			this.numberOfStone += reward.stone;
-			this.numberOfMetal += reward.metal;
-			this.numberOfFood += reward.food;
-			if (reward.pop > 0)
+			gameResources.Wood += reward.wood;
+			gameResources.Stone += reward.stone;
+			gameResources.Metal += reward.metal;
+			gameResources.Food += reward.food;
+
+			if (reward.population > 0)
 			{
-				VillagerController.Get().CreateNewVillagers(reward.pop - this.numberOfPopulation);
-				this.numberOfPopulation += reward.pop;
+				VillagerController.Get().CreateNewVillagers(reward.population - gameResources.Population);
+				gameResources.Population += reward.population;
 			}
 		}
-
-
-
 	}
 }
 
@@ -366,7 +355,7 @@ public class Reward
 	public int stone;
 	public int metal;
 	public int food;
-	public int pop;
+	public int population;
 	
 	public Reward (int wood, int stone, int metal, int food, int pop)
 	{
@@ -374,7 +363,7 @@ public class Reward
 		this.stone = stone;
 		this.metal = metal;
 		this.food = food;
-		this.pop = pop;
+		this.population = pop;
 	}
 	
 	public Reward (): this(0,0,0,0,0) {}

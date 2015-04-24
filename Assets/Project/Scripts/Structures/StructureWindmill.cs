@@ -14,12 +14,19 @@ public class StructureWindmill : Structure
 	#region Fields
 	public override GameResources[] ResourceRequirements 
 	{ 
-		get { return windmillRequirements; }
-	}
-	
-	private GameResources[] windmillRequirements;
+		// *** We will do it this way so others who potentially work on Structure children have an easier time doing this. More expensive on CPU if we call this a lot -- worth tradeoff of tiny bit of exra memory usage?
+		get 
+		{
+			GameResources levelOneResources = new GameResources(0, 5, 0, 0, 0);
+			GameResources levelTwoResources = new GameResources(0, 10, 0, 0, 0);
+			GameResources levelThreeResources = new GameResources(0, 20, 0, 0, 0);
+			GameResources levelFourResources = new GameResources(0, 80, 1, 0, 0);
 
-	public float foodProductionRate = 1.0f / 10f;							// Example: One food produced every 10 seconds.
+			return new GameResources[4] { levelOneResources, levelTwoResources, levelThreeResources, levelFourResources };
+		}
+	}
+
+	public float foodProductionRate = 1.0f / 10f;		// Example: One food produced every 10 seconds.
 
 	// Won't have a Set because this will most likely be calculated internally based on level / # of  villagers working here.
 	public float TimeUntilFoodProduction
@@ -60,14 +67,8 @@ public class StructureWindmill : Structure
 
 		timerHelper = TimeUntilFoodProduction;
 
-		// WorldClock.day starts off at 0 for a few seconds.
+		// WorldClock.day starts off at 0 for a few seconds, so this causes some issues.
 		day = WorldClock.day;
-
-		GameResources levelOneResources = new GameResources(0, 5, 0, 0, 0);
-		GameResources levelTwoResources = new GameResources(0, 10, 0, 0, 0);
-		GameResources levelThreeResources = new GameResources(0, 20, 0, 0, 0);
-		GameResources levelFourResources = new GameResources(0, 80, 1, 0, 0);
-		windmillRequirements = new GameResources[4] { levelOneResources, levelTwoResources, levelThreeResources, levelFourResources };
 	}
 	#endregion
 
@@ -119,7 +120,6 @@ public class StructureWindmill : Structure
 			// If this happens, our Day must have changed.
 			if (WorldClock.day != day)
 			{
-				//Debug.Log ("In IsNewDay(): Windmill Day = " + day.ToString () + ", Clock's Day = " + WorldClock.day.ToString ());
 				day = WorldClock.day;
 				return true;
 			}
@@ -146,30 +146,33 @@ public class StructureWindmill : Structure
 
 	private bool CheckIfWeCanUpgrade(int currentLevel)
 	{
-		// We're already at max level.
-		if (currentLevel >= windmillRequirements.Length)
+		// Grab reference to our requirements.
+		GameResources[] requirements = ResourceRequirements;
+
+		// We're already at max level (or our requirements array was set up with too few levels).
+		if (currentLevel >= requirements.Length)
 			return false;
 
 		// Grab a reference to all our resources.
 		GameResources res = ResourceController.Get ().GetResources();
 
-		if (res.Population < windmillRequirements[currentLevel].Population)
+		if (res.Population < requirements[currentLevel].Population)
 			return false;
-		if (res.Food < windmillRequirements[currentLevel].Food)
+		if (res.Food < requirements[currentLevel].Food)
 			return false;
-		if (res.Wood < windmillRequirements[currentLevel].Wood)
+		if (res.Wood < requirements[currentLevel].Wood)
 			return false;
-		if (res.Stone < windmillRequirements[currentLevel].Stone)
+		if (res.Stone < requirements[currentLevel].Stone)
 			return false;
-		if (res.Metal < windmillRequirements[currentLevel].Metal)
+		if (res.Metal < requirements[currentLevel].Metal)
 			return false;
 
-
-		ResourceController.Get ().RemoveResource(ResourceType.Population,  windmillRequirements[currentLevel].Population);
-		ResourceController.Get ().RemoveResource(ResourceType.Food,  windmillRequirements[currentLevel].Food);
-		ResourceController.Get ().RemoveResource(ResourceType.Wood,  windmillRequirements[currentLevel].Wood);
-		ResourceController.Get ().RemoveResource(ResourceType.Stone,  windmillRequirements[currentLevel].Stone);
-		ResourceController.Get ().RemoveResource(ResourceType.Population,  windmillRequirements[currentLevel].Metal);
+		ResourceController.Get ().RemoveResources (requirements[currentLevel]);
+//		ResourceController.Get ().RemoveResource(ResourceType.Population,  requirements[currentLevel].Population);
+//		ResourceController.Get ().RemoveResource(ResourceType.Food,  requirements[currentLevel].Food);
+//		ResourceController.Get ().RemoveResource(ResourceType.Wood,  requirements[currentLevel].Wood);
+//		ResourceController.Get ().RemoveResource(ResourceType.Stone,  requirements[currentLevel].Stone);
+//		ResourceController.Get ().RemoveResource(ResourceType.Population,  requirements[currentLevel].Metal);
 
 		Level++;
 		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Level " + Level.ToString() + "!", Color.green, 5.0f));

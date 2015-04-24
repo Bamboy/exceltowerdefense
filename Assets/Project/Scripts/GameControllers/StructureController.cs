@@ -50,7 +50,6 @@ public class StructureController : MonoBehaviour
 		structureInstance.Icon = icon;
 		structureInstance.transform.position = pos;
 		//GameObject newVillager = Instantiate(Resources.Load("Prefabs/VillagerSample", GameObject));
-		
 	}
 
 	public void CreateNewStructure()

@@ -159,7 +159,7 @@ namespace Excelsion.Enemies
 			// Defaults our rewards to one of each resource type.
 			Reward reward = new Reward();
 
-			reward.pop = 0;				// We don't reward population.
+			reward.population = 0;				// We don't reward population.
 
 			if (Random.Range (0f, 100f) <= ResourceFood.baseDropChance)
 		    {
