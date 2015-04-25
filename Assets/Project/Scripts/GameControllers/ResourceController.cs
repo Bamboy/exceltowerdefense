@@ -4,8 +4,21 @@ using UnityEngine.UI;
 
 //Stephan Ennen - 4/2/2015
 
+
+// Matt McGrath - 4/21/2015
+// An enum for the type of Resource we are looking at.
+public enum ResourceType
+{
+	None,
+	Population,
+	Food,
+	Wood,
+	Stone,
+	Metal
+}
+
 // Matt McGrath - 4/23/2014
-// Structure to keep our Resources. GameResources prevents confusion with Unity's Resources definition.
+// Structure to keep our Resources. "GameResources" prevents confusion with Unity's "Resources" definition.
 public struct GameResources
 {
 	public int Population;
@@ -71,35 +84,47 @@ namespace Excelsion.GameManagers
 		}
 		#endregion
 
-		/* wood - early resource material
-		 * stone - mostly for early-mid game upgrades 
-		 * metal - mostly late game upgrades - 2 stone -> 1 metal
-		 * food - used to maintain population
-		 * population - your lifeline
+		/* Wood  - early resource material
+		 * Stone - mostly for early-mid game upgrades 
+		 * Metal - mostly late game upgrades - 2 stone -> 1 metal
+		 * Food  - used to maintain population
+		 * Population - your lifeline
 		*/
 
-		// Matt 4/23 -- Use a structure instead of each  resource variable separate?
+		#region Fields
+		// Matt 4/23 -- Use a structure instead of each a variable for tracking each resource count.
 		// Keep this private from other scripts. Make it so other scripts use functions in order to get or change this structure's values.
 		private GameResources gameResources = new GameResources(5, 30, 0, 0, 0);
 
 
-		// MATT - 4/21/2015: Temporary testing. This could be part of this Controller or the Resource classes (if we choose to keep them).
-		// Numbers are obviously temporary bs and temporarily public for testing -- we [probably] don't want them that way in the end!
+		// Matt McGrath - 4/21/2015
+		// Numbers are obviously temporary bs for testing -- we [probably] don't want them that way in the end!
+		private int maxNumberOfPopulation = 50;
+		private int maxNumberOfFood = 1000;
 		private int maxNumberOfWood = 1000;
 		private int maxNumberOfStone = 750;
 		private int maxNumberOfMetal = 500;
-		private int maxNumberOfFood = 1000;
-		private int maxNumberOfPopulation = 100;
+
+		// Matt McGrath - 4/24/2015
+		// Chance that -- if an Enemy drops something -- it will be one of these. (0 = 0% chance, 1f = 100%)
+		public float foodDropChance = 0.4f;
+		public float woodDropChance = 0.3f;
+		public float stoneDropChance = 0.2f;
+		public float metalDropChance = 0.1f;
+
 
 		// UI References - Should probably have a UI Manager where all this bloat gets put and cached.
-		Text populationText;
-		Text foodText;
-		Text woodText;
+		// Example: public ResourceControllerGUI resourceGUI; // Then drag that GUI script into this field or set it during start-up.
+		private Text populationText;
+		private Text foodText;
+		private Text woodText;
 		Text stoneText;
 		Text metalText;
+		#endregion
 
 		void Start()
 		{
+			// Create our GameResource reference and set up initial Population to 5 and Food to 30.
 			gameResources = new GameResources(5, 30, 0, 0, 0);
 		}
 
@@ -313,7 +338,7 @@ namespace Excelsion.GameManagers
 
 		public void UpdateResourceUI()
 		{
-			// Too expensive to call this each update. For now make sure you have Resource Info prefab under Screen Canvas
+			// Too expensive to call this each update. We could cache this. For now make sure you have Resource Info prefab under Screen Canvas
 //			if (GameObject.Find ("Resource Info") == null)
 //				return;
 
@@ -324,13 +349,7 @@ namespace Excelsion.GameManagers
 			metalText.text = "Metal: " + ResourceAmount(ResourceType.Metal);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// End of Matt's possibly awful / buggy / game-breaking code                                                                ///
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-		// So that player could get some Reward for finished Tasks
+		// Sergey - So that player could get some Reward for finished Tasks
 		public void GainReward (Reward reward)
 		{
 			gameResources.Wood += reward.wood;

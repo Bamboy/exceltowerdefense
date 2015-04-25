@@ -35,7 +35,6 @@ public class StatusEffectPoison : StatusEffect
 	
 	public void SetPoison(float duration )
 	{
-		Debug.Log("poisoned something!");
 		if( IsPoisoned )
 			poison += duration;
 		else

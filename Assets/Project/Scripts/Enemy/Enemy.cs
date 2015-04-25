@@ -12,6 +12,8 @@ namespace Excelsion.Enemies
 	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(NavMeshAgent))]
 	public class Enemy : MonoBehaviour 
 	{
+		// Matt McGrath 4/24/2015
+		public float chanceToDropReward = 0.05f;
 		// Matt McGrath 4/19
 		public List<StatusEffect> statusEffects = new List<StatusEffect>();
 		// Matt McGrath 4/21: Adding this for funsies
@@ -30,8 +32,7 @@ namespace Excelsion.Enemies
 			} 
 		}
 
-		// MATT: TEMPORARILY MAKING THIS PUBLIC FOR TESTING SOMETHING -- was private
-		public float defaultSpeed; 	// We use this to remove status effects.
+		public float defaultSpeed; 			// We use this to remove status effects.
 		private NavMeshAgent navigation;
 
 		private Vector3 targetPosition;
@@ -42,6 +43,9 @@ namespace Excelsion.Enemies
 		public int health = 30; //TODO - Add status effects TODO - Add health percentage display.
 		private int maxHealth;
 		public HealthBar healthDisplay;
+
+		public int moneyValue = 3;
+
 		public virtual void Start () 
 		{
 			maxHealth = health;
@@ -103,18 +107,31 @@ namespace Excelsion.Enemies
 		}
 		#endregion
 
-
+	
 		void Update()
 		{
-			//Evaluate status effects.
+			// Evaluate status effects.
 			foreach (StatusEffect effect in statusEffects)
 			{
 				effect.EvaluateStatusEffect();
 			}
-			//If enemy reaches the target, destroy itself.
-			if (Vector3.Distance(transform.position,targetPosition) <= 5f) {
+
+			// If enemy reaches the target, destroy itself.
+
+			// Note from Matt: This never happens, because the target has a radius of 7.5. Use collisions or take into account the target's actual radius.
+			if (Vector3.Distance(transform.position, targetPosition) <= 7.75)//5f) 
+			{
 				Kill (false);
-				//Here we will deduct population or whatever else we want to happen when enemy reaches a house.
+
+				// Here we will deduct population or whatever else we want to happen when enemy reaches a house.
+				ResourceController.Get().RemoveResource (ResourceType.Population, 1);
+				if (ResourceController.Get ().ResourceAmount(ResourceType.Population) <= 0)
+				{
+					// This message got annoying lol
+//				    NotificationLog.Get().PushNotification(new Notification("NO MORE VILLAGERS LEFT: GAME OVER!", Color.red, 5.0f));
+				}
+				else
+					NotificationLog.Get().PushNotification(new Notification("Enemy reached target! Villager lost!", Color.red, 5.0f));
 			}
 
 		}
@@ -131,60 +148,78 @@ namespace Excelsion.Enemies
 		}
 		public void Kill(bool giveRewards)
 		{
-			if (giveRewards){
+			if (giveRewards)
+			{
 				OnKilled();
 			}
-			DefenseController.Get().enemies.Remove( this );
-			Destroy( this.gameObject );
+			DefenseController.Get().enemies.Remove(this);
+			Destroy(this.gameObject);
 		}
-		public int moneyValue = 3;
+
 		public virtual void OnKilled()
 		{
 			DefenseController.money += moneyValue;
 
+			// See if we should reward an item; if not, leave OnKilled().
+			if (Random.Range (0f, 1f) > chanceToDropReward)
+				return;
+
 			Reward reward = null;
-			GiveRandomRewards(out reward);
+			ResourceType resourceType = ResourceType.None;
+			GiveRandomRewards(out reward, out resourceType);
 
-			string randomName = names[Random.Range (0, names.Length)];
-			NotificationLog.Get ().PushNotification(new Notification(randomName + " Died!" + " Dropped: " + reward.food + "f, " + reward.wood + "w, " 
-			                                                         + reward.stone + "s, " + reward.metal + "m", Color.yellow, 7.0f));
+			if (reward.food > 0 || reward.wood > 0 || reward.stone > 0 || reward.metal > 0)
+			{
+				string randomName = names[Random.Range (0, names.Length)];
+				NotificationLog.Get ().PushNotification(new Notification(randomName + " Died!" + " Dropped 1 " + resourceType.ToString(), Color.yellow, 5.0f));
+			}
 
-			return; //TODO add chance to drop resources here.
 		}
 		#endregion
 
-		// Matt McGrath 4/21/2015: Temporary for testing usability of ResourceController from other scripts.
-		private void GiveRandomRewards(out Reward rewards)
+		// Matt McGrath 4/21/2015: Give a random reward (reward for now). Added second parameter for use with notification system. This of course assumes only one reward can be given.
+		private void GiveRandomRewards(out Reward rewards, out ResourceType typeGiven)
 		{
-			// Defaults our rewards to one of each resource type.
+			// Defaults our rewards to zero of each resource type.
 			Reward reward = new Reward();
+			ResourceType resourceGiven = ResourceType.None;
 
-			reward.population = 0;				// We don't reward population.
-
-			if (Random.Range (0f, 100f) <= ResourceFood.baseDropChance)
-		    {
-				// Reward 1 food.
-				reward.food = 1;
-			}
-
-			if (Random.Range (0f, 100f) <= ResourceWood.baseDropChance)
+			// Sloppy method for testing purposes and notifying what reward was given.
+			while (resourceGiven == ResourceType.None)
 			{
-				reward.wood = 1;
-			}
+				if (Random.Range (0f, 1f) <= ResourceController.Get().metalDropChance)
+				{
+					reward.metal = 1;
+					resourceGiven = ResourceType.Metal;
+					break;
+				}
 
-			if (Random.Range (0f, 100f) <= ResourceStone.baseDropChance)
-			{
-				reward.stone = 1;
-			}
+				if (Random.Range (0f, 1f) <= ResourceController.Get().stoneDropChance)
+				{
+					reward.stone = 1;
+					resourceGiven = ResourceType.Stone;
+					break;
+				}
 
-			if (Random.Range (0f, 100f) <= ResourceMetal.baseDropChance)
-			{
-				reward.metal = 1;
+				if (Random.Range (0f, 1f) <= ResourceController.Get().woodDropChance)
+				{
+					reward.wood = 1;
+					resourceGiven = ResourceType.Wood;
+					break;
+				}
+
+				if (Random.Range (0f, 1f) <= ResourceController.Get().foodDropChance)
+				{
+					reward.food = 1;
+					resourceGiven = ResourceType.Food;
+					break;
+				}
 			}
 
 			ResourceController.Get().GainReward(reward);
 
 			rewards = reward;
+			typeGiven = resourceGiven;
 		}
 
 		// Jimmy Westcott Apr 22,2015 - Evaluate what the closest target is
@@ -195,16 +230,18 @@ namespace Excelsion.Enemies
 			float currentDistance = 0f;
 			bool first = true;
 
-			foreach( GameObject house in houses) {
-
+			foreach( GameObject house in houses) 
+			{
 				currentDistance = Vector3.Distance(transform.position,house.transform.position);
-				if (first){
+				if (first)
+				{
 					shortestDistance = currentDistance;
 					position = house.transform.position;
 					first = false;
 				}
 
-				if (currentDistance < shortestDistance) {
+				if (currentDistance < shortestDistance) 
+				{
 					position = house.transform.position;
 					shortestDistance = currentDistance;
 					//Debug.Log ("Closest house is: " + house.name);

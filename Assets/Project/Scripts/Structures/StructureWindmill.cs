@@ -26,33 +26,40 @@ public class StructureWindmill : Structure
 		}
 	}
 
-	public float foodProductionRate = 1.0f / 10f;		// Example: One food produced every 10 seconds.
+	//public float foodProductionRate = 1.0f / 10f;		// Example: One food produced every 10 seconds.
+	// Apparently we only gain once per day? so let's change it to this.
+	private int foodProducedPerDay = 2;
+	public int FoodProducedPerDay
+	{
+		get { return foodProducedPerDay * Level; }
+	}
+
 
 	// Won't have a Set because this will most likely be calculated internally based on level / # of  villagers working here.
-	public float TimeUntilFoodProduction
-	{
-		get 
-		{ 
-			if (Level >= 0)
-			{
-				return timeUntilFoodProduction;// / (Level * 0.5f);
-			}
-			else return timeUntilFoodProduction; 
-		}
-		//set { value =  Mathf.Clamp(timerHelper, 0, timeUntilFoodProduction / (Level * 0.25f)); }			
-	}
-	private float timeUntilFoodProduction = 10f;
+//	public float TimeUntilFoodProduction
+//	{
+//		get 
+//		{ 
+//			if (Level >= 0)
+//			{
+//				return timeUntilFoodProduction;// / (Level * 0.5f);
+//			}
+//			else return timeUntilFoodProduction; 
+//		}
+//		//set { value =  Mathf.Clamp(timerHelper, 0, timeUntilFoodProduction / (Level * 0.25f)); }			
+//	}
+//	private float timeUntilFoodProduction = 10f;
+//
+//	public int FoodProducedEachHarvest
+//	{
+//		get { 
+//				return foodProducedEachHarvest * Level;
+//			}			
+//		//set { foodProducedEachHarvest = value; }
+//	}
+//	private int foodProducedEachHarvest = 1;
 
-	public int FoodProducedEachHarvest
-	{
-		get { 
-				return foodProducedEachHarvest * Level;
-			}			
-		//set { foodProducedEachHarvest = value; }
-	}
-	private int foodProducedEachHarvest = 1;
-
-	private float timerHelper = 0f;
+//	private float timerHelper = 0f;
 	#endregion
 
 	#region Initialization
@@ -63,36 +70,55 @@ public class StructureWindmill : Structure
 		Name = "Windmill of " + names[Random.Range(0, names.Length)];
 		StructureType = StructureType.Windmill;
 		Icon = Sprite.Create(Resources.Load( "GUI/Structure Icons/Testing/structure_windmill" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
+	}
+	protected override void Start()
+	{
 		Level = 0;
-
-		timerHelper = TimeUntilFoodProduction;
-
-		// WorldClock.day starts off at 0 for a few seconds, so this causes some issues.
-		day = WorldClock.day;
+		isBeingBuilt = false;
+//		timerHelper = TimeUntilFoodProduction;
 	}
 	#endregion
 
 	#region Structure / MonoBehavior Overrides
 	public override void Update()
 	{
-		if (IsNewDay())
+		if (Input.GetKeyDown(KeyCode.P))
 		{
-			Age += 1;
-			OnNewDay();
+			isBeingBuilt = true;
+			WorldClock.onDusk += DuskTesting;
+			Debug.Log ("Starting to build on day " + WorldClock.day.ToString ());
 		}
-	
-		timerHelper -= Time.deltaTime;
-		if (timerHelper <= 0f)
+
+		// If we aren't built we need no further logic.
+		if (isBuilt)
 		{
-			// Reset the timer.
-			timerHelper = TimeUntilFoodProduction;
-
-			// Give us the food we just harvested.
-			ResourceController.Get ().AddResource (ResourceType.Food, FoodProducedEachHarvest);
-
-			// Notify the player (temporary probably).
-			NotificationLog.Get ().PushNotification(new Notification(Name + " produced " + FoodProducedEachHarvest.ToString() + " Food!", Color.green, 5.0f));
+//			if (IsNewDay())
+//			{
+//				Age += 1;
+//				OnNewDay();
+//			}
+		
+//			timerHelper -= Time.deltaTime;
+//			if (timerHelper <= 0f)
+//			{
+//				// Reset the timer.
+//				timerHelper = TimeUntilFoodProduction;
+//
+//				// Give us the food we just harvested.
+//				ResourceController.Get ().AddResource (ResourceType.Food, FoodProducedEachHarvest);
+//
+//				// Notify the player (temporary probably).
+//				NotificationLog.Get ().PushNotification(new Notification(Name + " produced " + FoodProducedEachHarvest.ToString() + " Food!", Color.green, 5.0f));
+//			}
 		}
+	}
+
+	// Let the StructureController we are no longer managing this Structure.
+	public override void OnDestroy()
+	{
+		// Remove our dusk delegate.
+		WorldClock.onDusk -= DuskTesting;
+		base.OnDestroy();
 	}
 	
 	// Places the Structure at the given location.
@@ -103,35 +129,41 @@ public class StructureWindmill : Structure
 		transform.position = pos;
 		// TODO: Set a "birth" age so we can calculate total age of building.
 	}
-	
-	// Let the StructureController we are no longer managing this Structure.
-	public override void OnDestroy()
-	{
-		structureController.UnSubscribeStructure(this);
-	}
 	#endregion
 
-	private int day;
 
-	private bool IsNewDay()
+	#region WorldClock Events
+	private void DuskTesting()
 	{
-		if (WorldClock.day > 0)
+		Debug.Log ("We've been built!");
+		isBeingBuilt = false;
+
+		// Only display this once: When we're first finished being built.
+		if (!isBuilt)
 		{
-			// If this happens, our Day must have changed.
-			if (WorldClock.day != day)
-			{
-				day = WorldClock.day;
-				return true;
-			}
+			// Notify the player a structure has finished being built.
+			NotificationLog.Get ().PushNotification(new Notification(Name + " has been constructed!", Color.green, 5.0f));
 		}
 
-		return false;
+		isBuilt = true;
+		
+		// Give us the food we just harvested.
+		ResourceController.Get ().AddResource (ResourceType.Food, FoodProducedPerDay);
+		
+		// Notify the player (temporary probably).
+		if (Age > 0)
+			NotificationLog.Get ().PushNotification(new Notification(Name + " produced " + FoodProducedPerDay.ToString () + " Food!", Color.green, 5.0f));
+
+		Age += 1;
+		OnNewDay();
 	}
 
+	#endregion
+	
 	private void OnNewDay()
 	{
-		if (Age > 0)
-		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Age " + Age.ToString() + "!", Color.green, 5.0f));
+//		if (Age > 0)
+//		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Age " + Age.ToString() + "!", Color.green, 5.0f));
 
 		if (CheckIfWeCanUpgrade(Level))
 		{
@@ -168,17 +200,11 @@ public class StructureWindmill : Structure
 			return false;
 
 		ResourceController.Get ().RemoveResources (requirements[currentLevel]);
-//		ResourceController.Get ().RemoveResource(ResourceType.Population,  requirements[currentLevel].Population);
-//		ResourceController.Get ().RemoveResource(ResourceType.Food,  requirements[currentLevel].Food);
-//		ResourceController.Get ().RemoveResource(ResourceType.Wood,  requirements[currentLevel].Wood);
-//		ResourceController.Get ().RemoveResource(ResourceType.Stone,  requirements[currentLevel].Stone);
-//		ResourceController.Get ().RemoveResource(ResourceType.Population,  requirements[currentLevel].Metal);
 
 		Level++;
 		NotificationLog.Get ().PushNotification(new Notification(Name + " reached Level " + Level.ToString() + "!", Color.green, 5.0f));
 
 		return true;
-
 	}
 
 	// TODO: Add specialized UI stuff for this type of structure. Example: Production rate, production amount.

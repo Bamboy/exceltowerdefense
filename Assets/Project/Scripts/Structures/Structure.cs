@@ -42,9 +42,11 @@ public abstract class Structure : MonoBehaviour, ISelectable
 	public Sprite Icon;								// An icon for UI purposes. (Need?)
 
 	// Construction-related fields.
-	int constructionTime;							// How many days to construct the Structure.
+	protected int constructionTime;					// How many days to construct the Structure.
 	protected bool isBeingBuilt = false;			// Is this currently being built?
+	protected bool isBuilt = false;					// Are we finished being built and thus active?
 	public abstract GameResources[] ResourceRequirements { get; }	// List of the resources and amounts of each we require to construct this. The index is for Level.
+	protected int day;								// Keeps track of what day this structure is on. TODO use newly added WorldClock delegates instead.
 	
 	// For funsies.
 	public string[] names = new string[]{ "Bryan", "Sergey", "Tristan", "Stephan", "Bryan", "Dann", "David", "Imran", "Jake", "Jessin", "Matt", "Jimmy", "Joshua" };
@@ -59,18 +61,22 @@ public abstract class Structure : MonoBehaviour, ISelectable
 		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
 		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
 
-		// Temp.
-		day = WorldClock.day;
+//		// Temp.
+//		day = WorldClock.day;
+	}
+
+	protected virtual void Start()
+	{
 	}
 	
 	// Override & don't call base.Update() if you don't need this basic logic in one of the structure classes.
 	public virtual void Update()
 	{
 		// On each new Day, we will increment our age.
-		if (IsNewDay())
-		{
-			Age += 1;
-		}
+//		if (IsNewDay())
+//		{
+//			Age += 1;
+//		}
 	}
 	
 	// Places the Structure at the given location.
@@ -86,25 +92,6 @@ public abstract class Structure : MonoBehaviour, ISelectable
 	public virtual void OnDestroy()
 	{
 		structureController.UnSubscribeStructure(this);
-	}
-
-	private int day;
-
-	// Temporary helper method until something similar is built into WorldClock.
-	private bool IsNewDay()
-	{
-		if (WorldClock.day > 0)
-		{
-			// If this happens, our Day must have changed.
-			if (WorldClock.day != day)
-			{
-				//Debug.Log ("In IsNewDay(): Windmill Day = " + day.ToString () + ", Clock's Day = " + WorldClock.day.ToString ());
-				day = WorldClock.day;
-				return true;
-			}
-		}
-		
-		return false;
 	}
 
 	#region ISelection
