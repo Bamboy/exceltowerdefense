@@ -20,10 +20,17 @@ namespace Excelsion.GameManagers
 				GameObject obj = new GameObject("_DefenseController");
 				obj.tag = "GameController";
 				defControl = obj.AddComponent< DefenseController >();
+
+				// Let's child any Controller with a _Controllers object, creating it if it's not already present.
+				if (GameObject.Find("_Controllers") == null) {new GameObject("_Controllers");}
+				obj.transform.parent = GameObject.Find("_Controllers").transform;
+
 				return defControl;
 			}
 		}
 		#endregion
+
+		#region Fields
 		public List< Enemy > enemies;
 		//list of available houses
 		public List< GameObject> houses;
@@ -38,7 +45,9 @@ namespace Excelsion.GameManagers
 		public GameObject enemyPrefab;
 
 		public static int money;
+		#endregion
 
+		#region Initialization
 		void Awake()
 		{
 			if( defControl == null )
@@ -58,6 +67,7 @@ namespace Excelsion.GameManagers
 
 			money = 500;
 		}
+		#endregion
 
 		void OnDrawGizmos()
 		{
@@ -70,6 +80,7 @@ namespace Excelsion.GameManagers
 
 			Gizmos.DrawWireSphere( enemyObjective.transform.position, spawnRadius );
 		}
+
 		//private Vector3 _lastTestPos;
 		void Update()
 		{
@@ -81,19 +92,24 @@ namespace Excelsion.GameManagers
 		IEnumerator TimedSpawner()
 		{
 			yield return new WaitForSeconds( 0.5f );
+
+			// Don't spawn more Enemies if we're at max count!
 			while( enemies.Count >= maxEnemies)
 				yield return null;
 
+			// Otherwise, create a new enemy using the Enemy Prefab.
 			GameObject obj = GameObject.Instantiate( enemyPrefab, GetSpawnPosition(), Quaternion.identity ) as GameObject;
 			obj.transform.parent = this.transform;
 			Enemy newEnemy = obj.GetComponent< Enemy >();
 			if( newEnemy == null ) { Debug.LogError("Enemy prefab specified does not have an Enemy component!", this); Debug.Break(); }
+
+			// Add the enemy to our controller's list.
 			enemies.Add( newEnemy );
 
-			StartCoroutine( "TimedSpawner" ); //Repeat forever...
+			StartCoroutine( "TimedSpawner" ); 	//Repeat forever...
 		}
 		 
-		//Gets a random position that is located on the edge of a circle.
+		// Gets a random position that is located on the edge of a circle.
 		Vector3 GetSpawnPosition()
 		{
 			//Gets a random 2D direction
@@ -106,11 +122,13 @@ namespace Excelsion.GameManagers
 			return new Vector3( pos.x, spawnHeight, pos.y );
 		}
 
-		public void AddHouse(GameObject house) {
+		public void AddHouse(GameObject house) 
+		{
 			houses.Add(house);
 		}
 
-		public void RemoveHouse(GameObject house) {
+		public void RemoveHouse(GameObject house) 
+		{
 			houses.Remove(house);
 		}
 

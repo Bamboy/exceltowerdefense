@@ -29,6 +29,8 @@ public abstract class Structure : MonoBehaviour, ISelectable
 {
 	#region Fields
 
+	protected BoxCollider boxCollider;
+
 	public StructureType StructureType
 	{
 		get { return structureType; }
@@ -50,7 +52,7 @@ public abstract class Structure : MonoBehaviour, ISelectable
 	
 	// For funsies.
 	public string[] names = new string[]{ "Bryan", "Sergey", "Tristan", "Stephan", "Bryan", "Dann", "David", "Imran", "Jake", "Jessin", "Matt", "Jimmy", "Joshua" };
-	
+
 	[SerializeField]
 	protected StructureController structureController;
 	
@@ -58,11 +60,6 @@ public abstract class Structure : MonoBehaviour, ISelectable
 
 	protected virtual void Awake() 
 	{
-		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
-		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
-
-//		// Temp.
-//		day = WorldClock.day;
 	}
 
 	protected virtual void Start()
@@ -79,19 +76,31 @@ public abstract class Structure : MonoBehaviour, ISelectable
 //		}
 	}
 	
-	// Places the Structure at the given location.
+	// Builds the Structure at the given location.
 	// TODO: Instead of a Vector3, we'll probably need a "StructureZone" type object, since we can only build in pre-defined areas.
 	// A StructureZone will tell us the positions where we can build what type of Structure.
-	public virtual void PlaceAt(Vector3 pos)
+	public virtual void Build(StructureBuildZone buildZone, Quaternion rotation)
 	{
-		transform.position = pos;
+		transform.position = buildZone.transform.position;
+		transform.rotation = rotation;
+
 		// TODO: Set a "birth" age so we can calculate total age of building.
+
+		buildZone.isOccupied = true;
+
+		// TODO: Make a new windmill structure, not just grab one already existing in the scene.
+		GameObject obj = GameObject.Find("Windmill Structure");
+		obj.SetActive(true);
+
+		//TODO: It isn't placed in the center of the pad, rather top left.
+		obj.transform.position = transform.position;
+		obj.transform.rotation = transform.rotation;
 	}
 
 	// Let the StructureController know we are no longer managing this Structure.
 	public virtual void OnDestroy()
 	{
-		structureController.UnSubscribeStructure(this);
+		structureController.RemoveStructure(this);
 	}
 
 	#region ISelection

@@ -23,7 +23,7 @@ public class StructureTownhall : Structure
 	protected override void Awake () 
 	{
 		structureController = StructureController.Get();	// Gives us a reference to StructureController (also creates it if it doesn't exist yet).
-		structureController.SubscribeStructure(this); 		// To add Structure into StructureController, to be managed there.
+		//structureController.AddStructure(this); 		// To add Structure into StructureController, to be managed there.
 		
 		Name = "Village Townhall";
 		StructureType = StructureType.TownHall;
@@ -41,16 +41,20 @@ public class StructureTownhall : Structure
 	// Places the Structure at the given location.
 	// TODO: Instead of a Vector3, we'll probably need a "StructureZone" type object, since we can only build in pre-defined areas.
 	// A StructureZone will tell us the positions where we can build what type of Structure.
-	public override void PlaceAt(Vector3 pos)
+	public override void Build(StructureBuildZone buildZone, Quaternion rotation)
 	{
-		transform.position = pos;
+		transform.position = buildZone.transform.position;
+		transform.rotation = rotation;
+		
 		// TODO: Set a "birth" age so we can calculate total age of building.
+		
+		buildZone.isOccupied = true;
 	}
 	
 	// Let the StructureController we are no longer managing this Structure.
 	public override void OnDestroy()
 	{
-		structureController.UnSubscribeStructure(this);
+		structureController.RemoveStructure(this);
 	}
 	
 	

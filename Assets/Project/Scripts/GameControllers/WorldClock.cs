@@ -20,6 +20,11 @@ namespace Excelsion.GameManagers
 				GameObject obj = new GameObject("_WorldClock");
 				obj.tag = "GameController";
 				wClock = obj.AddComponent< WorldClock >();
+
+				// Let's child any Controller with a _Controllers object, creating it if it's not already present.
+//				if (GameObject.Find("_Controllers") == null) {new GameObject("_Controllers");}
+//				obj.transform.parent = GameObject.Find("_Controllers").transform;
+
 				return wClock;
 			}
 		}
@@ -81,9 +86,11 @@ namespace Excelsion.GameManagers
 		#endregion
 
 		private static bool paused;
-		public static bool Pause{
+		public static bool Pause
+		{
 			get{ return paused; }
-			set{ 
+			set
+			{ 
 				paused = value;
 				//if( value )
 				//	Time.timeScale = 0f; //TODO - make our own timescale var instead of modifying the global one?
@@ -93,9 +100,10 @@ namespace Excelsion.GameManagers
 		}
 
 		#region Private Time Settings
-		public static float dayLength = 15.0f;
-		public static float nightLength = 15.0f;
-		public static float totalDayLength {
+		public static float dayLength = 60.0f;
+		public static float nightLength = 60.0f;
+		public static float totalDayLength 
+		{
 			get{ return dayLength + nightLength; }
 		}
 		#endregion

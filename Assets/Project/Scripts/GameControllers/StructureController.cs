@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Excelsion.GameManagers;
+using System.Collections.Generic;
 
 // Matt McGrath - 4/22/2015, using Sergey Bedov's VillagerController code as a reference to maintain some consistency.
+
+
+// A Structure Controller manages all the structures (buildings) in the game world.
 public class StructureController : MonoBehaviour
 {
 	#region Fields
-	// An array of the Structure objects we are managing.
-	public Structure[] StructureList;
+	// A List of the Structure objects we are managing.
+	public List<Structure> StructureList;
+
+	// A list of all our possible build locations, as the GDD currently claims they are fixed.
+	public List<StructureBuildZone> BuildLocations;
 	#endregion
 
 	#region Access Instance Anywhere
@@ -17,6 +25,8 @@ public class StructureController : MonoBehaviour
 			return structureController;
 		else
 		{
+			Debug.Log ("Creating Structure Controller Singleton");
+
 			// We don't have a StructureController yet: Create one!
 			GameObject obj = new GameObject("_StructureController");
 
@@ -35,59 +45,122 @@ public class StructureController : MonoBehaviour
 	#region Initialization
 	void Awake ()
 	{
-		// Initialize our structure array with 0 elements.
-		StructureList = new Structure[0];
+		Debug.Log ("StructureController is Awake");
+		if( structureController == null )
+			structureController = this;
+		else
+			GameObject.Destroy( this.gameObject );
+
+		// Initialize our Structure List.
+		StructureList = new List<Structure>();
+
+		// If we reach here, we must not have had this controller in our scene, and build locations weren't put in via inspector.
+//		if (BuildLocations == null || BuildLocations.Count != 3)
+//		{
+//			BuildLocations = new List<StructureBuildZone>();
+//
+//			// We initialize our BuildLocations list through the editor.
+//			// * NEVERMIND: Until we get an overall GameManager to ensure our Controllers are referenced from a global source, we must do this.
+//			GameObject zonePrefab = Resources.Load ("Prefabs/Structures/Build Zone") as GameObject;
+//			if (zonePrefab == null)
+//				Debug.Log ("Build Zone Prefab is Null");
+//
+//			for (int i = 0; i < 3; i++)
+//			{
+//				Vector3 position = new Vector3((i - 1) * 50f, 0.1f, -60f);
+//				StructureBuildZone buildZone = Instantiate(zonePrefab, position, transform.rotation) as StructureBuildZone;
+//				if (buildZone == null)
+//				{
+//					Debug.Log ("Are we null here? " + i.ToString ());
+//				}
+//				BuildLocations.Add (buildZone);
+//			}
+//		}
+
+	}
+	#endregion
+
+	#region Structure Adding and Removing
+	// Add the specified Structure to our controller's list.
+	public void AddStructure(Structure structureToAdd)
+	{
+		StructureList.Add (structureToAdd);
+	}
+
+	// Remove the specified Structure from our controller's list.
+	public void RemoveStructure(Structure structureToRemove)
+	{
+		StructureList.Remove (structureToRemove);
 	}
 	#endregion
 	
-	#region Create Structure(s)
-	public void CreateNewStructure(string name, int age, Sprite icon, Vector3 pos)
+	#region Place Structure
+
+	// Returns the first StructureBuildZone that is not currently occupied.
+	// EDIT: Let's see if we're hovering our mouse over a potential build zone instead!
+	private StructureBuildZone GetAvailableBuildZone()
 	{
-		GameObject instance = Instantiate (Resources.Load ("Prefabs/Structures/StructureGO")) as GameObject;
-		Structure structureInstance = instance.GetComponent<Structure>();
-		structureInstance.Name = name;
-		structureInstance.Age = age;
-		structureInstance.Icon = icon;
-		structureInstance.transform.position = pos;
-		//GameObject newVillager = Instantiate(Resources.Load("Prefabs/VillagerSample", GameObject));
+//		Debug.Log ("Get Available List Count: " + BuildLocations.Count.ToString ());
+//
+//		// Find a StructureBuildZone that is not Occupied.
+//		foreach (StructureBuildZone zone in BuildLocations)
+//		{
+//			if (zone == null)
+//				Debug.Log ("Zone is null :(");
+//
+//			if (!zone.isOccupied)
+//			{
+//				return zone;
+//			}
+//		}
+//
+//		// All them are occupied. What do we do?! Null for now.
+//		return null;
+
+		foreach (StructureBuildZone zone in BuildLocations)
+		{
+			if (zone == null)
+				Debug.Log ("Zone is null :(");
+
+			if (zone.isSelected)
+			{
+				Debug.Log ("This zone is selected.");
+
+				if (!zone.isOccupied)
+				{
+					return zone;
+				}
+				else
+				{
+					Debug.Log ("...but it's occupied!");
+				}
+			}
+		}
+
+		return null;
 	}
 
-	public void CreateNewStructure()
+	public void PlaceStructure(Structure structureToPlace)
 	{
-		CreateNewStructure("Name Surname", 0, null, new Vector3(1000,2,1000));
-	}
-	
-	public void CreateNewStructures(int quantity)
-	{
-		for (int i = 0; i < quantity; i++)
+		StructureBuildZone buildZone = GetAvailableBuildZone();
+
+		if (buildZone != null)
 		{
-			CreateNewStructure();
+			structureToPlace.Build (buildZone, Quaternion.identity);
+
+			string debugString = "Building " + structureToPlace.Name + " on day " + WorldClock.day.ToString();
+			NotificationLog.Get ().PushNotification(new Notification(debugString, Color.green, 5.0f));
+			Debug.Log (debugString);
+			AddStructure (structureToPlace);
+		}
+
+		else
+		{
+//			string debugString = "Could not build structure here.";
+//			NotificationLog.Get ().PushNotification(new Notification(debugString, Color.green, 5.0f));
+//			Debug.Log (debugString);
 		}
 	}
 	
-	#endregion
-	
-	#region StructureList
-	// To refresh the list of Structures in the scene.
-	public void RefreshStructures()
-	{
-		StructureList = new Structure[0];
-		foreach(Structure structure in FindObjectsOfType(typeof(Structure)))
-		{
-			StructureList = ArrayTools.PushLast(StructureList, structure);
-		}
-	}
-
-	// To track and manage the Structure that is in the scene.
-	public void SubscribeStructure(Structure structure)
-	{
-		StructureList = ArrayTools.PushLast(StructureList, structure);
-	}
-
-	// To stop tracking and managing the Structure that is in the scene.
-	public void UnSubscribeStructure(Structure structure)
-	{
-		StructureList = ArrayTools.Remove(StructureList, structure);
-	}
 	#endregion
 }

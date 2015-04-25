@@ -17,12 +17,11 @@ public class StructureWindmill : Structure
 		// *** We will do it this way so others who potentially work on Structure children have an easier time doing this. More expensive on CPU if we call this a lot -- worth tradeoff of tiny bit of exra memory usage?
 		get 
 		{
-			GameResources levelOneResources = new GameResources(0, 5, 0, 0, 0);
-			GameResources levelTwoResources = new GameResources(0, 10, 0, 0, 0);
-			GameResources levelThreeResources = new GameResources(0, 20, 0, 0, 0);
-			GameResources levelFourResources = new GameResources(0, 80, 1, 0, 0);
+			GameResources levelOneResources = new GameResources(0, 10, 0, 0, 0);
+			GameResources levelTwoResources = new GameResources(0, 40, 0, 0, 0);
+			GameResources levelThreeResources = new GameResources(0, 80, 0, 0, 0);
 
-			return new GameResources[4] { levelOneResources, levelTwoResources, levelThreeResources, levelFourResources };
+			return new GameResources[3] { levelOneResources, levelTwoResources, levelThreeResources };
 		}
 	}
 
@@ -59,7 +58,7 @@ public class StructureWindmill : Structure
 //	}
 //	private int foodProducedEachHarvest = 1;
 
-//	private float timerHelper = 0f;
+
 	#endregion
 
 	#region Initialization
@@ -70,6 +69,7 @@ public class StructureWindmill : Structure
 		Name = "Windmill of " + names[Random.Range(0, names.Length)];
 		StructureType = StructureType.Windmill;
 		Icon = Sprite.Create(Resources.Load( "GUI/Structure Icons/Testing/structure_windmill" ) as Texture2D, new Rect(0,0,64,64), Vector2.zero, 100.0f);
+		boxCollider = GetComponent<BoxCollider>();
 	}
 	protected override void Start()
 	{
@@ -82,34 +82,22 @@ public class StructureWindmill : Structure
 	#region Structure / MonoBehavior Overrides
 	public override void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.P))
+		if (Input.GetKeyDown(KeyCode.Mouse0))
 		{
 			isBeingBuilt = true;
 			WorldClock.onDusk += DuskTesting;
-			Debug.Log ("Starting to build on day " + WorldClock.day.ToString ());
+
+			// Add the Windmill to our Structure Controller.
+			//StructureController.Get().AddStructure(this);
+
+			// And place the Windmill.
+			StructureController.Get().PlaceStructure (this);
 		}
 
 		// If we aren't built we need no further logic.
 		if (isBuilt)
 		{
-//			if (IsNewDay())
-//			{
-//				Age += 1;
-//				OnNewDay();
-//			}
-		
-//			timerHelper -= Time.deltaTime;
-//			if (timerHelper <= 0f)
-//			{
-//				// Reset the timer.
-//				timerHelper = TimeUntilFoodProduction;
-//
-//				// Give us the food we just harvested.
-//				ResourceController.Get ().AddResource (ResourceType.Food, FoodProducedEachHarvest);
-//
-//				// Notify the player (temporary probably).
-//				NotificationLog.Get ().PushNotification(new Notification(Name + " produced " + FoodProducedEachHarvest.ToString() + " Food!", Color.green, 5.0f));
-//			}
+
 		}
 	}
 
@@ -124,10 +112,14 @@ public class StructureWindmill : Structure
 	// Places the Structure at the given location.
 	// TODO: Instead of a Vector3, we'll probably need a "StructureZone" type object, since we can only build in pre-defined areas.
 	// A StructureZone will tell us the positions where we can build what type of Structure.
-	public override void PlaceAt(Vector3 pos)
+	public override void Build(StructureBuildZone buildZone, Quaternion rotation)
 	{
-		transform.position = pos;
+		transform.position = buildZone.transform.position;
+		transform.rotation = rotation;
+		
 		// TODO: Set a "birth" age so we can calculate total age of building.
+		
+		buildZone.isOccupied = true;
 	}
 	#endregion
 

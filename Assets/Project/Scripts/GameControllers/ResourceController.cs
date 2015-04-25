@@ -2,7 +2,15 @@
 using System.Collections;
 using UnityEngine.UI;
 
-//Stephan Ennen - 4/2/2015
+// Started by Stephan Ennen - 4/2/2015
+
+/*********************** ABOUT RESOURCES ***********************
+* Wood  		- Early resource material
+* Stone 		- Mostly for early-mid game upgrades 
+* Metal 		- Mostly late game upgrades - 2 stone -> 1 metal
+* Food  		- Used to maintain population
+* Population 	- Your lifeline 
+*****************************************************************/
 
 
 // Matt McGrath - 4/21/2015
@@ -44,6 +52,7 @@ namespace Excelsion.GameManagers
 	{
 		#region Access Instance Anywhere
 		private static ResourceController resControl;
+
 		public static ResourceController Get()
 		{
 			if( resControl != null )
@@ -53,9 +62,18 @@ namespace Excelsion.GameManagers
 				GameObject obj = new GameObject("_ResourceController");
 				obj.tag = "GameController";
 				resControl = obj.AddComponent< ResourceController >();
+
+				// Let's child any Controller with a _Controllers object, creating it if it's not already present.
+				if (GameObject.Find("_Controllers") == null) 
+				{
+					new GameObject("_Controllers");
+				}
+				obj.transform.parent = GameObject.Find("_Controllers").transform;
+
 				return resControl;
 			}
 		}
+
 		void Awake() 
 		{
 			if( resControl == null )
@@ -83,13 +101,6 @@ namespace Excelsion.GameManagers
 			metalText = mText.GetComponent<Text>();
 		}
 		#endregion
-
-		/* Wood  - early resource material
-		 * Stone - mostly for early-mid game upgrades 
-		 * Metal - mostly late game upgrades - 2 stone -> 1 metal
-		 * Food  - used to maintain population
-		 * Population - your lifeline
-		*/
 
 		#region Fields
 		// Matt 4/23 -- Use a structure instead of each a variable for tracking each resource count.
@@ -122,13 +133,15 @@ namespace Excelsion.GameManagers
 		Text metalText;
 		#endregion
 
+		#region Initialization
 		void Start()
 		{
 			// Create our GameResource reference and set up initial Population to 5 and Food to 30.
 			gameResources = new GameResources(5, 30, 0, 0, 0);
 		}
+		#endregion
 
-		#region Matt - Testing Public Methods -- Might redo this approach depending on if we keep Resource enum and / or Resource classes.
+		#region Matt - Public Resource Amount / Get Methods
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// Matt McGrath - 4/21/2015: Adding required tasked functionality + also experimenting with different approach to resources ///
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,6 +342,7 @@ namespace Excelsion.GameManagers
 
 		#endregion
 
+		#region Updates
 		// MonoBehaviour's Update function. 
 		void Update()
 		{
@@ -363,10 +377,11 @@ namespace Excelsion.GameManagers
 				gameResources.Population += reward.population;
 			}
 		}
+		#endregion
 	}
 }
 
-//Sergey Bedov - 4/12/2015
+// Sergey Bedov - 4/12/2015
 [System.Serializable]
 public class Reward
 {

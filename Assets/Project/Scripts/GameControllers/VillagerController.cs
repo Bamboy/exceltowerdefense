@@ -24,6 +24,8 @@ public class VillagerController : MonoBehaviour
 		else
 		{
 			GameObject obj = new GameObject("_VillagerController");
+
+			// Let's child any Controller with a _Controllers object, creating it if it's not already present.
 			if (GameObject.Find("_Controllers") == null) {new GameObject("_Controllers");}
 			obj.transform.parent = GameObject.Find("_Controllers").transform;
 		//	obj.tag = "VillagerController";
