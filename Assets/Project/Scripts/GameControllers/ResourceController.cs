@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-// Started by Stephan Ennen - 4/2/2015
+// Started by Stephan Ennen - 4/2/2015.
 
 /*********************** ABOUT RESOURCES ***********************
 * Wood  		- Early resource material
@@ -11,7 +11,6 @@ using UnityEngine.UI;
 * Food  		- Used to maintain population
 * Population 	- Your lifeline 
 *****************************************************************/
-
 
 // Matt McGrath - 4/21/2015
 // An enum for the type of Resource we are looking at.
@@ -23,7 +22,7 @@ public enum ResourceType
 	Wood,
 	Stone,
 	Metal
-}
+};
 
 // Matt McGrath - 4/23/2014
 // Structure to keep our Resources. "GameResources" prevents confusion with Unity's "Resources" definition.
@@ -48,6 +47,7 @@ public struct GameResources
 
 namespace Excelsion.GameManagers
 {
+	// ResourceController is a manager-type class that will control and store our game's resources (wood, food, etc).
 	public class ResourceController : MonoBehaviour 
 	{
 		#region Access Instance Anywhere
@@ -73,33 +73,6 @@ namespace Excelsion.GameManagers
 				return resControl;
 			}
 		}
-
-		void Awake() 
-		{
-			if( resControl == null )
-				resControl = this;
-			else
-				GameObject.Destroy( this.gameObject );
-
-			// Cache references to our UI Text fields.
-//			if (GameObject.Find ("Resource Info") == null)
-//				return;
-
-			GameObject pText = GameObject.Find ("Population Text");
-			populationText = pText.GetComponent<Text>();
-			
-			GameObject fText = GameObject.Find ("Food Text");
-			foodText = fText.GetComponent<Text>();
-			
-			GameObject wText = GameObject.Find ("Wood Text");
-			woodText = wText.GetComponent<Text>();
-			
-			GameObject sText = GameObject.Find ("Stone Text");
-			stoneText = sText.GetComponent<Text>();
-			
-			GameObject mText = GameObject.Find ("Metal Text");
-			metalText = mText.GetComponent<Text>();
-		}
 		#endregion
 
 		#region Fields
@@ -107,14 +80,13 @@ namespace Excelsion.GameManagers
 		// Keep this private from other scripts. Make it so other scripts use functions in order to get or change this structure's values.
 		private GameResources gameResources = new GameResources(5, 30, 0, 0, 0);
 
-
 		// Matt McGrath - 4/21/2015
-		// Numbers are obviously temporary bs for testing -- we [probably] don't want them that way in the end!
-		private int maxNumberOfPopulation = 50;
-		private int maxNumberOfFood = 1000;
-		private int maxNumberOfWood = 1000;
-		private int maxNumberOfStone = 750;
-		private int maxNumberOfMetal = 500;
+		// Maximums for our resources. No need for special accessors if we're allowed to adjust them without restriction.
+		public int maxNumberOfPopulation = 30;
+		public int maxNumberOfFood = 1000;
+		public int maxNumberOfWood = 1000;
+		public int maxNumberOfStone = 750;
+		public int maxNumberOfMetal = 500;
 
 		// Matt McGrath - 4/24/2015
 		// Chance that -- if an Enemy drops something -- it will be one of these. (0 = 0% chance, 1f = 100%)
@@ -123,17 +95,20 @@ namespace Excelsion.GameManagers
 		public float stoneDropChance = 0.2f;
 		public float metalDropChance = 0.1f;
 
-
-		// UI References - Should probably have a UI Manager where all this bloat gets put and cached.
-		// Example: public ResourceControllerGUI resourceGUI; // Then drag that GUI script into this field or set it during start-up.
-		private Text populationText;
-		private Text foodText;
-		private Text woodText;
-		Text stoneText;
-		Text metalText;
+		// UI Reference -- Removed and made into a ResourceReader.
 		#endregion
 
 		#region Initialization
+		// On Awake, set up our singleton instance if null. Otherwise, destroy the new instance attempt.
+		void Awake() 
+		{
+			if( resControl == null )
+				resControl = this;
+			else
+				GameObject.Destroy( this.gameObject );
+		}
+
+		// On Start, set up our GameResources structure to starting values.
 		void Start()
 		{
 			// Create our GameResource reference and set up initial Population to 5 and Food to 30.
@@ -346,23 +321,11 @@ namespace Excelsion.GameManagers
 		// MonoBehaviour's Update function. 
 		void Update()
 		{
-			// For now, let's keep the Resource UI constantly updated. Ideally we'll only want to do this with an OnResourcesChanged method for efficiency.
-			UpdateResourceUI();
+			// No longer need to update UI in this class.
 		}
+		#endregion
 
-		public void UpdateResourceUI()
-		{
-			// Too expensive to call this each update. We could cache this. For now make sure you have Resource Info prefab under Screen Canvas
-//			if (GameObject.Find ("Resource Info") == null)
-//				return;
-
-			populationText.text = "Population: " + ResourceAmount(ResourceType.Population);
-			foodText.text = "Food: " + ResourceAmount(ResourceType.Food);
-			woodText.text = "Wood: " + ResourceAmount(ResourceType.Wood);
-			stoneText.text = "Stone: " + ResourceAmount(ResourceType.Stone);
-			metalText.text = "Metal: " + ResourceAmount(ResourceType.Metal);
-		}
-
+		#region Sergey's Rewards
 		// Sergey - So that player could get some Reward for finished Tasks
 		public void GainReward (Reward reward)
 		{
@@ -381,6 +344,7 @@ namespace Excelsion.GameManagers
 	}
 }
 
+#region Sergey's Serializable Reward class
 // Sergey Bedov - 4/12/2015
 [System.Serializable]
 public class Reward
@@ -402,3 +366,4 @@ public class Reward
 	
 	public Reward (): this(0,0,0,0,0) {}
 }
+#endregion

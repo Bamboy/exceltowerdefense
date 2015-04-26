@@ -40,24 +40,25 @@ public class NotificationLog : MonoBehaviour
 
 	// A List (Array or other data structure later if you want) of logged notifications.
 	public List<Notification> loggedNotifications = new List<Notification>();	
-	public int displayLimit = 5;					// How many notifications to display at once?
+	public int displayLimit = 10;					// How many notifications to display at once?
 
 	// How long to display notification? (Or should we allow Notification to customize their own timings, so very important messages stay longer? 
 	// Would probably need a different data structure and approach since we no longer assume we're removing the first index from the List.
 	public float displayTime = 5f;					
 	public bool playNotificationSounds = true;		// Should we play the Notification sounds?
-
-	// Variables for testing.
-	//private float timeSinceLastNotification = 0.5f;
-	//private float autoNotificationTestTimer = 0.5f;
-	// int maxAutoMessages = 10;
+	
 	private int notificationNumber = 0;
 	
 	public List<Text> textReferences = new List<Text>();
 
-	Color defaultImageColor = new Color(0f, 0f, 0f, 0.25f);
+	Color defaultImageColor = new Color(0f, 0f, 0f, (150f / 255f));
+
+	public bool autoExpandBox = false;
 
 	public AudioSource audioSource;
+
+	// Reference to the parent of the Text (a background Image).
+	public Image backgroundImage;
 
 	// Use this for initialization
 	void Start () 
@@ -71,6 +72,8 @@ public class NotificationLog : MonoBehaviour
 
 		audioSource = this.gameObject.AddComponent<AudioSource>();
 		audioSource.volume = 0.25f;
+
+		backgroundImage = this.gameObject.GetComponent<Image>();
 	}
 	
 	// Update is called once per frame. Here we will manage the Notifications on the Log.
@@ -106,23 +109,35 @@ public class NotificationLog : MonoBehaviour
 		if  (loggedNotifications.Count == 0)
 		{
 			// If so, probably remove the UI backdrop. Eventually fade it out or something fancy.
-			// TODO grab reference to the background image and disable its rendering.
-			this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+			backgroundImage.color = new Color(0f, 0f, 0f, 0f);
 		}
 		else
 		{
 			// Keep it enabled. Would be better served through an OnFirstNotificationAdded event but I'll keep it simple for now.
-			// TODO grab reference to the background image and keep it enabled or re-enable it.
-			this.gameObject.GetComponent<Image>().color = defaultImageColor;
+			backgroundImage.color = defaultImageColor;
 		}
 	}
 
 	void LateUpdate()
 	{
 		UpdateText();
+
+		if (autoExpandBox)
+		{
+			ExpandNotificationLog();
+		}
+		else
+		{
+			backgroundImage.rectTransform.SetHeight (112f);
+		}
 	}
 
-
+	void ExpandNotificationLog()
+	{
+		//backgroundImage.rectTransform.sizeDelta = new Vector2(backgroundImage.rectTransform.w, rectTransform.sizeDelta.y); 
+		backgroundImage.rectTransform.SetHeight (12f + loggedNotifications.Count * 10f);
+	}
+	
 	int pushIndex = -1;
 
 	// Adds a notification to the Notification Log.
