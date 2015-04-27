@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 49686cab3a2c0b1478bf82d2518abdac
-timeCreated: 1428005010
+guid: b3561026022548649ab55634bd8b28fa
+timeCreated: 1430149166
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: house lvl3
+    4300000: basicHouse:pCube533
   materials:
     importMaterials: 0
     materialName: 0

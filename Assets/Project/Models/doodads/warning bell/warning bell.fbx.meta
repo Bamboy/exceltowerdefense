@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 49686cab3a2c0b1478bf82d2518abdac
-timeCreated: 1428005010
+guid: 2928ff16b3947a94d910ccc93dc989ad
+timeCreated: 1430148953
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,7 +9,9 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: house lvl3
+    4300000: WarningBell
+    7400000: WarningBell|Wheel001|Take 001|BaseLayer
+    9500000: //RootNode
   materials:
     importMaterials: 0
     materialName: 0
@@ -63,7 +65,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   additionalBone: 0
   userData: 
   assetBundleName: 
