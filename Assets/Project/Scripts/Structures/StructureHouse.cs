@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
+using UnityEngine.UI;
+using Excelsion.GameManagers;
 using Excelsion.Tasks;
 using Excelsion.UI;
-using Excelsion.GameManagers;
 
 // Matt McGrath - 4/22/2015, using Sergey Bedov's Villager code as a reference to maintain some consistency.
 
@@ -20,8 +20,9 @@ public class StructureHouse : Structure
 	private GameResources[] houseRequirements;
 
 	#endregion
-	
-	protected override void Awake ()
+
+	#region MonoBehavior (and thus Structure) overrides
+	protected override void Awake()
 	{
 		base.Awake();
 		
@@ -37,29 +38,24 @@ public class StructureHouse : Structure
 
 		// House logic.
 	}
-	
-	// Places the Structure at the given location.
-	// TODO: Instead of a Vector3, we'll probably need a "StructureZone" type object, since we can only build in pre-defined areas.
-	// A StructureZone will tell us the positions where we can build what type of Structure.
+	#endregion
 
+	#region Structure Building and Upgrading Logic
+	// Builds the Structure at the given location. A StructureZone will tell us the positions where we can build what type of Structure.
 	public override void Build(StructureBuildZone buildZone, Quaternion rotation)
 	{
-		transform.position = buildZone.transform.position;
-		transform.rotation = rotation;
-		
-		// TODO: Set a "birth" age so we can calculate total age of building.
-		
-		buildZone.isOccupied = true;
+		base.Build (buildZone, rotation);
 	}
-	
-	// Let the StructureController we are no longer managing this Structure.
-	public override void OnDestroy()
+	#endregion
+
+	#region UI Information
+	// We will call this (From a UI Manager or StructureReader for now) to display structure-specific stats.
+	protected override void DisplayStructureInformation()
 	{
-		structureController.RemoveStructure(this);
 	}
+	#endregion
 	
-	
-	#region Selection
+	#region ISelection
 	//[SerializeField] private Transform selectTrans;
 	public Transform SelectionTransform
 	{

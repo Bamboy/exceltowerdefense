@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 		TaskController.Get();
 		VillagerController.Get();
 		WorldClock.Get();
+		NotificationLog.Get();
 	}
 
 	// Use this for initialization

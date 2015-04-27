@@ -15,6 +15,11 @@ public class StructureController : MonoBehaviour
 
 	// A list of all our possible build locations, as the GDD currently claims they are fixed.
 	public List<StructureBuildZone> BuildLocations;
+
+	public StructureWindmill windmillPrefab;
+//	public StructureHouse housePrefab;
+//	public StructureTownhall townhallPrefab;
+
 	#endregion
 
 	#region Access Instance Anywhere
@@ -140,13 +145,24 @@ public class StructureController : MonoBehaviour
 		return null;
 	}
 
+	// Places the structure. (Externally calls a method which gets available locations for building).
 	public void PlaceStructure(Structure structureToPlace)
 	{
 		StructureBuildZone buildZone = GetAvailableBuildZone();
 
 		if (buildZone != null)
 		{
-			structureToPlace.Build (buildZone, Quaternion.identity);
+			//structureToPlace.Build (buildZone, Quaternion.identity);
+
+			// USING THIS INSTEAD OF BUILD METHOD FROM STRUCTURE.CS
+			structureToPlace.transform.position = buildZone.transform.position;
+			structureToPlace.transform.rotation = Quaternion.identity;
+			
+			// TODO: Set a "birth" age so we can calculate total age of building.
+			
+			buildZone.isOccupied = true;
+			// END STRUCTURE BUILD STUFF
+
 
 			string debugString = "Building " + structureToPlace.Name + " on day " + WorldClock.day.ToString();
 			NotificationLog.Get ().PushNotification(new Notification(debugString, Color.green, 5.0f));
@@ -163,4 +179,30 @@ public class StructureController : MonoBehaviour
 	}
 	
 	#endregion
+
+	// Bad design choice but I need this here to use for a Button script.
+	public void UpgradeStructure(Structure structureToUpgrade)
+	{
+		string upgradeOutcome = string.Empty;
+
+		if (structureToUpgrade.CheckIfWeCanUpgrade(structureToUpgrade.Level))
+		{
+			structureToUpgrade.Upgrade(structureToUpgrade.Level, out upgradeOutcome);
+
+			// Notify the player of the outcome of Upgrading.
+			NotificationLog.Get().PushNotification(new Notification(upgradeOutcome, Color.white, 5.0f));
+		}
+		else
+		{
+			NotificationLog.Get().PushNotification(new Notification("Unable to Upgrade.", Color.white, 5.0f));
+		}
+	}
+
+//	void Update()
+//	{
+//		foreach (Structure structure in StructureList)
+//		{
+//			structure.Update();
+//		}
+//	}
 }

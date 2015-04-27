@@ -6,12 +6,7 @@ using System;
 
 // Matt McGrath - 4/18/2015
 
-// Notification Log will display "Important Events" such as villagers dying.
-// It will do so in a typical MMO chat-log type way, where messages slowly 
-// disappear after a given amount of time.
-// TODO bug where the last full log of messages all show up as the last message sent rather than appropriately deleting and shifting downward.
-// TODO make singleton
-// TODO error checking and prevention
+// Notification Log will display "Important Events" such as villagers dying. Messages will slowly disappear over time. TODO: Perhaps a scroll wheel to view older messages.
 public class NotificationLog : MonoBehaviour 
 {
 	#region Access Instance Anywhere
@@ -20,10 +15,12 @@ public class NotificationLog : MonoBehaviour
 	public static NotificationLog Get()
 	{
 		if( notControl != null )
+		{
 			return notControl;
+		}
 		else
 		{
-			GameObject go = Instantiate(Resources.Load("Notification Log")) as GameObject; 
+			GameObject go = Instantiate(Resources.Load("Prefabs/UI/Notification Log")) as GameObject; 
 			go.tag = "NotificationLog";
 			return notControl;
 		}
@@ -32,12 +29,15 @@ public class NotificationLog : MonoBehaviour
 	void Awake() 
 	{
 		if( notControl == null )
+		{
 			notControl = this;
+		}
 		else
 			GameObject.Destroy( this.gameObject );
 	}
 	#endregion
 
+	#region Fields
 	// A List (Array or other data structure later if you want) of logged notifications.
 	public List<Notification> loggedNotifications = new List<Notification>();	
 	public int displayLimit = 10;					// How many notifications to display at once?
@@ -59,12 +59,18 @@ public class NotificationLog : MonoBehaviour
 
 	// Reference to the parent of the Text (a background Image).
 	public Image backgroundImage;
+	#endregion
 
+	#region Initialization
 	// Use this for initialization
 	void Start () 
 	{
+		// During prototype, where we're just in the gameplay scene, we always want the Log to be Active.
+		this.gameObject.SetActive(true);
+
 		loggedNotifications = new List<Notification>();
-		
+
+		// Set each text reference to empty, so we don't display anything until needed.
 		foreach (Text text in textReferences)
 		{
 			text.text = string.Empty;
@@ -75,11 +81,13 @@ public class NotificationLog : MonoBehaviour
 
 		backgroundImage = this.gameObject.GetComponent<Image>();
 	}
-	
+	#endregion
+
+	#region Updates for Log logic
 	// Update is called once per frame. Here we will manage the Notifications on the Log.
 	void Update () 
 	{
-		// TEMP TESTING
+		// TEMP testing of pushing notifications into the log.
 		if (Input.GetKeyDown (KeyCode.L))
 		{
 			notificationNumber++;
@@ -87,6 +95,7 @@ public class NotificationLog : MonoBehaviour
 			Notification notification = new Notification("Testing Notifications! Message #" + notificationNumber.ToString (), Color.white, 4.0f);
 			PushNotification(notification);
 		}
+		// End TEMP testing.
 
 		if (loggedNotifications.Count > 0)
 		{
@@ -118,26 +127,54 @@ public class NotificationLog : MonoBehaviour
 		}
 	}
 
+	// We use LateUpdate to update the text of any newly-pushed or pulled notifications.
 	void LateUpdate()
 	{
 		UpdateText();
 
+		// If we're using the auto expand feature, expand the UI to fit the amount of notifications we have.
 		if (autoExpandBox)
 		{
 			ExpandNotificationLog();
 		}
+		// Otherwise, set the height to our default (which is hardcoded for now).
 		else
 		{
 			backgroundImage.rectTransform.SetHeight (112f);
 		}
 	}
+	#endregion
 
+	#region Updates for UI logic
+	// Updates the Text UI elements we are references in the scene.
+	private void UpdateText()
+	{
+		// Make all our referenced Text UI's empty.
+		for (int i = 0; i < textReferences.Count; i++)
+		{
+			textReferences[i].text = string.Empty;
+		}
+		
+		// Now fill up the referenced Text UI's with our logged Notifications.
+		for (int i = 0; i < loggedNotifications.Count; i++)
+		{
+			// If somehow this happens between updates,  prevent it. It will resolve itself next frame.
+			//			if (i >= textReferences.Count)
+			//				break;
+			
+			textReferences[i].text = loggedNotifications[i].message;
+			textReferences[i].color = loggedNotifications[i].fontColor;
+		}
+	}
+	// Expands the log's height so the background image (black border for now) is only as big as it needs to be.
 	void ExpandNotificationLog()
 	{
 		//backgroundImage.rectTransform.sizeDelta = new Vector2(backgroundImage.rectTransform.w, rectTransform.sizeDelta.y); 
 		backgroundImage.rectTransform.SetHeight (12f + loggedNotifications.Count * 10f);
 	}
-	
+	#endregion
+
+	#region Removing and Adding Notifications
 	int pushIndex = -1;
 
 	// Adds a notification to the Notification Log.
@@ -200,24 +237,5 @@ public class NotificationLog : MonoBehaviour
 
 		//UpdateText();
 	}
-
-	private void UpdateText()
-	{
-		// Make all our referenced Text UI's empty.
-		for (int i = 0; i < textReferences.Count; i++)
-		{
-			textReferences[i].text = string.Empty;
-		}
-		
-		// Now fill up the referenced Text UI's with our logged Notifications.
-		for (int i = 0; i < loggedNotifications.Count; i++)
-		{
-			// If somehow this happens between updates,  prevent it. It will resolve itself next frame.
-//			if (i >= textReferences.Count)
-//				break;
-
-			textReferences[i].text = loggedNotifications[i].message;
-			textReferences[i].color = loggedNotifications[i].fontColor;
-		}
-	}
+	#endregion
 }

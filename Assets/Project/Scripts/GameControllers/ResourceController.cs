@@ -112,7 +112,7 @@ namespace Excelsion.GameManagers
 		void Start()
 		{
 			// Create our GameResource reference and set up initial Population to 5 and Food to 30.
-			gameResources = new GameResources(5, 30, 0, 0, 0);
+			gameResources = new GameResources(5, 20, 10, 5, 0);
 		}
 		#endregion
 

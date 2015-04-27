@@ -100,8 +100,8 @@ namespace Excelsion.GameManagers
 		}
 
 		#region Private Time Settings
-		public static float dayLength = 60.0f;
-		public static float nightLength = 60.0f;
+		public static float dayLength = 5.0f;
+		public static float nightLength = 5.0f;
 		public static float totalDayLength 
 		{
 			get{ return dayLength + nightLength; }
