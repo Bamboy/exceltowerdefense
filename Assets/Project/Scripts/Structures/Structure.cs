@@ -48,9 +48,9 @@ public abstract class Structure : MonoBehaviour, ISelectable
 
 	// Construction-related fields.
 	public abstract GameResources[] ResourceRequirements { get; }	// List of the resources and amounts of each we require to construct this. The index is for Level.
-	protected int constructionTime;									// How many days to construct the Structure.
-	protected bool isBeingBuilt = false;							// Is this currently being built?
-	protected bool isBuilt = false;									// Are we finished being built and thus active?
+	public int constructionTime;									// How many days to construct the Structure.		(PUBLIC FOR QUICK PROTOTYPE DEADLINE)
+	public bool isBeingBuilt = false;								// Is this currently being built?					(PUBLIC FOR QUICK PROTOTYPE)
+	public bool isBuilt = false;									// Are we finished being built and thus active?		(PUBLIC FOR QUICK PROTOTYPE)
 	protected int dayBuilt;											// Keeps track of what Day this structure was built on.
 	
 	// For funsies random name of buildings.
@@ -58,6 +58,10 @@ public abstract class Structure : MonoBehaviour, ISelectable
 
 	[SerializeField]
 	protected StructureController structureController;
+
+
+	// FOR PROTOTYPE:
+	public bool ConstructAutomatically = true;
 	
 	#endregion
 

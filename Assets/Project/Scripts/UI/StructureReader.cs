@@ -76,7 +76,26 @@ namespace Excelsion.UI
 		void UpdateStats()
 		{
 			info_structureName.text = "Name: " + structureSelected.Name;
-			info_structureLevel.text = "Level: " + structureSelected.Level.ToString();
+
+			// Can houses have levels?
+			if (structureSelected is StructureHouse == false)
+			{
+				if (structureSelected.Level > 0)
+				{
+					info_structureLevel.text = "Level: " + structureSelected.Level.ToString();
+				}
+				else if (structureSelected.isBeingBuilt)
+				{
+					info_structureLevel.text = "Currently being constructed";
+				}
+			}
+			// If structure is a house, don't display level?
+			else
+			{
+				info_structureLevel.text = "";
+			}
+
+			// We don't really use this right now.
 			info_structureType.text = "Type: " + structureSelected.StructureType.ToString();
 		}
 		
@@ -107,7 +126,7 @@ namespace Excelsion.UI
 						selectedSubInfoToggle.SetActive(true);
 						Text[] windmillTexts = selectedSubInfoToggle.GetComponentsInChildren<Text>();
 						windmillTexts[0].text = "Production: " + ((StructureWindmill)structureSelected).FoodProducedPerDay.ToString () + " Food / Day";
-						windmillTexts[1].text = "Upgrade Requirements: ";
+						windmillTexts[1].text = "";//"Upgrade Requirements: ";
 					}
 					else
 					{
@@ -127,7 +146,49 @@ namespace Excelsion.UI
 						selectedSubInfoToggle = go.gameObject;
 						selectedSubInfoToggle.SetActive(true);
 						Text[] houseTexts = selectedSubInfoToggle.GetComponentsInChildren<Text>();
-						houseTexts[0].text = "I'm just a house :(";
+						houseTexts[0].text = "Home to a villager.";
+					}
+					else
+					{
+						// 
+					}
+				}
+			}
+			if (structureSelected is StructureWoodCutter)
+			{
+				foreach (Transform go in selectedInfoToggle.transform)
+				{
+					if (go.name == "Woodcutter Stats")
+					{
+						if (selectedSubInfoToggle != null)
+							selectedSubInfoToggle.SetActive(false);
+						
+						selectedSubInfoToggle = go.gameObject;
+						selectedSubInfoToggle.SetActive(true);
+						Text[] windmillTexts = selectedSubInfoToggle.GetComponentsInChildren<Text>();
+						windmillTexts[0].text = "Production: " + ((StructureWoodCutter)structureSelected).WoodProducedPerDay.ToString () + " Wood / Day";
+						windmillTexts[1].text = "";//"Upgrade Requirements: ";
+					}
+					else
+					{
+						// 
+					}
+				}
+			}
+			if (structureSelected is StructureStoneCutter)
+			{
+				foreach (Transform go in selectedInfoToggle.transform)
+				{
+					if (go.name == "Stonecutter Stats")
+					{
+						if (selectedSubInfoToggle != null)
+							selectedSubInfoToggle.SetActive(false);
+						
+						selectedSubInfoToggle = go.gameObject;
+						selectedSubInfoToggle.SetActive(true);
+						Text[] windmillTexts = selectedSubInfoToggle.GetComponentsInChildren<Text>();
+						windmillTexts[0].text = "Production: " + ((StructureStoneCutter)structureSelected).StoneMinedPerDay.ToString () + " Stone / Day";
+						windmillTexts[1].text = "";//"Upgrade Requirements: ";
 					}
 					else
 					{
@@ -149,27 +210,6 @@ namespace Excelsion.UI
 			// Otherwise, we didn't select a Structure, so we don't want to handle it in this reader.
 			else
 				structureSelected = null;
-
-		
-
-
-
-//			if (newSelection is StructureHouse)
-//			{
-//				structureSelected = newSelection as StructureHouse;
-//			}
-//			if (newSelection is StructureWindmill)
-//			{
-//				structureSelected = newSelection as StructureWindmill;
-//			}
-//			if (newSelection is Structure)
-//			{
-//				structureSelected = newSelection as Structure;
-//			}
-//			else
-//			{
-//				structureSelected = null;
-//			}
 		}
 		#endregion
 	}
