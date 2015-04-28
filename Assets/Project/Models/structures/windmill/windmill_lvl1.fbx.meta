@@ -1,24 +1,28 @@
 fileFormatVersion: 2
-guid: 6888667b37bb52946a32ed2258c40713
-timeCreated: 1429383898
+guid: c57d056ee5867a24788d97ce5b9eee81
+timeCreated: 1430247236
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Cube.000_Cube.014
+    100000: Cube.000
     100002: Cube.003
     100004: //RootNode
-    400000: Cube.000_Cube.014
+    400000: Cube.000
     400002: Cube.003
     400004: //RootNode
-    2300000: Cube.000_Cube.014
+    2300000: Cube.000
     2300002: Cube.003
-    3300000: Cube.000_Cube.014
+    3300000: Cube.000
     3300002: Cube.003
     4300000: Cube.003
-    4300002: Cube.000_Cube.014
-    7400000: Cube.003|windmill lvl1 idle
-    7400002: Cube.000_Cube.014|windmill lvl1 idle
+    4300002: Cube.000
+    7400000: Cube.003|lvl3_blades spinning
+    7400002: Cube.003|spinning
+    7400004: Cube.003|watermill blades spin
+    7400006: Cube.000|lvl3_blades spinning
+    7400008: Cube.000|spinning
+    7400010: Cube.000|watermill blades spin
     9500000: //RootNode
   materials:
     importMaterials: 0
@@ -37,16 +41,16 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Cube.003|windmill lvl1 idle
-      takeName: Cube.003|windmill lvl1 idle
+      name: Cube.003|spinning
+      takeName: Cube.003|spinning
       firstFrame: 0
-      lastFrame: 179
+      lastFrame: 180
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -62,7 +66,7 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: Cube.000_Cube.014
+      - path: Cube.000
         weight: 1
       - path: Cube.003
         weight: 1
