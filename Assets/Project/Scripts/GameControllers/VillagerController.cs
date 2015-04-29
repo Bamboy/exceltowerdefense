@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using Excelsion.Villagers;
+using Excelsion.GameManagers;
 
 public class VillagerController : MonoBehaviour
 {
@@ -37,24 +38,31 @@ public class VillagerController : MonoBehaviour
 	
 	void Awake ()
 	{
+		if( villagerController == null )
+			villagerController = this;
+		else
+			GameObject.Destroy( this.gameObject );
+
+		int villagersQty = ResourceController.Get().ResourceAmount(ResourceType.Population);
 		VillagerList = new Villager[0];
+		CreateNewVillagers(villagersQty);
 	}
 
 	#region Create Villager(s)
 	public void CreateNewVillager (string name, float age, Sprite icon, Vector3 pos)
 	{
-		GameObject instance = Instantiate (Resources.Load ("Prefabs/Villagers/VillagerGO")) as GameObject;
+		Object [] vil_res = Resources.LoadAll ("Prefabs/Villagers");
+		GameObject instance = Instantiate (vil_res[Random.Range(0, vil_res.Length-1)], pos, Quaternion.identity) as GameObject;
 		Villager vil_inst = instance.GetComponent<Villager>();
-		vil_inst.Name = name;
-		vil_inst.Age = age;
-		vil_inst.Icon = icon;
-		vil_inst.transform.position = pos;
-		//GameObject newVillager = Instantiate(Resources.Load("Prefabs/VillagerSample", GameObject));
-		 
+	//	vil_inst.Name = name;
+	//	vil_inst.Age = age;
+	//	vil_inst.Icon = icon;
 	}
 	public void CreateNewVillager ()
 	{
-		CreateNewVillager ("Name Surname", 0, null, new Vector3(1000,2,1000));
+		//TODO define villagers spawn position (If they are going to be born? Where?)
+		Vector3 villagersSpawner = new Vector3(Random.Range(-8,8), 1F, Random.Range(-10,-15)); // DEFINE IT MANUALY HERE FOR NOW
+		CreateNewVillager ("Name Surname", 0, null, villagersSpawner);
 	}
 
 	public void CreateNewVillagers (int quantity)

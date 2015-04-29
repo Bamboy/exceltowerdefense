@@ -329,10 +329,10 @@ namespace Excelsion.GameManagers
 		// Sergey - So that player could get some Reward for finished Tasks
 		public void GainReward (Reward reward)
 		{
-			gameResources.Wood += reward.wood;
-			gameResources.Stone += reward.stone;
-			gameResources.Metal += reward.metal;
-			gameResources.Food += reward.food;
+			AddResource(ResourceType.Wood, reward.wood);
+			AddResource(ResourceType.Stone, reward.stone);
+			AddResource(ResourceType.Metal, reward.metal);
+			AddResource(ResourceType.Food, reward.food);
 
 			if (reward.population > 0)
 			{

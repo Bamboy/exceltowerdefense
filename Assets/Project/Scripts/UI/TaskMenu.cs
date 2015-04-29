@@ -99,6 +99,11 @@ public class TaskMenu : MonoBehaviour
 		Debug.Log("Auto-Assign function Doesn't work for now.");
 	}
 
+	public void HideShow()
+	{
+		gameObject.SetActive(!gameObject.activeSelf);
+	}
+
 	void Close()
 	{
 		Destroy(gameObject);
