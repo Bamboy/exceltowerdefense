@@ -12,11 +12,11 @@ namespace Excelsion.Enemies
 	[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(NavMeshAgent))]
 	public class Enemy : MonoBehaviour 
 	{
+		#region Fields
 		// Matt McGrath 4/24/2015
-		public float chanceToDropReward = 0.05f;
-		// Matt McGrath 4/19
-		public List<StatusEffect> statusEffects = new List<StatusEffect>();
-		// Matt McGrath 4/21: Adding this for funsies
+		public float chanceToDropReward = 0.05f;								// A PERCENTAGE chance this Enemy will drop an item upon death.
+		public List<StatusEffect> statusEffects = new List<StatusEffect>();		// A List of the Status Effects plaguing this Enemy.
+		// Random Enemy names: For fun!
 		public string[] names = new string[]{ "Bryan", "Sergey", "Tristan", "Stephan", "Bryan", "Dann", "David", "Imran", "Jake", "Jessin", "Matt", "Jimmy", "Joshua" };
 
 		private bool DO_DEBUG = false;
@@ -32,7 +32,7 @@ namespace Excelsion.Enemies
 			} 
 		}
 
-		public float defaultSpeed; 			// We use this to remove status effects.
+		public float defaultSpeed; 				// We use this to return Enemy to normal Speed after a status effect that affects Speed is over.
 		private NavMeshAgent navigation;
 
 		private Vector3 targetPosition;
@@ -40,12 +40,14 @@ namespace Excelsion.Enemies
 		private Vector3 targetHeading;
 		private Vector3 currentHeading;
 
-		public int health = 30; //TODO - Add status effects TODO - Add health percentage display.
-		private int maxHealth;
+		public int health = 30; 			//TODO - Add health percentage display.
+		public int maxHealth;				// We need this public for the DefenseController.
 		public HealthBar healthDisplay;
 
 		public int moneyValue = 3;
+		#endregion
 
+		#region Initialization
 		public virtual void Start () 
 		{
 			maxHealth = health;
@@ -65,6 +67,7 @@ namespace Excelsion.Enemies
 			Speed = speed;
 			defaultSpeed = speed;
 		}
+		#endregion
 
 		#region Movement
 
@@ -107,7 +110,7 @@ namespace Excelsion.Enemies
 		}
 		#endregion
 
-	
+		#region Update
 		void Update()
 		{
 			// Evaluate status effects.
@@ -135,6 +138,7 @@ namespace Excelsion.Enemies
 			}
 
 		}
+		#endregion
 
 		#region Health
 		public virtual void Damage( int val )
@@ -177,6 +181,7 @@ namespace Excelsion.Enemies
 		}
 		#endregion
 
+		#region Reward Giving
 		// Matt McGrath 4/21/2015: Give a random reward (reward for now). Added second parameter for use with notification system. This of course assumes only one reward can be given.
 		private void GiveRandomRewards(out Reward rewards, out ResourceType typeGiven)
 		{
@@ -221,6 +226,7 @@ namespace Excelsion.Enemies
 			rewards = reward;
 			typeGiven = resourceGiven;
 		}
+		#endregion
 
 		// Jimmy Westcott Apr 22,2015 - Evaluate what the closest target is
 		private Vector3 GetClosestTarget(List<GameObject> houses) 

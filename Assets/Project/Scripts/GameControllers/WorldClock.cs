@@ -100,8 +100,8 @@ namespace Excelsion.GameManagers
 		}
 
 		#region Private Time Settings
-		public static float dayLength = 5.0f;
-		public static float nightLength = 5.0f;
+		public static float dayLength = 15.0f;
+		public static float nightLength = 15.0f;
 		public static float totalDayLength 
 		{
 			get{ return dayLength + nightLength; }
@@ -117,8 +117,21 @@ namespace Excelsion.GameManagers
 			onDusk = null;
 			onDusk += DuskTest;
 		}
-		private static void DawnPause( int day ){ Debug.Log("New dawn! "+ day); /*Pause = true;*/ } //TODO - dawn will be unpaused elsewhere via UI.
-		private static void DuskTest(){ Debug.Log("New night!"); }
+		private static void DawnPause( int day )
+		{ 
+			// Next night enemies will spawn more often.
+			DefenseController.Get().enemySpawnDelay -= 0.2f;					// Reduce spawn time by 20% of a second.
+			Mathf.Clamp(DefenseController.Get().enemySpawnDelay, 0.5f, 5f);		// Clamp, real clamp values not given in design docs.
+			//Debug.Log("Enemies spawn every " + DefenseController.Get().enemySpawnDelay.ToString() + " seconds");
+
+			Debug.Log("New dawn! " + day); /*Pause = true;*/ 
+			//TODO - dawn will be unpaused elsewhere via UI.
+		} 
+
+		private static void DuskTest()
+		{ 
+			Debug.Log("New night!"); 
+		}
 
 
 		[SerializeField] private Transform clockSpinner;

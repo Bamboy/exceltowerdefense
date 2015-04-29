@@ -31,20 +31,15 @@ namespace Excelsion.GameManagers
 		#endregion
 
 		#region Fields
-		public List< Enemy > enemies;
-		//list of available houses
-		public List< GameObject> houses;
-		// Maximum enemies alive at any given time.
-		public int maxEnemies = 20;
-
-		// Target of which the enemies are trying to destroy.
-		public GameObject enemyObjective; 
-
-		public float spawnRadius = 175.0f;
-		public float spawnHeight = 15.0f;
-		public GameObject enemyPrefab;
-
-		public static int money;
+		public List< Enemy > enemies;			// List of active enemies trying to attack us!
+		public List< GameObject> houses;		// List of available houses.
+		public int maxEnemies = 20;				// Maximum enemies alive at any given time.
+		public GameObject enemyObjective; 		// Target to which the enemies are trying to destroy.
+		public float spawnRadius = 175.0f;		// For knowing how far to spawn enemies.
+		public float spawnHeight = 15.0f;		// For knowing how far to spawn enemies.
+		public GameObject enemyPrefab;			// Reference to our Enemy prefab.
+		public static int money;				// Money enemy drops upon death. Money doesn't seem to be used yet(?)	
+		public float enemySpawnDelay = 3.0f;	// How often is a new Enemy spawned?
 		#endregion
 
 		#region Initialization
@@ -89,12 +84,17 @@ namespace Excelsion.GameManagers
 			//_lastTestPos = thisTest;
 		}
 
+		// This will repeat forever, spawning enemies every x amount of seconds. TODO: BUT only during the night!
 		IEnumerator TimedSpawner()
 		{
-			yield return new WaitForSeconds( 0.5f );
+			yield return new WaitForSeconds(enemySpawnDelay);
+
+			// Don't spawn more Enemies if we're not at night!
+			while (WorldClock.isDaytime)
+				yield return null;
 
 			// Don't spawn more Enemies if we're at max count!
-			while( enemies.Count >= maxEnemies)
+			while (enemies.Count >= maxEnemies)
 				yield return null;
 
 			// Otherwise, create a new enemy using the Enemy Prefab.
@@ -103,8 +103,14 @@ namespace Excelsion.GameManagers
 			Enemy newEnemy = obj.GetComponent< Enemy >();
 			if( newEnemy == null ) { Debug.LogError("Enemy prefab specified does not have an Enemy component!", this); Debug.Break(); }
 
+			// Modify the max health of an enemy based on the day. For now, let's make them + 1 stronger each day -- no limits. //TODO: Health really should be a float, so we could do modifiers like Health += 1.20f.
+			newEnemy.maxHealth = WorldClock.day + 1;
+			newEnemy.health = newEnemy.maxHealth;
+
 			// Add the enemy to our controller's list.
 			enemies.Add( newEnemy );
+
+			//Debug.Log("Enemy Spawned with Max Health " + newEnemy.maxHealth.ToString ());
 
 			StartCoroutine( "TimedSpawner" ); 	//Repeat forever...
 		}
@@ -112,26 +118,26 @@ namespace Excelsion.GameManagers
 		// Gets a random position that is located on the edge of a circle.
 		Vector3 GetSpawnPosition()
 		{
-			//Gets a random 2D direction
+			// Gets a random 2D direction.
 			Vector2 direction = Random.insideUnitCircle.normalized; 
-			//Removes the y axis of our objective's position.
+			// Removes the y axis of our objective's position.
 			Vector2 origin = new Vector2(enemyObjective.transform.position.x, enemyObjective.transform.position.z);
-			//"Pushes" our origin position in direction by a certian distance.
-			Vector2 pos = VectorExtras.OffsetPosInDirection( origin, direction, spawnRadius );
-			//Converts back into Vector3, with the y axis being at a set height, then returns it.
-			return new Vector3( pos.x, spawnHeight, pos.y );
+			// "Pushes" our origin position in direction by a certian distance.
+			Vector2 pos = VectorExtras.OffsetPosInDirection(origin, direction, spawnRadius);
+			// Converts back into Vector3, with the y axis being at a set height, then returns it.
+
+			return new Vector3(pos.x, spawnHeight, pos.y );
 		}
 
-		public void AddHouse(GameObject house) 
-		{
-			houses.Add(house);
-		}
-
-		public void RemoveHouse(GameObject house) 
-		{
-			houses.Remove(house);
-		}
-
-
+		// Note from Matt McGrath - 4/28/2015: These should probably be done via the StructureController now. As a House is a type of Structure. These don't seem to be used anyways so I'll comment them out.
+//		public void AddHouse(GameObject house) 
+//		{
+//			houses.Add(house);
+//		}
+//
+//		public void RemoveHouse(GameObject house) 
+//		{
+//			houses.Remove(house);
+//		}
 	}
 }
