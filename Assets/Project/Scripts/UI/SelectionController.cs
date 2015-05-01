@@ -109,7 +109,7 @@ namespace Excelsion.UI
 				{
 					Debug.LogWarning("You probably want to specify a SelectionTransform for "+ obj.name +". Using defaults.", obj);
 					transform.position = obj.transform.position;
-					transform.localScale = scaleMultiplier;
+					transform.localScale = Vector3.one*8; // WAS: scaleMultiplier; /* SERGEY: This caused problems with selecting Scaled & Small objects */
 				}
 				if( onSelectionChanged != null )
 					onSelectionChanged( obj );

@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using Excelsion.Tasks;
+using Excelsion.UI;
 
 namespace Excelsion.Villagers
 {
@@ -122,6 +123,13 @@ namespace Excelsion.Villagers
 		{
 			transform.position = pos;
 		}
+
+		#region Select
+		public void SelectVillager()
+		{
+			SelectionController.Get().Select(transform.GetComponent<VillagerMotor>());
+		}
+		#endregion
 
 		void OnDestroy()
 		{

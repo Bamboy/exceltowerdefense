@@ -13,6 +13,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using Excelsion.Villagers;
 using Excelsion.Tasks;
+using Excelsion.GameManagers;
 
 public class TaskMenu : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class TaskMenu : MonoBehaviour
 	public TaskAssignPanel taskAssignPanel;
 	public Button ReAssignButton;
 	public Button AutoAssignButton;
-	public Button BackToGameButton;
+//	public Button BackToGameButton;
 
 	public VillagerButton ActiveVillagerButton;
 
@@ -38,7 +39,7 @@ public class TaskMenu : MonoBehaviour
 			else
 			{
 				GameObject instance = Instantiate(Resources.Load("GUI/TaskMenu/TaskMenu")) as GameObject;
-				instance.transform.SetParent(GameObject.Find("Canvas").transform, false);
+				instance.transform.SetParent(GameObject.Find("Screen Canvas").transform, false);
 				taskMenu = instance.GetComponent<TaskMenu>();
 				return taskMenu;
 			}
@@ -49,6 +50,7 @@ public class TaskMenu : MonoBehaviour
 	#region papulate Assign Menu Panels
 	public void PapulateAssignVillager (Villager villager, VillagerButton villagerButton)
 	{
+		villager.SelectVillager();
 		villagerAssignPanel.Papulate(villager);
 		if ((bool)villagerButton)
 		{
@@ -81,9 +83,10 @@ public class TaskMenu : MonoBehaviour
 		// --- Buttons Listeners ---
 		ReAssignButton.onClick.AddListener(() => Assign());
 		AutoAssignButton.onClick.AddListener(() => AutoAssign());
-		BackToGameButton.onClick.AddListener(() => Close());
+	//	BackToGameButton.onClick.AddListener(() => Close());
 
 	}
+
 	#region Menu Buttons Clicks
 	void Assign()
 	{
@@ -98,10 +101,12 @@ public class TaskMenu : MonoBehaviour
 	{
 		Debug.Log("Auto-Assign function Doesn't work for now.");
 	}
-
-	public void HideShow()
+	
+	public void HideShow(int day)
 	{
-		gameObject.SetActive(!gameObject.activeSelf);
+		print("HideShow TaskMenu");
+		WorldClock.Pause = !WorldClock.Pause;
+		VillagerController.Get().TheTaskMenu.gameObject.SetActive(!gameObject.activeSelf);
 	}
 
 	void Close()

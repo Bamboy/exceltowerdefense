@@ -39,13 +39,18 @@ public class TaskController : MonoBehaviour
 		TaskList = new Task[0];
 		foreach(Task task in Resources.LoadAll("Prefabs/Tasks", typeof(Task)))
 		{
-			TaskList = ArrayTools.PushLast(TaskList,task);
+			if (task.Name == "Empty")
+				emptyTask = task;
+			else if (task.Name == "Go Home")
+			{}
+			else
+				TaskList = ArrayTools.PushLast(TaskList,task);
 		}
 	}
-
+	private Task emptyTask;
 	public Task GetEmpty ()
 	{
-		return TaskList[0];
+		return emptyTask;
 	}
 
 	public Task GetTask (string name)

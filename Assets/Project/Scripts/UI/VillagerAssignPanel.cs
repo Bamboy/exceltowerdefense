@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Excelsion.Villagers;
 using Excelsion.Tasks;
+using Excelsion.GameManagers;
 
 public class VillagerAssignPanel : MonoBehaviour
 {
@@ -21,12 +22,15 @@ public class VillagerAssignPanel : MonoBehaviour
 		Icon.sprite = villager.Icon;
 
 	// currently assigned task papulating:
-		Task task = villager.GetCurTask();
-		if (task.Name == "Empty")
-			TaskStatus.color = Color.red;
-		else
-			TaskStatus.color = Color.green;
-		TaskStatus.GetComponentInChildren<Text>().text = "CurTask: " + task.Name + ".";
+		if (VillagerController.Get().TheTaskMenu.isActiveAndEnabled)
+		{
+			Task task = villager.GetCurTask();
+			if (task.Name == "Empty")
+				TaskStatus.color = Color.red;
+			else
+				TaskStatus.color = Color.green;
+			TaskStatus.GetComponentInChildren<Text>().text = "CurTask: " + task.Name + ".";
+		}
 	// ------------------------
 	}
 

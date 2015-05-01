@@ -26,6 +26,7 @@ public enum ResourceType
 
 // Matt McGrath - 4/23/2014
 // Structure to keep our Resources. "GameResources" prevents confusion with Unity's "Resources" definition.
+[System.Serializable]
 public struct GameResources
 {
 	public int Population;
@@ -173,6 +174,7 @@ namespace Excelsion.GameManagers
 			case ResourceType.Population:
 				gameResources.Population += amount;
 				gameResources.Population = Mathf.Clamp(gameResources.Population, 0, maxNumberOfPopulation);
+				VillagerController.Get().CreateNewVillagers(amount);
 				break;
 			case ResourceType.Food:
 				gameResources.Food += amount;
@@ -194,6 +196,14 @@ namespace Excelsion.GameManagers
 				Debug.Log ("Undefined ResourceType provided!");
 				break;
 			}
+		}
+		public void AddResources(GameResources resources)
+		{
+			AddResource (ResourceType.Food, resources.Food);
+			AddResource (ResourceType.Wood, resources.Wood);
+			AddResource (ResourceType.Stone, resources.Stone);
+			AddResource (ResourceType.Metal, resources.Metal);
+			AddResource (ResourceType.Population, resources.Population);
 		}
 
 		// Matt McGrath - 4/21/2015: 
@@ -324,46 +334,5 @@ namespace Excelsion.GameManagers
 			// No longer need to update UI in this class.
 		}
 		#endregion
-
-		#region Sergey's Rewards
-		// Sergey - So that player could get some Reward for finished Tasks
-		public void GainReward (Reward reward)
-		{
-			AddResource(ResourceType.Wood, reward.wood);
-			AddResource(ResourceType.Stone, reward.stone);
-			AddResource(ResourceType.Metal, reward.metal);
-			AddResource(ResourceType.Food, reward.food);
-
-			if (reward.population > 0)
-			{
-				VillagerController.Get().CreateNewVillagers(reward.population - gameResources.Population);
-				gameResources.Population += reward.population;
-			}
-		}
-		#endregion
 	}
 }
-
-#region Sergey's Serializable Reward class
-// Sergey Bedov - 4/12/2015
-[System.Serializable]
-public class Reward
-{
-	public int wood;
-	public int stone;
-	public int metal;
-	public int food;
-	public int population;
-	
-	public Reward (int wood, int stone, int metal, int food, int pop)
-	{
-		this.wood = wood;
-		this.stone = stone;
-		this.metal = metal;
-		this.food = food;
-		this.population = pop;
-	}
-	
-	public Reward (): this(0,0,0,0,0) {}
-}
-#endregion

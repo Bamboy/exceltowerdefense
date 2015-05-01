@@ -51,9 +51,9 @@ public class VillagerButton : MonoBehaviour
 	public void UpdateColor ()
 	{
 		if (villager.GetCurTask().Name == "Empty") {
-			Button.colors = unassignedVillagerColors; print ("unassigned COLOR");
+			Button.colors = unassignedVillagerColors; // print ("unassigned COLOR");
 		} else {
-			Button.colors = assignedVillagerColors; print ("assigned COLOR");
+			Button.colors = assignedVillagerColors; // print ("assigned COLOR");
 		}
 	}
 

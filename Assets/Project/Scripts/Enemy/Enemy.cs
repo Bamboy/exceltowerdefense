@@ -168,11 +168,11 @@ namespace Excelsion.Enemies
 			if (Random.Range (0f, 1f) > chanceToDropReward)
 				return;
 
-			Reward reward = null;
+			GameResources reward = new GameResources();
 			ResourceType resourceType = ResourceType.None;
 			GiveRandomRewards(out reward, out resourceType);
 
-			if (reward.food > 0 || reward.wood > 0 || reward.stone > 0 || reward.metal > 0)
+			if (reward.Food > 0 || reward.Wood > 0 || reward.Stone > 0 || reward.Metal > 0)
 			{
 				string randomName = names[Random.Range (0, names.Length)];
 				NotificationLog.Get ().PushNotification(new Notification(randomName + " Died!" + " Dropped 1 " + resourceType.ToString(), Color.yellow, 5.0f));
@@ -183,10 +183,10 @@ namespace Excelsion.Enemies
 
 		#region Reward Giving
 		// Matt McGrath 4/21/2015: Give a random reward (reward for now). Added second parameter for use with notification system. This of course assumes only one reward can be given.
-		private void GiveRandomRewards(out Reward rewards, out ResourceType typeGiven)
+		private void GiveRandomRewards(out GameResources rewards, out ResourceType typeGiven)
 		{
 			// Defaults our rewards to zero of each resource type.
-			Reward reward = new Reward();
+			GameResources reward = new GameResources();
 			ResourceType resourceGiven = ResourceType.None;
 
 			// Sloppy method for testing purposes and notifying what reward was given.
@@ -194,34 +194,34 @@ namespace Excelsion.Enemies
 			{
 				if (Random.Range (0f, 1f) <= ResourceController.Get().metalDropChance)
 				{
-					reward.metal = 1;
+					reward.Metal = 1;
 					resourceGiven = ResourceType.Metal;
 					break;
 				}
 
 				if (Random.Range (0f, 1f) <= ResourceController.Get().stoneDropChance)
 				{
-					reward.stone = 1;
+					reward.Stone = 1;
 					resourceGiven = ResourceType.Stone;
 					break;
 				}
 
 				if (Random.Range (0f, 1f) <= ResourceController.Get().woodDropChance)
 				{
-					reward.wood = 1;
+					reward.Wood = 1;
 					resourceGiven = ResourceType.Wood;
 					break;
 				}
 
 				if (Random.Range (0f, 1f) <= ResourceController.Get().foodDropChance)
 				{
-					reward.food = 1;
+					reward.Food = 1;
 					resourceGiven = ResourceType.Food;
 					break;
 				}
 			}
 
-			ResourceController.Get().GainReward(reward);
+			ResourceController.Get().AddResources(reward);
 
 			rewards = reward;
 			typeGiven = resourceGiven;

@@ -13,6 +13,7 @@ using Excelsion.GameManagers;
 
 public class VillagerController : MonoBehaviour
 {
+	public TaskMenu TheTaskMenu;
 
 	public Villager[] VillagerList;
 	
@@ -46,7 +47,34 @@ public class VillagerController : MonoBehaviour
 		int villagersQty = ResourceController.Get().ResourceAmount(ResourceType.Population);
 		VillagerList = new Villager[0];
 		CreateNewVillagers(villagersQty);
+
+		TheTaskMenu = TaskMenu.Get();
+		TheTaskMenu.HideShow(day);
+
 	}
+
+	void Start()
+	{
+		WorldClock.onDawn += TheTaskMenu.HideShow;
+
+	}
+
+	void Update()
+	{
+	//	if WorldClock.
+	//	WorldClock.onDusk += TheTaskMenu.HideShow;
+	}
+
+	private int day;
+	private void onDawn()
+	{
+	//	DayNightCycle
+	}
+
+//	private IEnumerator test()
+//	{
+//		yield return new WaitForSeconds (1);
+//	}
 
 	#region Create Villager(s)
 	public void CreateNewVillager (string name, float age, Sprite icon, Vector3 pos)

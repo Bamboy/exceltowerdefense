@@ -17,7 +17,7 @@ namespace Excelsion.Tasks
 	public class Task : MonoBehaviour
 	{
 		// this are to make Tasks prefabs
-		public enum TaskType{Stay, GoTo, Gather, Build}
+		public enum TaskType{Stay, GoTo, Gather, Build, GoHome}
 		public TaskType TheTaskType;
 
 		public delegate void SetupTask();
@@ -33,7 +33,8 @@ namespace Excelsion.Tasks
 
 		public float GoalDelay=10F; // --- this is time villager has to stay on goal to gain Reward
 
-		public Reward TaskReward;
+//		public Reward TaskReward;
+		public GameResources RewardResources;
 
 		public Task NextTask; // --- GoHome or Empty by default
 
@@ -62,6 +63,9 @@ namespace Excelsion.Tasks
 			case TaskType.Build:
 				setupTask = setupBuildTask;
 				break;
+			case TaskType.GoHome:
+				setupTask = setupGoHomeTask;
+				break;
 			default: // same that TaskType.Stay
 				setupTask = setupStayTask;
 				break;
@@ -89,11 +93,19 @@ namespace Excelsion.Tasks
 		void setupGatherTask()
 		{
 
-
+			if (GoalTag.Length != 0)
+			{
+				transform.position = ClosestWithTag(GoalTag).transform.position;
+			}
 
 		}
 		void setupBuildTask()
 		{
+		}
+
+		void setupGoHomeTask()
+		{
+			transform.position = villager.GetComponent<Transform>().position;
 		}
 
 		#endregion
@@ -153,8 +165,11 @@ namespace Excelsion.Tasks
 		// --- called when the task is done, and is time to gain Reward
 		public void Done()
 		{
-			Debug.Log("Task Done: " + Name + "; Progress = " + TaskProgress);
-			ResourceController.Get().GainReward(TaskReward);
+			string taskDoneMessage = "" + villager.Name + " | " + this.Name + " | F="
+				+ RewardResources.Food + "|W=" + RewardResources.Wood + "|S="
+					+ RewardResources.Stone + "|P=" + RewardResources.Population; // TEMP
+			NotificationLog.Get ().PushNotification(new Notification(taskDoneMessage, Color.green, 5.0f));
+			ResourceController.Get().AddResources(RewardResources);
 			if (NextTask == null)
 				NextTask = TaskController.Get().GetEmpty();
 			print ("--- ASSIGNED TASK ---\n Villager: " + villager + " | Task: " + NextTask);

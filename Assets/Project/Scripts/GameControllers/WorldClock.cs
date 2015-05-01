@@ -85,6 +85,12 @@ namespace Excelsion.GameManagers
 		//TODO - consider adding a percentage day/night progress
 		#endregion
 
+		#region Pause
+		public delegate void OnPause();
+		public delegate void OnUnpause();
+		public static OnPause onPause;
+		public static OnUnpause onUnpause;
+
 		private static bool paused;
 		public static bool Pause
 		{
@@ -96,12 +102,19 @@ namespace Excelsion.GameManagers
 				//	Time.timeScale = 0f; //TODO - make our own timescale var instead of modifying the global one?
 				//else
 				//	Time.timeScale = 1f;
+				if (paused)
+					if (onPause != null)
+						onPause();
+				if (!paused)
+					if (onUnpause != null)
+						onUnpause();
 			}
 		}
+		#endregion
 
 		#region Private Time Settings
-		public static float dayLength = 15.0f;
-		public static float nightLength = 15.0f;
+		public static float dayLength = 20.0f;
+		public static float nightLength = 20.0f;
 		public static float totalDayLength 
 		{
 			get{ return dayLength + nightLength; }
