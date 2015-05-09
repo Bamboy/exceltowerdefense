@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: cd74b20f70df83043b7fc341728b41bd
-timeCreated: 1428782676
+guid: 198bc2eff9b82eb4da09b91f7eaabfc6
+timeCreated: 1431117406
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder.001
+    4300000: spade
   materials:
     importMaterials: 0
     materialName: 0
@@ -66,5 +66,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: doodads
+  assetBundleName: 
   assetBundleVariant: 

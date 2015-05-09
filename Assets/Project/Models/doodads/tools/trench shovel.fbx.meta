@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 93087d9518b654640a8e4980ca460efa
-timeCreated: 1428782676
+guid: dc323d043f1c1b0479f3f521c11a87ad
+timeCreated: 1431117406
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder.002
+    4300000: trench shovel
   materials:
     importMaterials: 0
     materialName: 0
@@ -66,5 +66,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: doodads
+  assetBundleName: 
   assetBundleVariant: 

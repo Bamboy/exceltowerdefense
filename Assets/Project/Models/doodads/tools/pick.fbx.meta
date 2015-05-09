@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 085f7640a44507245a2bb37b70b8f656
-timeCreated: 1428782675
+guid: b4d4018481a3b36459e962e322a5c987
+timeCreated: 1431117406
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -66,5 +66,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: doodads
+  assetBundleName: 
   assetBundleVariant: 

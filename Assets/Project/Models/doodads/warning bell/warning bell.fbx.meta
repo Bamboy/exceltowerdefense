@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2928ff16b3947a94d910ccc93dc989ad
-timeCreated: 1430148953
+timeCreated: 1431147743
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -10,7 +10,7 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: WarningBell
-    7400000: WarningBell|Wheel001|Take 001|BaseLayer
+    7400000: WarningBell|WarningBell|WarningBell|Wheel001|Take 001|BaseLayer|WarningBell
     9500000: //RootNode
   materials:
     importMaterials: 0

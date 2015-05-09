@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e0d6fe3614597ab48986ae1f2c68a909
-timeCreated: 1428781408
+guid: ce811ac26d7c7a546b8a15375aae68b0
+timeCreated: 1431116918
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: main crate.001
+    4300000: larger crate 1
   materials:
     importMaterials: 0
     materialName: 0
@@ -66,5 +66,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
-  assetBundleName: doodads
+  assetBundleName: 
   assetBundleVariant: 
