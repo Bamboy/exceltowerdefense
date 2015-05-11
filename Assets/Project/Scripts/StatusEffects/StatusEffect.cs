@@ -29,7 +29,7 @@ public abstract class StatusEffect
 	protected StatusEffectType statusEffectType;
 
 	public float effectDuration;							// NOT USED YET: Duration the StatusEffect lasts.
-	public Enemy enemyAffected;								// The Enemy suffering with this StatusEffect.
+	public Enemy enemyAffected;							// The Enemy suffering with this StatusEffect.
 	
 	public bool IsEffectStackable = false;					// If we're already on fire (or etc), should we have two stacks of fire ticking against us?
 

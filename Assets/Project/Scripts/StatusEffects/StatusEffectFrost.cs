@@ -20,7 +20,7 @@ public class StatusEffectFrost : StatusEffect
 		statusEffectType = StatusEffectType.Frost;
 	}
 
-	public override void EvaluateStatusEffect ()
+	public override void EvaluateStatusEffect()
 	{
 		EvaluateFrost();
 	}
@@ -31,7 +31,7 @@ public class StatusEffectFrost : StatusEffect
 		SetFrost(effectDuration);
 	}
 
-	public void SetFrost(float duration )
+	public void SetFrost(float duration)
 	{
 		if( IsFrosted )
 			frost += duration;
@@ -44,7 +44,7 @@ public class StatusEffectFrost : StatusEffect
 	}
 	void EvaluateFrost()
 	{
-		if( IsFrosted )
+		if (IsFrosted)
 		{
 			frost -= Time.deltaTime;
 			if( IsFrosted == false ) //End Fody.

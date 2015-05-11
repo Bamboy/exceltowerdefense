@@ -1,19 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Excelsion.Enemies;
 
-public class SpawnPoint : MonoBehaviour {
-
+public class SpawnPoint : MonoBehaviour 
+{
     public GameObject enemyObjective; 
-
-    public List< Enemy > enemies;
+    public List<Enemy> enemies;
     public GameObject enemyPrefab;
-
     public float spawnTime;
 
-	void Start () {
-
+	void Start () 
+	{
         enemies = new List<Enemy>();
         enemyObjective = GameObject.FindGameObjectWithTag("Player") as GameObject;
         if (enemyObjective == null)
@@ -22,8 +20,9 @@ public class SpawnPoint : MonoBehaviour {
         }
         StartCoroutine("TimedSpawner");
 	}
-	void Update () {
-	
+
+	void Update () 
+	{
 	}
 
     IEnumerator TimedSpawner()

@@ -62,5 +62,13 @@ namespace Excelsion.UI
 			stoneText.text = "Stone: " + resourceController.ResourceAmount(ResourceType.Stone);
 			metalText.text = "Metal: " + resourceController.ResourceAmount(ResourceType.Metal);
 		}
+
+		public void HideShow()
+		{
+			// Slide the menu in? For now just activate or deactivate it.
+			gameObject.SetActive(!gameObject.activeSelf);
+
+			//displayButton.GetComponent<TabSlideOut>().isSliding = true;
+		}
 	}
 }

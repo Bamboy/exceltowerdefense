@@ -31,8 +31,8 @@ namespace Excelsion.GameManagers
 		#endregion
 
 		#region Fields
-		public List< Enemy > enemies;			// List of active enemies trying to attack us!
-		public List< GameObject> houses;		// List of available houses.
+		public List<Enemy> enemies;				// List of active enemies trying to attack us!
+		public List<GameObject> houses;			// List of available houses.
 		public int maxEnemies = 20;				// Maximum enemies alive at any given time.
 		public GameObject enemyObjective; 		// Target to which the enemies are trying to destroy.
 		public float spawnRadius = 175.0f;		// For knowing how far to spawn enemies.
@@ -52,7 +52,7 @@ namespace Excelsion.GameManagers
 		}
 		void Start()
 		{
-			enemies = new List< Enemy >();
+			enemies = new List<Enemy>();
 			enemyObjective = GameObject.FindGameObjectWithTag("Player") as GameObject;
 			if( enemyObjective == null )
 			{
@@ -100,7 +100,7 @@ namespace Excelsion.GameManagers
 			// Otherwise, create a new enemy using the Enemy Prefab.
 			GameObject obj = GameObject.Instantiate( enemyPrefab, GetSpawnPosition(), Quaternion.identity ) as GameObject;
 			obj.transform.parent = this.transform;
-			Enemy newEnemy = obj.GetComponent< Enemy >();
+			Enemy newEnemy = obj.GetComponent<Enemy>();
 			if( newEnemy == null ) { Debug.LogError("Enemy prefab specified does not have an Enemy component!", this); Debug.Break(); }
 
 			// Modify the max health of an enemy based on the day. For now, let's make them + 1 stronger each day -- no limits. //TODO: Health really should be a float, so we could do modifiers like Health += 1.20f.

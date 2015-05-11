@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
-
-// Started by Stephan Ennen - 4/2/2015.
 
 /*********************** ABOUT RESOURCES ***********************
 * Wood  		- Early resource material
@@ -13,6 +11,7 @@ using UnityEngine.UI;
 *****************************************************************/
 
 // Matt McGrath - 4/21/2015
+
 // An enum for the type of Resource we are looking at.
 public enum ResourceType
 {
@@ -24,7 +23,6 @@ public enum ResourceType
 	Metal
 };
 
-// Matt McGrath - 4/23/2014
 // Structure to keep our Resources. "GameResources" prevents confusion with Unity's "Resources" definition.
 [System.Serializable]
 public struct GameResources
@@ -117,12 +115,7 @@ namespace Excelsion.GameManagers
 		}
 		#endregion
 
-		#region Matt - Public Resource Amount / Get Methods
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// Matt McGrath - 4/21/2015: Adding required tasked functionality + also experimenting with different approach to resources ///
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		// Matt McGrath - 4/21/2015
+		#region Public Resource Amount / Get Methods
 		// Return the value of a specified resource type.
 		public int ResourceAmount(ResourceType resourceType)
 		{
@@ -154,17 +147,14 @@ namespace Excelsion.GameManagers
 			
 			return resourceAmount;
 		}
-
-		// MATT - 4/21/2015: Temporary testing using a more flexible method for CanAfford. Avoids needing one for each resource type.
+		
 		// Doesn't technically rely on new Resource classes, either.
 		public bool CanAffordResource(ResourceType resourceType, int amount)
 		{
 			int amountOfResource = ResourceAmount(resourceType);
 			return (amountOfResource - amount >= 0) ? true : false;
 		}
-
-
-		// Matt McGrath - 4/21/2015: 
+		
 		// Adds an amount of a given resource, keeping it within min and max bounds.
 		public void AddResource(ResourceType resourceType, int amount)
 		{
@@ -197,6 +187,8 @@ namespace Excelsion.GameManagers
 				break;
 			}
 		}
+
+		// Adds the resources specified in the GameResources parameter.
 		public void AddResources(GameResources resources)
 		{
 			AddResource (ResourceType.Food, resources.Food);
@@ -205,8 +197,7 @@ namespace Excelsion.GameManagers
 			AddResource (ResourceType.Metal, resources.Metal);
 			AddResource (ResourceType.Population, resources.Population);
 		}
-
-		// Matt McGrath - 4/21/2015: 
+		
 		// Removes an amount of a given resource, keeping it within min and max bounds.
 		// *** Could simply just have AddResource and pass in negative amounts instead of creating this. But maybe we'll do something differently after removing, so keep this here.
 		public void RemoveResource(ResourceType resourceType, int amount)
@@ -240,7 +231,6 @@ namespace Excelsion.GameManagers
 			}
 		}
 
-		// Matt McGrath - 4/21/2015
 		// Returns the Maximum amount of this resource the player is allowed to have.
 		public int MaximumAmountOfResource(ResourceType resourceType)
 		{
@@ -324,7 +314,6 @@ namespace Excelsion.GameManagers
 			gameResources.Metal -= resourcesToRemove.Metal;
 			Mathf.Clamp(gameResources.Metal, 0, maxNumberOfMetal);
 		}
-
 		#endregion
 
 		#region Updates

@@ -1,17 +1,18 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Excelsion.Enemies;
 using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
-using Excelsion.Enemies;
 
 //Stephan Ennen - 3/17/2015
-using System.Collections.Generic;
 
 namespace Excelsion.Inventory
 {
-	//RIGHT NOW THIS CLASS IS ONLY A PLACEHOLDER FOR OTHER SCRIPTS.
+	// RIGHT NOW THIS CLASS IS ONLY A PLACEHOLDER FOR OTHER SCRIPTS.
 	public class ItemIgnite : Item
 	{
+		#region Fields
 		private static Sprite spr;
 		public ItemIgnite()
 		{
@@ -21,9 +22,8 @@ namespace Excelsion.Inventory
 		//Return display icon location
 		public override Sprite Icon{ get{ return spr; } }
 
-
-		public override int Priority{ get{ return 0; } } //Lower values will be overwritten by higher values.
-		public override int MutexBits{ get{ return 0; } } //Runs a bitwise AND operation to see if we can use this item alongside another item.
+		public override int Priority{ get{ return 0; } } 	//Lower values will be overwritten by higher values.
+		public override int MutexBits{ get{ return 0; } } 	//Runs a bitwise AND operation to see if we can use this item alongside another item.
 		public override TowerStats Stats{ 
 			get{ 
 				TowerStats val = new TowerStats();
@@ -38,7 +38,7 @@ namespace Excelsion.Inventory
 		public override string Name{ get{ return "Set fire to things! :D"; } }
 
 		//TODO - Add model / effect changes
-		
+		#endregion
 		
 		#region Tower Functions
 		//Apply tower delegates here.
@@ -59,26 +59,14 @@ namespace Excelsion.Inventory
 			return;
 		}*/
 		#endregion
+
 		#region Projectile Functions
 		//Called after our projectile is created. Use this to pass delegates or other info to the projectile.
 		public override void OnProjectileDelegates( ProjectileBase projectile )
 		{
 			projectile.onEnemiesHit += OnEnemiesHit;
 		}
-		/*
-		//Called in the projectile's update loop. Pass as a delegate in OnProjectileDelegates.
-		public override void OnProjectileUpdate( ProjectileBase projectile )
-		{
-			return;
-		}
-		
-		//Override how target(s) are selected. Only one of these functions is run.
-		public override void EnemySelection( out Enemy[] enemies, ProjectileBase projectile )
-		{
-			enemies = new Enemy[0];
-			return;
-		} */
-		
+
 		//Give the enemies status effects or just do some damage.
 		public override void OnEnemiesHit( Enemy[] enemies )
 		{
@@ -87,7 +75,7 @@ namespace Excelsion.Inventory
 			effectsBeingApplied.Add (StatusEffectType.Cold);
 			List<StatusEffectType> effectsToIgnore = new List<StatusEffectType>();
 
-			foreach( Enemy e in enemies )
+			foreach (Enemy e in enemies )
 			{
 				// TESTING NOT STACKING EFFECTS:
 				foreach (StatusEffect effect in e.statusEffects)
@@ -119,7 +107,5 @@ namespace Excelsion.Inventory
 			}
 		}
 		#endregion
-		
-		
 	}
 }

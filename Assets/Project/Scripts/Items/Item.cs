@@ -1,24 +1,24 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using Excelsion.Enemies;
 using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
-using Excelsion.Enemies;
-using UnityEngine.EventSystems;
 
 //Stephan Ennen - 3/7/2015
 
 namespace Excelsion.Inventory
 {
-	//Base class for all items and their functionality.
+	// Base class for all items and their functionality.
 	public abstract class Item : System.Object
 	{
-		public abstract int Priority{ get; } //Lower values will be overwritten by higher values. NOT IMPLEMENTED - IGNORE.
-		public abstract int MutexBits{ get; } //Runs a bitwise AND operation to see if we can use this item alongside another item. NOT IMPLEMENTED - IGNORE.
-		public abstract TowerStats Stats{ get; } //Values here are added with the tower's base stats and other item's stats. There are min/max limits in place so go nuts.
+		public abstract int Priority{ get; } 		//Lower values will be overwritten by higher values. NOT IMPLEMENTED - IGNORE.
+		public abstract int MutexBits{ get; } 		//Runs a bitwise AND operation to see if we can use this item alongside another item. NOT IMPLEMENTED - IGNORE.
+		public abstract TowerStats Stats{ get; } 	//Values here are added with the tower's base stats and other item's stats. There are min/max limits in place so go nuts.
 
-		//Return display name NOT IMPLEMENTED.
+		// Return display name NOT IMPLEMENTED.
 		public abstract string Name{ get; }
-		//Return display icon location for GUI. A sprite needs to actually be created here, so look at or copy some of the existing item definitions.
+		// Return display icon location for GUI. A sprite needs to actually be created here, so look at or copy some of the existing item definitions.
 		public abstract Sprite Icon{ get; }
 
 		//TODO - Add model / effect changes
@@ -42,33 +42,32 @@ namespace Excelsion.Inventory
 			return;
 		}
 		#endregion
+
 		#region Projectile Functions
-		//Called after our projectile is created. Use this to pass delegates or other info to the new projectile.
-		public virtual void OnProjectileDelegates( ProjectileBase projectile )
+		// Called after our projectile is created. Use this to pass delegates or other info to the new projectile.
+		public virtual void OnProjectileDelegates(ProjectileBase projectile)
 		{
 			return;
 		}
 
-		//Called in the projectile's update loop. Note that a projectile with this won't move on its own! [Add to projectile's 'onUpdateEvent' delegate]
-		public virtual void OnProjectileUpdate( ProjectileBase projectile )
+		// Called in the projectile's update loop. Note that a projectile with this won't move on its own! [Add to projectile's 'onUpdateEvent' delegate]
+		public virtual void OnProjectileUpdate(ProjectileBase projectile)
 		{
 			return;
 		}
 
-		//Override how target(s) are selected before collision damage is dealt. An example of how to use this would be like getting all enemies within X range for an explosion. [Add to projectile's 'onEnemySelection' delegate]
-		public virtual void EnemySelection( out Enemy[] enemies, ProjectileBase projectile ) 
+		// Override how target(s) are selected before collision damage is dealt. An example of how to use this would be like getting all enemies within X range for an explosion. [Add to projectile's 'onEnemySelection' delegate]
+		public virtual void EnemySelection(out Enemy[] enemies, ProjectileBase projectile) 
 		{
 			enemies = new Enemy[0];
 			return;
 		}
 
-		//Give the enemies status effects or just do some extra damage. Note that damage is always seperately dealt by ProjectileBase. [Add to projectile's 'onEnemiesHit' delegate]
-		public virtual void OnEnemiesHit( Enemy[] enemies )
+		// Give the enemies status effects or just do some extra damage. Note that damage is always seperately dealt by ProjectileBase. [Add to projectile's 'onEnemiesHit' delegate]
+		public virtual void OnEnemiesHit(Enemy[] enemies)
 		{
 			return;
 		}
 		#endregion
-
-
 	}
 }

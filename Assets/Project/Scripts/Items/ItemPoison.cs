@@ -1,16 +1,17 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Excelsion.Enemies;
 using Excelsion.Towers;
 using Excelsion.Towers.Projectiles;
-using Excelsion.Enemies;
 
-using System.Collections.Generic;
-
+// Jimmy Westcott
 namespace Excelsion.Inventory
 {
-	//Item that slows a tiny bit and puts a long DoT on the enemy
+	// Item that slows a tiny bit and puts a long Damage-Over-Time on the enemy.
 	public class ItemPoison : Item
 	{
+		#region Fields
 		private static Sprite spr;
 		
 		// Default Constructor; simply creates the Sprite for now.
@@ -41,11 +42,12 @@ namespace Excelsion.Inventory
 				return val;
 			}
 		}
-		
+
 		//Return display name
 		public override string Name{ get{ return "Poison Enemies!"; } }
 		
 		//TODO - Add model / effect changes
+		#endregion
 		
 		#region Projectile Functions
 		// Called after our projectile is created. Use this to pass delegates or other info to the projectile.
@@ -61,7 +63,7 @@ namespace Excelsion.Inventory
 			effectsBeingApplied.Add (StatusEffectType.Poison);
 			List<StatusEffectType> effectsToIgnore = new List<StatusEffectType>();
 			
-			foreach( Enemy e in enemies )
+			foreach (Enemy e in enemies )
 			{
 				// TESTING NOT STACKING EFFECTS:
 				foreach (StatusEffect effect in e.statusEffects)

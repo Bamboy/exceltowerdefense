@@ -133,10 +133,12 @@ namespace Excelsion.GameManagers
 		private static void DawnPause( int day )
 		{ 
 			// Next night enemies will spawn more often.
-			DefenseController.Get().enemySpawnDelay -= 0.2f;					// Reduce spawn time by 20% of a second.
-			Mathf.Clamp(DefenseController.Get().enemySpawnDelay, 0.5f, 5f);		// Clamp, real clamp values not given in design docs.
-			//Debug.Log("Enemies spawn every " + DefenseController.Get().enemySpawnDelay.ToString() + " seconds");
-
+			//if (GameManager.InitializeWorldClock)				Matt: I need this in conjunction with my GameManager, so it doesn't create a defense controller when I'm not wanting one.
+			// I'll comment it out for now until everyone starts using the GameManager prefab for their scenes.
+			{
+				DefenseController.Get().enemySpawnDelay -= 0.2f;					// Reduce spawn time by 20% of a second.
+				Mathf.Clamp(DefenseController.Get().enemySpawnDelay, 0.5f, 5f);		// Clamp, real clamp values not given in design docs.
+			}
 			Debug.Log("New dawn! " + day); /*Pause = true;*/ 
 			//TODO - dawn will be unpaused elsewhere via UI.
 		} 

@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine;
+using Excelsion.Enemies;
+using Excelsion.GameManagers;
 using Excelsion.Inventory;
 using Excelsion.Towers.Projectiles;
-using Excelsion.GameManagers;
-using Excelsion.Enemies;
 using Excelsion.UI;
 
 //Stephan Ennen - 4/2/2015
@@ -25,7 +24,7 @@ namespace Excelsion.Towers
 		public float projectileSpawnDistance = 3f;
 		public Bag inventory;
 		public TowerStats stats;
-		public List< Enemy > targets; //Switch this to internal later...
+		public List<Enemy> targets; //Switch this to internal later...
 		public Enemy activeTarget;
 
 		private bool CanAttack{ get{ return (stats.speed > 0.0f && activeTarget != null); } } //Disable attacking if speed is zero or less.
@@ -33,9 +32,7 @@ namespace Excelsion.Towers
 		private float cooldown = 0.0f; //Firing speed timer.
 		private int tick;
 
-		// MATT TESTING
 		public static Transform projectileParentTransform;
-		// END MATT TESTING
 
 		#region Statics
 		public static TowerBase[] towers;
@@ -85,7 +82,7 @@ namespace Excelsion.Towers
 			myID = nextTowerID;
 			Register( this );
 
-			targets = new List< Enemy >();
+			targets = new List<Enemy>();
 			inventory = new Bag( 6 ); //Start with an empty inventory because at the start of a game we won't have a working tower.
 
 			//Note that multiple items of the same type is not intended here. (Except for ItemNull)
@@ -250,7 +247,7 @@ namespace Excelsion.Towers
 			//if( CanAttack == false ) 
 			//	return; //Don't bother if we can't attack.
 
-			foreach( Enemy e in DefenseController.Get().enemies )
+			foreach (Enemy e in DefenseController.Get().enemies )
 			{
 				if( e == null )
 				{
@@ -267,9 +264,9 @@ namespace Excelsion.Towers
 			//By default, target closest to objective.
 			float closest = Mathf.Infinity;
 			Enemy returnEnemy = null;
-			foreach( Enemy e in targets )
+			foreach (Enemy e in targets)
 			{
-				if( e == null )
+				if (e == null)
 				{
 					DefenseController.Get().enemies.Remove( e ); //This might cause errors?
 					continue;
@@ -385,28 +382,29 @@ namespace Excelsion.Towers
                 return (S1) * targetDir + aTargetSpeed;
         }
 		#endregion
+
 		void OnDrawGizmos()
 		{
-			if( DO_DEBUG )
+			if (DO_DEBUG)
 			{
 				Gizmos.color = Color.cyan;
-				Gizmos.DrawWireSphere( transform.position, new TowerStats().range );
+				Gizmos.DrawWireSphere(transform.position, new TowerStats().range);
 
-				if( targets == null ) return;
+				if (targets == null) return;
 
-				foreach( Enemy e in targets ) //This causes errors as enemies are destroyed. Ignore it or turn off debug.
+				foreach (Enemy e in targets) //This causes errors as enemies are destroyed. Ignore it or turn off debug.
 				{
-					if( e == null )
+					if (e == null)
 						continue;
-					else if( e == activeTarget )
+					else if (e == activeTarget)
 					{
 						Gizmos.color = Color.white;
 
-						Gizmos.DrawLine( transform.position, e.transform.position );
+						Gizmos.DrawLine(transform.position, e.transform.position);
 						continue;
 					}
 					Gizmos.color = Color.grey;
-					Gizmos.DrawLine( transform.position, e.transform.position );
+					Gizmos.DrawLine(transform.position, e.transform.position);
 				}
 
 			}

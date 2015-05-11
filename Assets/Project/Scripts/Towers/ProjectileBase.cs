@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using Excelsion.Enemies;
 
 //Stephan Ennen - 3/3/2015
@@ -10,9 +10,10 @@ namespace Excelsion.Towers.Projectiles
 	[RequireComponent(typeof(Rigidbody), typeof(Collider))]
 	public class ProjectileBase : MonoBehaviour 
 	{
-		public delegate void OnUpdateEvent( ProjectileBase projectile );
-		public delegate void OnEnemySelection( out Enemy[] enemies, ProjectileBase projectile );
-		public delegate void OnEnemiesHit( Enemy[] enemies );
+		#region Fields
+		public delegate void OnUpdateEvent(ProjectileBase projectile);
+		public delegate void OnEnemySelection(out Enemy[] enemies, ProjectileBase projectile);
+		public delegate void OnEnemiesHit( Enemy[] enemies);
 
 		public OnUpdateEvent onUpdateEvent;
 		public OnEnemySelection onEnemySelection;
@@ -24,8 +25,12 @@ namespace Excelsion.Towers.Projectiles
         public float speed;
 
         public Vector3 travelDir;
+		#endregion
 
-		public void Initalize( TowerBase owner, Enemy target, int damageOnImpact ) //Delegates are passed seperately.
+		#region Initialization
+		// Matt 5-09-2015: TODO: Need this to work with PlayerTower without PlayerTower deriving from TowerBase and inheriting all its unnecessary methods and fields.
+		// Will most likely have to turn this into a "ManualTower" or something and make a lighter TowerBase both type of towers can come from.
+		public void Initalize(TowerBase owner, Enemy target, int damageOnImpact) //Delegates are passed seperately.
 		{
 			this.owner = owner;
 			this.target = target;
@@ -36,30 +41,35 @@ namespace Excelsion.Towers.Projectiles
 		{
 			StartCoroutine("TimedDestroy"); //We might go flying off into oblivion. Clean ourselves up if so.
 		}
-		void Update () 
+		#endregion
+
+		#region Update
+		void Update() 
 		{
-			if( onUpdateEvent != null )
+			if (onUpdateEvent != null)
 				onUpdateEvent( this );
 			else
 				transform.Translate(Vector3.forward * speed * Time.deltaTime);
 		}
+		#endregion
 
-		//Do things like explode here.
+		#region Collision Handling
+		// Do things like explode here.
 		public virtual void OnCollisionEnter( Collision col )
 		{
 			//Array of enemies that will be effected. Start empty
 			Enemy[] enemiesHit = new Enemy[0];
 
 			//If we have any enemy selection delegates, have them modify our array.
-			if( onEnemySelection != null )
-				onEnemySelection( out enemiesHit, this );
+			if (onEnemySelection != null)
+				onEnemySelection(out enemiesHit, this);
 			else //..Otherwise just use the single enemy that was collided with.
 			{
-				if( col.gameObject.tag == "Enemy" )
+				if (col.gameObject.tag == "Enemy")
 				{
-					Enemy e = col.gameObject.GetComponent< Enemy >(); //TODO - make this more fail-safe
+					Enemy e = col.gameObject.GetComponent<Enemy>(); //TODO - make this more fail-safe
 					if( e != null )
-						enemiesHit = ArrayTools.Push< Enemy >( enemiesHit, e );
+						enemiesHit = ArrayTools.Push<Enemy>(enemiesHit, e);
 					else
 					{
 						GameObject.Destroy( this.gameObject );
@@ -69,18 +79,18 @@ namespace Excelsion.Towers.Projectiles
 			}
 
 			//Pass all enemies that should be effected to our items. (So they may apply status effects or whatever)
-			if( onEnemiesHit != null )
-				onEnemiesHit( enemiesHit );
+			if (onEnemiesHit != null)
+				onEnemiesHit(enemiesHit);
 
 			//Deal damage to all enemies effected.
-			foreach( Enemy h in enemiesHit )
+			foreach(Enemy h in enemiesHit)
 			{
-				h.Damage( dmg );
+				h.Damage(dmg);
 			}
-
 
 			GameObject.Destroy( this.gameObject );
 		}
+		#endregion
 
 		IEnumerable TimedDestroy()
 		{

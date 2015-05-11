@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 
+// *** ISSUE *** 5/9/2015 -- This and a lot of other prefabs became broken somehow?!?!
+
 // Matt McGrath - 4/18/2015
 
 // Notification Log will display "Important Events" such as villagers dying. Messages will slowly disappear over time. TODO: Perhaps a scroll wheel to view older messages.
@@ -73,7 +75,10 @@ public class NotificationLog : MonoBehaviour
 		// Set each text reference to empty, so we don't display anything until needed.
 		foreach (Text text in textReferences)
 		{
-			text.text = string.Empty;
+			if (textReferences != null)
+			{
+				text.text = string.Empty;
+			}
 		}
 
 		audioSource = this.gameObject.AddComponent<AudioSource>();
@@ -90,6 +95,7 @@ public class NotificationLog : MonoBehaviour
 		// TEMP testing of pushing notifications into the log.
 		if (Input.GetKeyDown (KeyCode.L))
 		{
+			Excelsion.GameManagers.WorldClock.Pause = !Excelsion.GameManagers.WorldClock.Pause;
 			notificationNumber++;
 			float randomDisplayTime = UnityEngine.Random.Range (2f, 10f);
 			Notification notification = new Notification("Testing Notifications! Message #" + notificationNumber.ToString (), Color.white, 4.0f);
