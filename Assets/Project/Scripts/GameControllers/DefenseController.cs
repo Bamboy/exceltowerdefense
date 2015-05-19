@@ -40,6 +40,7 @@ namespace Excelsion.GameManagers
 		public GameObject enemyPrefab;			// Reference to our Enemy prefab.
 		public static int money;				// Money enemy drops upon death. Money doesn't seem to be used yet(?)	
 		public float enemySpawnDelay = 3.0f;	// How often is a new Enemy spawned?
+		public bool spawnOnlyAtNight = false;	// Adding this so we can test new prototype without altering too much of this code, in case prototype ends up a dud.
 		#endregion
 
 		#region Initialization
@@ -90,6 +91,7 @@ namespace Excelsion.GameManagers
 			yield return new WaitForSeconds(enemySpawnDelay);
 
 			// Don't spawn more Enemies if we're not at night!
+			if (spawnOnlyAtNight)
 			while (WorldClock.isDaytime)
 				yield return null;
 

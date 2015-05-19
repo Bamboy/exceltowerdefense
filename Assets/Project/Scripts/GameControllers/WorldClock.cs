@@ -82,6 +82,9 @@ namespace Excelsion.GameManagers
 					return nightLength - (totalDayProgress - dayLength);
 			}
 		}
+
+		public static bool isClockBeingUsed = false;	// Adding this so we can use this script for prototype without completely altering it. We don't want a time cycle in prototype.
+
 		//TODO - consider adding a percentage day/night progress
 		#endregion
 
@@ -161,22 +164,25 @@ namespace Excelsion.GameManagers
 
 		void Update () 
 		{
-			if( Pause == false )
+			if (isClockBeingUsed)
 			{
-				//Calculate time...
-				rawTime += Time.deltaTime;
-				UpdateVisuals();
-			}
-			else
-			{
-				//Dont calculate time, the game is paused.
+				if( Pause == false )
+				{
+					//Calculate time...
+					rawTime += Time.deltaTime;
+					UpdateVisuals();
+				}
+				else
+				{
+					//Dont calculate time, the game is paused.
+				}
 			}
 		}
 		void UpdateVisuals()
 		{
 			clockDayCounter.text = "Day: \n"+ day;
 			clockSpinner.localRotation = Quaternion.Euler(0,0, (totalDayProgress / totalDayLength) * -360.0f );
-			//Debug.Log("Daytime?: "+ isDaytime +", Time unitl next switch: "+ timeUntilDayNightSwitch );
+			Debug.Log("Daytime?: "+ isDaytime +", Time unitl next switch: "+ timeUntilDayNightSwitch );
 
 			if( isDaytime ) //This will trigger any scripts interested in changes of this value. (OnDawn, OnDusk)
 				return;

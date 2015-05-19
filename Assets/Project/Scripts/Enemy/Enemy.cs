@@ -58,11 +58,11 @@ namespace Excelsion.Enemies
 			currentHeading = transform.forward;
 
 			//Set the target position based on the closest house thats setup.
-			if (DefenseController.Get().houses.Count > 1 )
-			{
-				targetPosition = GetClosestTarget(DefenseController.Get().houses);
-			}
-			else 
+//			if (DefenseController.Get().houses.Count > 1 )
+//			{
+//				targetPosition = GetClosestTarget(DefenseController.Get().houses);
+//			}
+//			else 
 			{
 				targetPosition = DefenseController.Get().enemyObjective.transform.position;
 			}
@@ -77,8 +77,8 @@ namespace Excelsion.Enemies
 
 		public virtual void DoMovement()
 		{
-			//targetPosition = DefenseController.Get().enemyObjective.transform.position;
-			targetPosition = GetClosestTarget(DefenseController.Get().houses);
+			targetPosition = DefenseController.Get().enemyObjective.transform.position;
+			//targetPosition = GetClosestTarget(DefenseController.Get().houses);
 			targetInRangePosition = VectorExtras.OffsetPosInPointDirection( new Vector3(targetPosition.x, transform.position.y, targetPosition.z), 
 			                        transform.position, 8.0f );
 			if( Vector3.Distance( transform.position, targetInRangePosition ) <= 1.0f )
