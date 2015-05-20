@@ -19,7 +19,7 @@ namespace Excelsion.UI
 				return selectC;
 			else
 			{
-				GameObject prefab = Resources.LoadAssetAtPath<GameObject>("GUI/Selection");
+				GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("GUI/Selection");
 				GameObject obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.LookRotation(Vector3.up)) as GameObject;
 				selectC = obj.GetComponent< SelectionController >();
 				return selectC;
